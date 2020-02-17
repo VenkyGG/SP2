@@ -28,7 +28,7 @@ SceneText::~SceneText()
 void SceneText::Init()
 {
 	//no hello
-	//sp2
+	//sp2 is gay
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Generate a default VAO for now
