@@ -183,7 +183,7 @@ void SceneText::Init()
 
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
-	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
+	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga")
 
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(0.f, 0.f, 0.f), 9, 36, 1.f);
