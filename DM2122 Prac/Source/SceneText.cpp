@@ -169,8 +169,8 @@ void SceneText::Init()
 	meshList[GEO_MOTORSHOW_CEILING] = MeshBuilder::GenerateQuad("ceiling", Color(0, 0, 0), 1.f, 1.f);
 
 	//Flatland surrounding field
-	meshList[GEO_FLATLAND] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 5000.f, 5000.f);
-	//meshList[GEO_FLATLAND]->textureID = LoadTGA("Image//marble.tga");
+	meshList[GEO_FLATLAND] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
+	meshList[GEO_FLATLAND]->textureID = LoadTGA("Image//floortexture.tga");
 	meshList[GEO_FLATLAND]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_FLATLAND]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
 	meshList[GEO_FLATLAND]->material.kSpecular.Set(1.f, 1.f, 1.f);
