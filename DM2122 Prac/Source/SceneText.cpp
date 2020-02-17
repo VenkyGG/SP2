@@ -46,7 +46,7 @@ void SceneText::Init()
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 
-	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Texture.fragmentshader"); 
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Texture.fragmentshader")
 
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
