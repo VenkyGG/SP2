@@ -27,7 +27,7 @@ SceneText::~SceneText()
 
 void SceneText::Init()
 {
-	//no bye
+	//no hello
 
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
