@@ -116,7 +116,7 @@ void SceneText::Init()
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
 	//Initialize Second light
-	light[1].type = Light::LIGHT_DIRECTIONAL;
+	light[1].type = Light::LIGHT_POINT;
 	light[1].position.Set(500, 500, 0);
 	light[1].color.Set(0.5f, 0.5f, 0.5f);
 	light[1].power = 1.5f;
@@ -167,7 +167,7 @@ void SceneText::Init()
 	meshList[GEO_MOTORSHOW_WALL]->textureID = LoadTGA("Image//wall_texture.tga");
 
 	meshList[GEO_MOTORSHOW_CEILING] = MeshBuilder::GenerateQuad("ceiling", Color(0, 0, 0), 1.f, 1.f);
-
+	meshList[GEO_MOTORSHOW_CEILING]->textureID = LoadTGA("Image//ceilingtexture.tga");
 	//Flatland surrounding field
 	meshList[GEO_FLATLAND] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
 	meshList[GEO_FLATLAND]->textureID = LoadTGA("Image//floortexture.tga");
@@ -186,7 +186,7 @@ void SceneText::Init()
 	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
 
 
-	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(0.f, 0.f, 0.f), 9, 36, 1.f);
+	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 
 	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sunflower", "OBJ//sun.obj");
@@ -263,7 +263,7 @@ void SceneText::Update(double dt)
 
 
 	starepoint = Target2;
-
+	float speed = 2;
 	if (Application::IsKeyPressed('Z') && TimeChangeDelay < GetTickCount64())//changes night and day
 	{
 		day = !day;//day is not day
@@ -272,7 +272,7 @@ void SceneText::Update(double dt)
 	if (Application::IsKeyPressed('W'))
 	{
 
-		camera.position =camera.position + camera.view;
+		camera.position =camera.position + camera.view * speed;
 		camera.position.y = camera.playerheight;
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
@@ -281,7 +281,7 @@ void SceneText::Update(double dt)
 	if (Application::IsKeyPressed('S'))
 	{
 
-		camera.position = camera.position - camera.view;
+		camera.position = camera.position - camera.view * speed;
 		camera.position.y = camera.playerheight;
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
@@ -289,13 +289,13 @@ void SceneText::Update(double dt)
 	}
 	if (Application::IsKeyPressed('A'))
 	{
-		camera.position = camera.position - camera.right;
+		camera.position = camera.position - camera.right * speed;
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
 	}
 	if (Application::IsKeyPressed('D'))
 	{
-		camera.position = camera.position + camera.right;
+		camera.position = camera.position + camera.right * speed;
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
 	}
@@ -435,10 +435,10 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 			mesh->collison = true;
 			mesh->collisionboxcreated = true;
 		}
-		Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
-		modelStack.PushMatrix();
-		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();
+		//Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+		//modelStack.PushMatrix();
+		//RenderMesh(Collider, false, false);
+		//modelStack.PopMatrix();
 		
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
@@ -561,8 +561,8 @@ void SceneText::RenderSkybox()
 		RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
 		modelStack.PopMatrix();
 		modelStack.Translate(0.f, size - offset, 0.f);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
+		modelStack.Scale(size * 2.75f, size * 2.75f, size * 2.75f);
+		modelStack.Rotate(GetTickCount64()*0.01f, 0.f, 1.f, 0.f);
 		modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
 		RenderMesh(meshList[GEO_MOTORSHOW_CEILING], false, true);
 		modelStack.PopMatrix();
