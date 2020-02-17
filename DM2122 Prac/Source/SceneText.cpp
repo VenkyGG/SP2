@@ -272,7 +272,7 @@ void SceneText::Update(double dt)
 	if (Application::IsKeyPressed('W'))
 	{
 
-		camera.position =camera.position + camera.view * speed;
+		camera.position = camera.position + camera.view * speed;
 		camera.position.y = camera.playerheight;
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
@@ -299,7 +299,7 @@ void SceneText::Update(double dt)
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
 	}
-	
+
 	camera.Update(dt);
 
 
@@ -439,7 +439,7 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 		//modelStack.PushMatrix();
 		//RenderMesh(Collider, false, false);
 		//modelStack.PopMatrix();
-		
+
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -562,7 +562,7 @@ void SceneText::RenderSkybox()
 		modelStack.PopMatrix();
 		modelStack.Translate(0.f, size - offset, 0.f);
 		modelStack.Scale(size * 2.75f, size * 2.75f, size * 2.75f);
-		modelStack.Rotate(GetTickCount64()*0.01f, 0.f, 1.f, 0.f);
+		modelStack.Rotate(GetTickCount64() * 0.01f, 0.f, 1.f, 0.f);
 		modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
 		RenderMesh(meshList[GEO_MOTORSHOW_CEILING], false, true);
 		modelStack.PopMatrix();
