@@ -199,7 +199,6 @@ void SceneText::Init()
 		//meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
 		meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileBody());
 	}
-
 	day = true;//set time to day
 }
 
@@ -378,18 +377,19 @@ void SceneText::Render()
 
 	for (int i = 0; i < numbots; ++i)
 	{
-		modelStack.PushMatrix();
-		modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+		//modelStack.PushMatrix();
+		//modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
 		//RenderMesh(meshList[GEO_HEAD], false, true);
-		modelStack.PopMatrix();
+		//modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+		Bot[i]->SetCollisionStorage1(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector1));
+		Bot[i]->SetCollisionStorage2(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector2));
+		meshList[GEO_BODY]->collison = true;
 		RenderMesh(meshList[GEO_BODY], false, true);
 		modelStack.PopMatrix();
 	}
-
-
 
 
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2);//render crosshair
@@ -415,30 +415,67 @@ void SceneText::CheckSquareCollision()
 {
 	for (int current = GEO_AXES + 1; current != NUM_GEOMETRY; current++)
 	{
-		if (meshList[current]->collison)
+		if (meshList[current] != NULL)
 		{
-			float xmin = meshList[current]->ColisionVector2.x;
-			float xmax = meshList[current]->ColisionVector1.x;
-			float ymin = meshList[current]->ColisionVector2.y;
-			float ymax = meshList[current]->ColisionVector1.y;
-			float zmin = meshList[current]->ColisionVector2.z;
-			float zmax = meshList[current]->ColisionVector1.z;
-			//cout << xmax << endl;
-			if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
+			if (current == GEO_BODY)
 			{
-				camera.position.x = xmax + 0.1f;
+				for (int i = 0; i < numbots; i++)
+				{
+					float xmin = Bot[i]->GetCollisionStorage2().x;
+					float xmax = Bot[i]->GetCollisionStorage1().x;
+					float ymin = Bot[i]->GetCollisionStorage2().y;
+					float ymax = Bot[i]->GetCollisionStorage1().y;
+					float zmin = Bot[i]->GetCollisionStorage2().z;
+					float zmax = Bot[i]->GetCollisionStorage1().z;
+
+					if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
+					{
+						camera.position.x = xmax + 0.1f;
+
+					}
+					if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
+					{
+						camera.position.x = xmin - 0.1f;
+					}
+					if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
+					{
+						camera.position.z = zmax + 0.1f;
+					}
+					if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
+					{
+						camera.position.z = zmin - 0.1f;
+					}
+				}
 			}
-			if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
+			else
 			{
-				camera.position.x = xmin - 0.1f;
-			}
-			if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-			{
-				camera.position.z = zmax + 0.1f;
-			}
-			if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-			{
-				camera.position.z = zmin - 0.1f;
+				if (meshList[current]->collison)
+				{
+					float xmin = meshList[current]->ColisionVector2.x;
+					float xmax = meshList[current]->ColisionVector1.x;
+					float ymin = meshList[current]->ColisionVector2.y;
+					float ymax = meshList[current]->ColisionVector1.y;
+					float zmin = meshList[current]->ColisionVector2.z;
+					float zmax = meshList[current]->ColisionVector1.z;
+					//cout << xmax << endl;
+
+					if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
+					{
+						camera.position.x = xmax + 0.1f;
+					}
+					if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
+					{
+						camera.position.x = xmin - 0.1f;
+					}
+					if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
+					{
+						camera.position.z = zmax + 0.1f;
+					}
+					if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
+					{
+						camera.position.z = zmin - 0.1f;
+					}
+				}
 			}
 		}
 	}
@@ -448,17 +485,20 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 {
 	if (hasCollision)
 	{
-		if (!mesh->collisionboxcreated)
+		if (mesh != meshList[GEO_BODY])
 		{
-			mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
-			mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
-			mesh->collison = true;
-			mesh->collisionboxcreated = true;
+			if (!mesh->collisionboxcreated)
+			{
+				mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
+				mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
+				mesh->collison = true;
+				mesh->collisionboxcreated = true;
+			}
 		}
-		Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		modelStack.PushMatrix();
 		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();
+		modelStack.PopMatrix();*/
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;

@@ -43,6 +43,7 @@ public:
 	Vector3 p8;
 	Vector3 ColisionVector1;
 	Vector3 ColisionVector2;
+	
 	bool collison = false;
 	bool collisionboxcreated = false;
 	Material material;

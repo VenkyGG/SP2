@@ -120,3 +120,23 @@ std::string NPC::getNpcFileRightLeg()
 {
 	return npcFileRightLeg;
 }
+
+Vector3 NPC::GetCollisionStorage1()
+{
+	return ColisionVector1Storage;
+}
+
+void NPC::SetCollisionStorage1(Vector3 vector3)
+{
+	ColisionVector1Storage = vector3;
+}
+
+Vector3 NPC::GetCollisionStorage2()
+{
+	return ColisionVector2Storage;
+}
+
+void NPC::SetCollisionStorage2(Vector3 vector3)
+{
+	ColisionVector2Storage = vector3;
+}

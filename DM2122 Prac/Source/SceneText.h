@@ -23,8 +23,8 @@ class SceneText : public Scene
 		GEO_MOTORSHOW_CEILING,
 		GEO_FLATLAND,
 		GEO_LIGHTSPHERE,
+		GEO_EXTRASHAPE1,
 		GEO_TEXT,
-		
 		GEO_BODY,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
@@ -81,8 +81,8 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 	Light light[2];
-	int numbots = 2;
-	NPC* Bot[2];
+	int numbots = 50;
+	NPC* Bot[50];
 
 	Camera2 camera;
 
