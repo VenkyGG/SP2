@@ -27,16 +27,6 @@ float CCar::getcurrentSpeed()
 	return currentSpeed;
 }
 
-string CCar::getfileLocation()
-{
-	return fileLocation;
-}
-
-string CCar::getTexture()
-{
-	return Texture;
-}
-
 void CCar::setxLocation(float xpos)
 {
 	xLocation = xpos;
@@ -55,16 +45,6 @@ void CCar::setzLocation(float zpos)
 float CCar::getzLocation()
 {
 	return zLocation;
-}
-
-bool CCar::getIsSpinning()
-{
-	return IsSpinning;
-}
-
-float CCar::getPrice()
-{
-	return price;
 }
 
 CCar::~CCar()
