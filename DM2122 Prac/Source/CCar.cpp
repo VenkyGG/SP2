@@ -27,6 +27,11 @@ float CCar::getcurrentSpeed()
 	return currentSpeed;
 }
 
+string CCar::getfileLocation()
+{
+	return fileLocation;
+}
+
 void CCar::setxLocation(float xpos)
 {
 	xLocation = xpos;
