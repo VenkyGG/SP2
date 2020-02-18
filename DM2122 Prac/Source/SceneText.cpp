@@ -7,6 +7,7 @@
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
+#include "CCar.h"
 using namespace std;
 
 #define ROT_LIMIT 45.f;
