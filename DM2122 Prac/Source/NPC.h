@@ -8,8 +8,6 @@
 class NPC
 {
 private:
-	int NPCID[4];
-
 	float NPCRotationalValue;
 
 	float NPCTranslationXValue;
@@ -22,9 +20,6 @@ private:
 	std::string npcFileRightArm;
 	std::string npcFileLeftLeg;
 	std::string npcFileRightLeg;
-
-	int declareNPC;
-
 	
 public:
 	NPC(float seed);
@@ -44,7 +39,5 @@ public:
 	std::string getNpcFileRightArm();
 	std::string getNpcFileLeftLeg();
 	std::string getNpcFileRightLeg();
-
-	int getDeclare();
 };
 

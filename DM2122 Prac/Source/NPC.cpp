@@ -6,7 +6,7 @@ NPC::NPC(float seed)
 {
 	srand(seed);
 
-	declareNPC = 0;
+	int declareNPC = 0;
 
 	declareNPC = rand() % 4 + 1;
 
@@ -119,9 +119,4 @@ std::string NPC::getNpcFileLeftLeg()
 std::string NPC::getNpcFileRightLeg()
 {
 	return npcFileRightLeg;
-}
-
-int NPC::getDeclare()
-{
-	return declareNPC;
 }
