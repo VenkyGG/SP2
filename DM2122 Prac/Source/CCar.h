@@ -1,7 +1,8 @@
 #pragma once
 using namespace std;
 #include <string>
-
+#include "Mesh.h"
+#include "MeshBuilder.h"
 class CCar
 {
 	float maxSpeed;
@@ -13,6 +14,7 @@ class CCar
 	bool IsSpinning;
 	float price;
 
+	Mesh* mesh;
 	CCar* Next;
 	CCar* Previous;
 
@@ -34,6 +36,13 @@ public:
 	CCar* Getprevious();
 	void SetNext(CCar* x);
 	void SetPrevious(CCar* x);
+
+	Mesh* GetMesh();
+	void SetMesh(string filelocation);
+
+	bool GetIsSpinning();
+	void SetIsSpinning(bool x);
+
 
 	CCar();
 	~CCar();

@@ -185,13 +185,21 @@ void SceneText::Init()
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
 	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
-
+	
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 
 	srand(time(NULL));
-
+	CCar* current = cars.GetStart();
+	for (int i = 0; i < cars.GetnumberofCars(); i++)
+	{
+		current->GetMesh()->textureID = LoadTGA(current->getTextureLocation().c_str());
+		if (i != cars.GetnumberofCars() - 1)
+		{
+			current = current->GetNext();
+		}
+	}
 	for (int i = 0; i <numbots; ++i)
 	{
 		Bot[i] = new NPC(rand() % 10000);
@@ -385,10 +393,26 @@ void SceneText::Render()
 			RenderMesh(meshList[GEO_BODY], false, true);
 			modelStack.PopMatrix();
 		}
-		/*for (int i = 0; i < ; i++)
+		if (cars.GetnumberofCars() != 0)
 		{
-
-		}*/
+			CCar* current = cars.GetStart();
+			for (int i = 0; i < cars.GetnumberofCars(); i++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(current->getxLocation(), 0, current->getzLocation());
+				if (current->GetIsSpinning())
+				{
+					modelStack.Rotate(GetTickCount64() * 0.01f, 0.f, 1.f, 0.f);
+				}
+				current->GetMesh()->collison= false;
+				RenderMesh(current->GetMesh(), false, true);
+				modelStack.PopMatrix();
+				if (i != cars.GetnumberofCars() - 1)
+				{
+					current = current->GetNext();
+				}
+			}
+		}
 	}
 
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2);//render crosshair
