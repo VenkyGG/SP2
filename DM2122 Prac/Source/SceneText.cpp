@@ -190,13 +190,7 @@ void SceneText::Init()
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 
-	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sunflower", "OBJ//sun.obj");
-	meshList[GEO_EXTRASHAPE1]->textureID = LoadTGA("Image//sun.tga");
-	meshList[GEO_EXTRASHAPE1]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_EXTRASHAPE1]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_EXTRASHAPE1]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[GEO_EXTRASHAPE1]->material.kShininess = 1.f;
-
+	
 
 
 	day = true;//set time to day
@@ -366,10 +360,10 @@ void SceneText::Render()
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_EXTRASHAPE1], true, true);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 
 

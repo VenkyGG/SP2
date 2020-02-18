@@ -24,7 +24,6 @@ class SceneText : public Scene
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
 		GEO_CROSSHAIR,
-		GEO_EXTRASHAPE1,
 		NUM_GEOMETRY,
 	};
 
