@@ -434,7 +434,7 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 			mesh->collison = true;
 			mesh->collisionboxcreated = true;
 		}
-		//Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8)
+		//Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		//modelStack.PushMatrix();
 		//RenderMesh(Collider, false, false);
 		//modelStack.PopMatrix();
