@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Light.h"
 #include "NPC.h"
+#include "CarsList.h"
 
 class SceneText : public Scene
 {
@@ -84,6 +85,8 @@ private:
 	int numbots = 50;
 	NPC* Bot[50];
 
+	CarsList cars;
+
 	Camera2 camera;
 
 	void CheckSquareCollision();
@@ -94,7 +97,7 @@ private:
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	bool day;
+	bool OutsideMotorShow;
 	double TimeChangeDelay;
 	Vector3 starepoint;
 public:

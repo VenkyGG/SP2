@@ -1,19 +1,19 @@
+
 #include "SceneText.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include <Mtx44.h>
-
 #include "shader.hpp"
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
-#include "CCar.h"
 
 using namespace std;
 
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
+
 
 SceneText::SceneText()
 {
@@ -199,7 +199,9 @@ void SceneText::Init()
 		//meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
 		meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileBody());
 	}
-	day = true;//set time to day
+	OutsideMotorShow = true;//set time to day
+
+	
 }
 
 
@@ -225,7 +227,7 @@ void SceneText::Update(double dt)
 	}
 	light[0].power = 0;
 	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	if (!day)//if night
+	if (!OutsideMotorShow)//if night
 	{
 		//light[0].position.x = 0;//set light to above tile selector
 		//light[0].position.y = 5;
@@ -267,7 +269,7 @@ void SceneText::Update(double dt)
 	float speed = 2;
 	if (Application::IsKeyPressed('Z') && TimeChangeDelay < GetTickCount64())//changes night and day
 	{
-		day = !day;//day is not day
+		OutsideMotorShow = !OutsideMotorShow;//day is not day
 		TimeChangeDelay = GetTickCount64() + 250;//delay so day wont be spammed
 	}
 	if (Application::IsKeyPressed('W'))
@@ -366,31 +368,28 @@ void SceneText::Render()
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
 	modelStack.PopMatrix();
 
-	/*modelStack.PushMatrix();
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_EXTRASHAPE1], true, true);
-	modelStack.PopMatrix();*/
-
-	//std::cout << Bot->getNPCTranslationX() << std::endl;
-
-	//std::cout << Bot->getNPCTranslationZ() << std::endl;
-
-	for (int i = 0; i < numbots; ++i)
+	if (!OutsideMotorShow)//Renders Motorshow stuff
 	{
-		//modelStack.PushMatrix();
-		//modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
-		//RenderMesh(meshList[GEO_HEAD], false, true);
-		//modelStack.PopMatrix();
+		for (int i = 0; i < numbots; i++)
+		{
+			//modelStack.PushMatrix();
+			//modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+			//RenderMesh(meshList[GEO_HEAD], false, true);
+			//modelStack.PopMatrix();
 
-		modelStack.PushMatrix();
-		modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
-		Bot[i]->SetCollisionStorage1(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector1));
-		Bot[i]->SetCollisionStorage2(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector2));
-		meshList[GEO_BODY]->collison = true;
-		RenderMesh(meshList[GEO_BODY], false, true);
-		modelStack.PopMatrix();
+			modelStack.PushMatrix();
+			modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+			Bot[i]->SetCollisionStorage1(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector1));
+			Bot[i]->SetCollisionStorage2(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector2));
+			meshList[GEO_BODY]->collison = true;
+			RenderMesh(meshList[GEO_BODY], false, true);
+			modelStack.PopMatrix();
+		}
+		/*for (int i = 0; i < ; i++)
+		{
+
+		}*/
 	}
-
 
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2);//render crosshair
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
@@ -416,40 +415,40 @@ void SceneText::CheckSquareCollision()
 	for (int current = GEO_AXES + 1; current != NUM_GEOMETRY; current++)
 	{
 		if (meshList[current] != NULL)
-		{
-			if (current == GEO_BODY)
+		{ 
+			if (meshList[current]->collison)
 			{
-				for (int i = 0; i < numbots; i++)
+				if (current == GEO_BODY)
 				{
-					float xmin = Bot[i]->GetCollisionStorage2().x;
-					float xmax = Bot[i]->GetCollisionStorage1().x;
-					float ymin = Bot[i]->GetCollisionStorage2().y;
-					float ymax = Bot[i]->GetCollisionStorage1().y;
-					float zmin = Bot[i]->GetCollisionStorage2().z;
-					float zmax = Bot[i]->GetCollisionStorage1().z;
+					for (int i = 0; i < numbots; i++)
+					{
+						float xmin = Bot[i]->GetCollisionStorage2().x;
+						float xmax = Bot[i]->GetCollisionStorage1().x;
+						float ymin = Bot[i]->GetCollisionStorage2().y;
+						float ymax = Bot[i]->GetCollisionStorage1().y;
+						float zmin = Bot[i]->GetCollisionStorage2().z;
+						float zmax = Bot[i]->GetCollisionStorage1().z;
 
-					if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
-					{
-						camera.position.x = xmax + 0.1f;
+						if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
+						{
+							camera.position.x = xmax + 0.1f;
 
-					}
-					if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
-					{
-						camera.position.x = xmin - 0.1f;
-					}
-					if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-					{
-						camera.position.z = zmax + 0.1f;
-					}
-					if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-					{
-						camera.position.z = zmin - 0.1f;
+						}
+						if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
+						{
+							camera.position.x = xmin - 0.1f;
+						}
+						if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
+						{
+							camera.position.z = zmax + 0.1f;
+						}
+						if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
+						{
+							camera.position.z = zmin - 0.1f;
+						}
 					}
 				}
-			}
-			else
-			{
-				if (meshList[current]->collison)
+				else
 				{
 					float xmin = meshList[current]->ColisionVector2.x;
 					float xmax = meshList[current]->ColisionVector1.x;
@@ -475,7 +474,9 @@ void SceneText::CheckSquareCollision()
 					{
 						camera.position.z = zmin - 0.1f;
 					}
+					
 				}
+				meshList[current]->collison = false;
 			}
 		}
 	}
@@ -545,7 +546,7 @@ void SceneText::RenderSkybox()
 {
 	float size = 1000;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
-	if (day)//render daytime skybox
+	if (OutsideMotorShow)//render daytime skybox
 	{
 		modelStack.PushMatrix();
 		///scale, translate, rotate
