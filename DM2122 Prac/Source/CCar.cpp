@@ -24,12 +24,7 @@ void CCar::setcurrentSpeed(float speed)
 
 float CCar::getcurrentSpeed()
 {
-	return maxSpeed;
-}
-
-string CCar::getfileLocation()
-{
-	return fileLocation;
+	return currentSpeed;
 }
 
 void CCar::setxLocation(float xpos)
