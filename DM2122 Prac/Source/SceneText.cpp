@@ -8,7 +8,6 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "CCar.h"
-#include "NPC.h"
 
 using namespace std;
 
@@ -191,8 +190,15 @@ void SceneText::Init()
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 
-	
+	srand(time(NULL));
 
+	for (int i = 0; i <numbots; ++i)
+	{
+		Bot[i] = new NPC(rand() % 10000);
+
+		meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
+		meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileBody());
+	}
 
 	day = true;//set time to day
 }
@@ -365,6 +371,24 @@ void SceneText::Render()
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_EXTRASHAPE1], true, true);
 	modelStack.PopMatrix();*/
+
+	//std::cout << Bot->getNPCTranslationX() << std::endl;
+
+	//std::cout << Bot->getNPCTranslationZ() << std::endl;
+
+	for (int i = 0; i < numbots; ++i)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+		RenderMesh(meshList[GEO_HEAD], false, true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+		RenderMesh(meshList[GEO_BODY], false, true);
+		modelStack.PopMatrix();
+	}
+
 
 
 

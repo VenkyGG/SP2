@@ -8,7 +8,7 @@ NPC::NPC(float seed)
 
 	int declareNPC = 0;
 
-	declareNPC = rand() % 4 + 1;
+	declareNPC = 3;//rand() % 4 + 1;
 
 	if (declareNPC == 1)
 	{

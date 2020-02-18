@@ -6,6 +6,7 @@
 #include "Camera2.h"
 #include "Mesh.h"
 #include "Light.h"
+#include "NPC.h"
 
 class SceneText : public Scene
 {
@@ -23,6 +24,8 @@ class SceneText : public Scene
 		GEO_FLATLAND,
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
+		GEO_HEAD,
+		GEO_BODY,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
@@ -78,6 +81,8 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 	Light light[2];
+	int numbots = 300;
+	NPC* Bot[300];
 
 	Camera2 camera;
 
