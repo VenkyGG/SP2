@@ -27,7 +27,6 @@ SceneText::~SceneText()
 
 void SceneText::Init()
 {
-
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Generate a default VAO for now
