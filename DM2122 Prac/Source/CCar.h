@@ -9,6 +9,7 @@ class CCar
 	float xLocation;
 	float zLocation;
 	string fileLocation;
+	string Texture;
 	bool IsSpinning;
 	float price;
 
@@ -18,10 +19,13 @@ public:
 	void setcurrentSpeed(float speed);
 	float getcurrentSpeed();
 	string getfileLocation();
+	string getTexture();
 	void setxLocation(float xpos);
 	float getxLocation();
 	void setzLocation(float zpos);
 	float getzLocation();
+	bool getIsSpinning();
+	float getPrice();
 
 	CCar();
 	~CCar();
