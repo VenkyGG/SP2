@@ -9,6 +9,8 @@ class CCar
 	float xLocation;
 	float zLocation;
 	string fileLocation;
+	bool IsSpinning;
+	float price;
 
 public:
 	void setmaxSpeed(float maxspeed);
