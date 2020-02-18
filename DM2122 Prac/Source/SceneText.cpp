@@ -8,6 +8,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "CCar.h"
+#include "NPC.h"
 using namespace std;
 
 #define ROT_LIMIT 45.f;
