@@ -196,7 +196,7 @@ void SceneText::Init()
 	{
 		Bot[i] = new NPC(rand() % 10000);
 
-		meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
+		//meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
 		meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileBody());
 	}
 
@@ -380,7 +380,7 @@ void SceneText::Render()
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
-		RenderMesh(meshList[GEO_HEAD], false, true);
+		//RenderMesh(meshList[GEO_HEAD], false, true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -455,10 +455,10 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 			mesh->collison = true;
 			mesh->collisionboxcreated = true;
 		}
-		//Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
-		//modelStack.PushMatrix();
-		//RenderMesh(Collider, false, false);
-		//modelStack.PopMatrix();
+		Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+		modelStack.PushMatrix();
+		RenderMesh(Collider, false, false);
+		modelStack.PopMatrix();
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
