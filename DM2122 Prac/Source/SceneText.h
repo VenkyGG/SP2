@@ -6,7 +6,7 @@
 #include "Camera2.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "NPC.h"
+#include "NPCList.h"
 #include "CarsList.h"
 
 class SceneText : public Scene
@@ -28,7 +28,6 @@ class SceneText : public Scene
 		GEO_CARPLATFORMBASE,
 		GEO_CARPLATFORMTOP,
 		GEO_TEXT,
-		GEO_BODY,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
@@ -84,10 +83,11 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 	Light light[2];
-	int numbots = 50;
-	NPC* Bot[50];
+	
+
 
 	CarsList cars;
+	
 
 	Camera2 camera;
 

@@ -7,12 +7,12 @@ CarsList::CarsList()
 	int maxspeed = 25;
 	CCar* current = Start;
 	numcars = 0;
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator("OBJ//Cars"))
+	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ//Cars"))
 	{
 		if (Start == NULL)
 		{
 			string location = p.path().filename().string();
-			for (size_t i = 0; i < location.length(); i++)
+			for (int i = 0; i < location.length(); i++)
 			{
 				if (location[i] == '.')
 				{
@@ -70,11 +70,11 @@ CarsList::CarsList()
 	current = Start;
 	float camxpos = 0;
 	float camzpos = 0;
-	float radius = 20.0f;
+	float radius = 100.0f;
 	for (int i = 0; i < numcars; i++)
 	{
-		current->setxLocation(camxpos + radius * sin(currentangle));
-		current->setzLocation(camzpos + radius * cos(currentangle));
+		current->setxLocation(camxpos + radius * sin(Math::DegreeToRadian(currentangle)));
+		current->setzLocation(camzpos + radius * cos(Math::DegreeToRadian(currentangle)));
 		currentangle += angleposition;
 		if (i != numcars - 1)
 		{

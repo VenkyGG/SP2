@@ -1,8 +1,9 @@
 #pragma once
-using namespace std;
+
 #include <string>
 #include "Mesh.h"
 #include "MeshBuilder.h"
+using namespace std;
 class CCar
 {
 	float maxSpeed;

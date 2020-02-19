@@ -1,11 +1,11 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <time.h>
 #include <string>
-#include <Vector3.h>
-
+#include <experimental/filesystem> 
+#include "Mesh.h"
+using namespace std;
 class NPC
 {
 private:
@@ -15,15 +15,14 @@ private:
 
 	float NPCTranslationZValue;
 
-	std::string npcFileHead;
-	std::string npcFileBody;
-	std::string npcFileLeftArm;
-	std::string npcFileRightArm;
-	std::string npcFileLeftLeg;
-	std::string npcFileRightLeg;
-	Vector3 ColisionVector1Storage;
-	Vector3 ColisionVector2Storage;
-	
+
+	int type;
+	Mesh* CharacterPartsOBJ[6];
+	string CharacterTexture;
+	int numpeople;
+
+	NPC* Next;
+	NPC* Previous;
 public:
 	NPC(float seed);
 	~NPC();
@@ -36,16 +35,17 @@ public:
 	float getNPCTranslationX();
 	float getNPCTranslationZ();
 
-	std::string getNpcFileHead();
-	std::string getNpcFileBody();
-	std::string getNpcFileLeftArm();
-	std::string getNpcFileRightArm();
-	std::string getNpcFileLeftLeg();
-	std::string getNpcFileRightLeg();
+	int Gettype();
+	void Settype(int x);
 
-	Vector3 GetCollisionStorage1();
-	void SetCollisionStorage1(Vector3 vector3);
-	Vector3 GetCollisionStorage2();
-	void SetCollisionStorage2(Vector3 vector3);
+	
+	Mesh* GetMesh(int index);
+	void SetMesh(Mesh* x, int index);
+	
+
+	NPC* GetNext();
+	NPC* Getprevious();
+	void SetNext(NPC* x);
+	void SetPrevious(NPC* x);
 };
 

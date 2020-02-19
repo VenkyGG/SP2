@@ -6,49 +6,10 @@ NPC::NPC(float seed)
 {
 	srand(seed);
 
-	int declareNPC = 0;
 
-	declareNPC = 3;//rand() % 4 + 1;
-
-	if (declareNPC == 1)
-	{
-		npcFileHead = "OBJ//Man1//Man1Head.obj";
-		npcFileBody = "OBJ//Man1//Man1Body.obj";
-		npcFileLeftArm = "OBJ//Man1//Man1LeftArm.obj";
-		npcFileRightArm = "OBJ//Man1//Man1RightArm.obj";
-		npcFileLeftLeg = "OBJ//Man1//Man1LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Man1//Man1RightLeg.obj";
-	}
-
-	if (declareNPC == 2)
-	{
-		npcFileHead = "OBJ//Woman1//Woman1Head.obj";
-		npcFileBody = "OBJ//Woman1//Woman1Body.obj";
-		npcFileLeftArm = "OBJ//Woman1//Woman1LeftArm.obj";
-		npcFileRightArm = "OBJ//Woman1//Woman1RightArm.obj";
-		npcFileLeftLeg = "OBJ//Woman1//Woman1LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Woman1//Woman1RightLeg.obj";
-	}
-
-	if (declareNPC == 3)
-	{
-		npcFileHead = "OBJ//Man2//Man2Head.obj";
-		npcFileBody = "OBJ//Man2//Man2Body.obj";
-		npcFileLeftArm = "OBJ//Man2//Man2LeftArm.obj";
-		npcFileRightArm = "OBJ//Man2//Man2RightArm.obj";
-		npcFileLeftLeg = "OBJ//Man2//Man2LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Man2//Man2RightLeg.obj";
-	}
-
-	if (declareNPC == 4)
-	{
-		npcFileHead = "OBJ//Woman2//Woman2Head.obj";
-		npcFileBody = "OBJ//Woman2//Woman2Body.obj";
-		npcFileLeftArm = "OBJ//Woman2//Woman2LeftArm.obj";
-		npcFileRightArm = "OBJ//Woman2//Woman2RightArm.obj";
-		npcFileLeftLeg = "OBJ//Woman2//Woman2LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Woman2//Woman2RightLeg.obj";
-	}
+	type = rand() % 4;
+	
+	
 
 	NPCTranslationXValue = rand() % 2000 - 1000;
 
@@ -91,52 +52,44 @@ float NPC::getNPCTranslationZ()
 	return NPCTranslationZValue;
 }
 
-std::string NPC::getNpcFileHead()
+int NPC::Gettype()
 {
-	return npcFileHead;
+	return type;
 }
 
-std::string NPC::getNpcFileBody()
+void NPC::Settype(int x)
 {
-	return npcFileBody;
+	type = x;
 }
 
-std::string NPC::getNpcFileLeftArm()
+
+
+Mesh* NPC::GetMesh(int index)
 {
-	return npcFileLeftArm;
+	return CharacterPartsOBJ[index];
 }
 
-std::string NPC::getNpcFileRightArm()
+void NPC::SetMesh(Mesh* x, int index)
 {
-	return npcFileRightArm;
+	CharacterPartsOBJ[index] = x;
 }
 
-std::string NPC::getNpcFileLeftLeg()
+NPC* NPC::GetNext()
 {
-	return npcFileLeftLeg;
+	return Next;
 }
 
-std::string NPC::getNpcFileRightLeg()
+NPC* NPC::Getprevious()
 {
-	return npcFileRightLeg;
+	return Previous;
 }
 
-Vector3 NPC::GetCollisionStorage1()
+void NPC::SetNext(NPC* x)
 {
-	return ColisionVector1Storage;
+	Next = x;
 }
 
-void NPC::SetCollisionStorage1(Vector3 vector3)
+void NPC::SetPrevious(NPC* x)
 {
-	ColisionVector1Storage = vector3;
-}
-
-Vector3 NPC::GetCollisionStorage2()
-{
-	return ColisionVector2Storage;
-}
-
-void NPC::SetCollisionStorage2(Vector3 vector3)
-{
-	ColisionVector2Storage = vector3;
+	Previous = x;
 }

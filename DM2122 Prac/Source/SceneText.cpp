@@ -13,7 +13,7 @@ using namespace std;
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
-
+NPCList NPCs(500);
 
 SceneText::SceneText()
 {
@@ -189,7 +189,13 @@ void SceneText::Init()
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
-
+	int currentfile = 0;
+	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ//NPC//Man1"))
+	{
+		Mesh* x = NULL;
+		x = MeshBuilder::GenerateOBJ("PPP", p.path().string());
+		NPCs.SetMesh(0, x);
+	}
 	srand(time(NULL));
 	CCar* current = cars.GetStart();
 	for (int i = 0; i < cars.GetnumberofCars(); i++)
@@ -200,13 +206,7 @@ void SceneText::Init()
 			current = current->GetNext();
 		}
 	}
-	for (int i = 0; i <numbots; ++i)
-	{
-		Bot[i] = new NPC(rand() % 10000);
-
-		//meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
-		meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileBody());
-	}
+	
 	OutsideMotorShow = true;//set time to day
 
 	
@@ -378,33 +378,43 @@ void SceneText::Render()
 
 	if (!OutsideMotorShow)//Renders Motorshow stuff
 	{
-		for (int i = 0; i < numbots; i++)
+		/*if (NPCs.GetNumberofNPC() > 0)
 		{
-			//modelStack.PushMatrix();
-			//modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
-			//RenderMesh(meshList[GEO_HEAD], false, true);
-			//modelStack.PopMatrix();
+			NPC* current = NPCs.GetStart();
+			for (int i = 0; i < NPCs.GetNumberofNPC(); i++)
+			{
+				
+				modelStack.PushMatrix();
+				modelStack.Translate(current->getNPCTranslationX(), 0, current->getNPCTranslationZ());
+				modelStack.Rotate(GetTickCount64() * 0.1f, 0.f, 1.f, 0.f);
+				RenderMesh(current->GetMesh(i), false, true);
+				
 
-			modelStack.PushMatrix();
-			modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
-			Bot[i]->SetCollisionStorage1(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector1));
-			Bot[i]->SetCollisionStorage2(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector2));
-			meshList[GEO_BODY]->collison = true;
-			RenderMesh(meshList[GEO_BODY], false, true);
-			modelStack.PopMatrix();
-		}
-		if (cars.GetnumberofCars() != 0)
+				for (int i = 1; i < 6; i++)
+				{
+					modelStack.PushMatrix();
+					RenderMesh(current->GetMesh(i), false, true);
+					modelStack.PopMatrix();
+				}
+				modelStack.PopMatrix();
+				if (i != NPCs.GetNumberofNPC() - 1)
+				{
+					current = current->GetNext();
+				}
+			}
+		}*/
+		if (cars.GetnumberofCars() > 0)
 		{
 			CCar* current = cars.GetStart();
 			for (int i = 0; i < cars.GetnumberofCars(); i++)
 			{
 				modelStack.PushMatrix();
+				modelStack.Scale(2, 2, 2);
 				modelStack.Translate(current->getxLocation(), 0, current->getzLocation());
 				if (current->GetIsSpinning())
 				{
-					modelStack.Rotate(GetTickCount64() * 0.01f, 0.f, 1.f, 0.f);
+					//modelStack.Rotate(GetTickCount64() * 0.1f, 0.f, 1.f, 0.f);
 				}
-				current->GetMesh()->collison= false;
 				RenderMesh(current->GetMesh(), false, true);
 				modelStack.PopMatrix();
 				if (i != cars.GetnumberofCars() - 1)
@@ -436,70 +446,74 @@ void SceneText::Exit()
 
 void SceneText::CheckSquareCollision()
 {
+	CCar * current = cars.GetStart();
+	for (int i = 0; i < cars.GetnumberofCars(); i++)
+	{
+		
+			float xmin = current->GetMesh()->ColisionVector2.x;
+			float xmax = current->GetMesh()->ColisionVector1.x;
+			float ymin = current->GetMesh()->ColisionVector2.y;
+			float ymax = current->GetMesh()->ColisionVector1.y;
+			float zmin = current->GetMesh()->ColisionVector2.z;
+			float zmax = current->GetMesh()->ColisionVector1.z;
+			//cout << xmax << endl;
+
+			if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
+			{
+				camera.position.x = xmax + 0.1f;
+			}
+			if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
+			{
+				camera.position.x = xmin - 0.1f;
+			}
+			if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
+			{
+				camera.position.z = zmax + 0.1f;
+			}
+			if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
+			{
+				camera.position.z = zmin - 0.1f;
+			}
+
+			if (i != cars.GetnumberofCars() - 1)
+			{
+				current = current->GetNext();
+			}
+		
+		
+	}
 	for (int current = GEO_AXES + 1; current != NUM_GEOMETRY; current++)
 	{
 		if (meshList[current] != NULL)
 		{ 
 			if (meshList[current]->collison)
 			{
-				if (current == GEO_BODY)
+				float xmin = meshList[current]->ColisionVector2.x;
+				float xmax = meshList[current]->ColisionVector1.x;
+				float ymin = meshList[current]->ColisionVector2.y;
+				float ymax = meshList[current]->ColisionVector1.y;
+				float zmin = meshList[current]->ColisionVector2.z;
+				float zmax = meshList[current]->ColisionVector1.z;
+				//cout << xmax << endl;
+
+				if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
 				{
-					for (int i = 0; i < numbots; i++)
-					{
-						float xmin = Bot[i]->GetCollisionStorage2().x;
-						float xmax = Bot[i]->GetCollisionStorage1().x;
-						float ymin = Bot[i]->GetCollisionStorage2().y;
-						float ymax = Bot[i]->GetCollisionStorage1().y;
-						float zmin = Bot[i]->GetCollisionStorage2().z;
-						float zmax = Bot[i]->GetCollisionStorage1().z;
-
-						if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
-						{
-							camera.position.x = xmax + 0.1f;
-
-						}
-						if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
-						{
-							camera.position.x = xmin - 0.1f;
-						}
-						if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-						{
-							camera.position.z = zmax + 0.1f;
-						}
-						if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-						{
-							camera.position.z = zmin - 0.1f;
-						}
-					}
+					camera.position.x = xmax + 0.1f;
 				}
-				else
+				if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
 				{
-					float xmin = meshList[current]->ColisionVector2.x;
-					float xmax = meshList[current]->ColisionVector1.x;
-					float ymin = meshList[current]->ColisionVector2.y;
-					float ymax = meshList[current]->ColisionVector1.y;
-					float zmin = meshList[current]->ColisionVector2.z;
-					float zmax = meshList[current]->ColisionVector1.z;
-					//cout << xmax << endl;
-
-					if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
-					{
-						camera.position.x = xmax + 0.1f;
-					}
-					if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
-					{
-						camera.position.x = xmin - 0.1f;
-					}
-					if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-					{
-						camera.position.z = zmax + 0.1f;
-					}
-					if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-					{
-						camera.position.z = zmin - 0.1f;
-					}
+					camera.position.x = xmin - 0.1f;
+				}
+				if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
+				{
+					camera.position.z = zmax + 0.1f;
+				}
+				if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
+				{
+					camera.position.z = zmin - 0.1f;
+				}
 					
-				}
+				
 				meshList[current]->collison = false;
 			}
 		}
@@ -510,16 +524,15 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 {
 	if (hasCollision)
 	{
-		if (mesh != meshList[GEO_BODY])
+		
+		if (!mesh->collisionboxcreated)
 		{
-			if (!mesh->collisionboxcreated)
-			{
-				mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
-				mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
-				mesh->collison = true;
-				mesh->collisionboxcreated = true;
-			}
+			mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
+			mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
+			mesh->collison = true;
+			mesh->collisionboxcreated = true;
 		}
+		
 		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		modelStack.PushMatrix();
 		RenderMesh(Collider, false, false);
@@ -568,7 +581,7 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 
 void SceneText::RenderSkybox()
 {
-	float size = 1000;//uniform scaling
+	float size = 500;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
 	if (OutsideMotorShow)//render daytime skybox
 	{

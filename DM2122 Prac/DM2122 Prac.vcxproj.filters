@@ -60,10 +60,13 @@
     <ClInclude Include="Source\CCar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\CarsList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Source\NPC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\CarsList.h">
+    <ClInclude Include="Source\NPCList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\CarsList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NPCList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
