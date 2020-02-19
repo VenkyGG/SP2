@@ -6,7 +6,7 @@
 #include "Camera2.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "NPCList.h"
+#include "NPC.h"
 #include "CarsList.h"
 
 class SceneText : public Scene
@@ -87,7 +87,8 @@ private:
 
 
 	CarsList cars;
-	
+	int numberofNPCs = 500;
+	NPC *NPCs[500];
 
 	Camera2 camera;
 

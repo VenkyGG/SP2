@@ -1,8 +1,12 @@
 #include "NPC.h"
 
+#include "GL\glew.h"
+#include "Application.h"
+
+
 // max -1000 x and z
 
-NPC::NPC(float seed)
+NPC::NPC(int seed)
 {
 	srand(seed);
 

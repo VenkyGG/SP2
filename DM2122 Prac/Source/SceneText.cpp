@@ -13,7 +13,9 @@ using namespace std;
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
-NPCList NPCs(500);
+
+
+
 
 SceneText::SceneText()
 {
@@ -189,12 +191,30 @@ void SceneText::Init()
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
-	int currentfile = 0;
-	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ//NPC//Man1"))
+	vector<Mesh*> MeshStorage;
+	vector<string> TextureStorage;
+	for (auto& q : std::experimental::filesystem::directory_iterator("OBJ//NPC"))
 	{
-		Mesh* x = NULL;
-		x = MeshBuilder::GenerateOBJ("PPP", p.path().string());
-		NPCs.SetMesh(0, x);
+		for (auto& p : std::experimental::filesystem::directory_iterator(q))
+		{
+			Mesh* x = NULL;
+			x = MeshBuilder::GenerateOBJ("PPP", p.path().string());
+			cout << p.path().string() << endl;
+			MeshStorage.push_back(x);
+		}
+	}
+	for (int i = 0; i < numberofNPCs; i++)
+	{
+		//srand(time(NULL));
+		int x = rand() % 10000;
+		cout << x << endl;
+		NPCs[i] = new NPC(x);
+		for (int k = 0; k < 6; k++)
+		{
+			
+			NPCs[i]->SetMesh(MeshStorage[NPCs[i]->Gettype() * 6 + k], k);
+		}
+		
 	}
 	srand(time(NULL));
 	CCar* current = cars.GetStart();
@@ -378,31 +398,24 @@ void SceneText::Render()
 
 	if (!OutsideMotorShow)//Renders Motorshow stuff
 	{
-		/*if (NPCs.GetNumberofNPC() > 0)
+		for (int i = 0; i < numberofNPCs; i++)
 		{
-			NPC* current = NPCs.GetStart();
-			for (int i = 0; i < NPCs.GetNumberofNPC(); i++)
-			{
-				
-				modelStack.PushMatrix();
-				modelStack.Translate(current->getNPCTranslationX(), 0, current->getNPCTranslationZ());
-				modelStack.Rotate(GetTickCount64() * 0.1f, 0.f, 1.f, 0.f);
-				RenderMesh(current->GetMesh(i), false, true);
-				
+			modelStack.PushMatrix();
+			modelStack.Translate(NPCs[i]->getNPCTranslationX(), 0, NPCs[i]->getNPCTranslationZ());
+			//modelStack.Rotate(GetTickCount64() * 0.1f, 0.f, 1.f, 0.f);
+			RenderMesh(NPCs[i]->GetMesh(0), false, true);
+			//cout << NPCs[i]->getNPCTranslationX() << endl;
 
-				for (int i = 1; i < 6; i++)
-				{
-					modelStack.PushMatrix();
-					RenderMesh(current->GetMesh(i), false, true);
-					modelStack.PopMatrix();
-				}
+			for (int k = 1; k < 6; k++)
+			{
+				modelStack.PushMatrix();
+				RenderMesh(NPCs[i]->GetMesh(k), false, true);
 				modelStack.PopMatrix();
-				if (i != NPCs.GetNumberofNPC() - 1)
-				{
-					current = current->GetNext();
-				}
 			}
-		}*/
+			modelStack.PopMatrix();
+			
+
+		}
 		if (cars.GetnumberofCars() > 0)
 		{
 			CCar* current = cars.GetStart();

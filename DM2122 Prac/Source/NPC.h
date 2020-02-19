@@ -24,7 +24,7 @@ private:
 	NPC* Next;
 	NPC* Previous;
 public:
-	NPC(float seed);
+	NPC(int seed);
 	~NPC();
 
 	void setNPCRotation(float degreesNPC);

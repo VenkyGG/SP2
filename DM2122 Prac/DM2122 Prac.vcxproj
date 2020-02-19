@@ -138,7 +138,6 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\NPC.h" />
-    <ClInclude Include="Source\NPCList.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneText.h" />
     <ClInclude Include="Source\shader.hpp" />
@@ -157,7 +156,6 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\NPC.cpp" />
-    <ClCompile Include="Source\NPCList.cpp" />
     <ClCompile Include="Source\SceneText.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
