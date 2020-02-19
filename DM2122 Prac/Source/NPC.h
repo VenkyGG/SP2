@@ -9,6 +9,8 @@
 class NPC
 {
 private:
+	int declareNPC;
+
 	float NPCRotationalValue;
 
 	float NPCTranslationXValue;
@@ -47,5 +49,7 @@ public:
 	void SetCollisionStorage1(Vector3 vector3);
 	Vector3 GetCollisionStorage2();
 	void SetCollisionStorage2(Vector3 vector3);
+
+	int getDeclareNPC();
 };
 

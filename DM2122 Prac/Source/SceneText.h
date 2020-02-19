@@ -28,7 +28,12 @@ class SceneText : public Scene
 		GEO_CARPLATFORMBASE,
 		GEO_CARPLATFORMTOP,
 		GEO_TEXT,
+		GEO_HEAD,
 		GEO_BODY,
+		GEO_LEFTARM,
+		GEO_RIGHTARM,
+		GEO_LEFTLEG,
+		GEO_RIGHTLEG,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
@@ -84,8 +89,10 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 	Light light[2];
-	int numbots = 50;
-	NPC* Bot[50];
+	int numbots = 500;
+	NPC* Bot[500];
+
+	float rotateBot;
 
 	CarsList cars;
 

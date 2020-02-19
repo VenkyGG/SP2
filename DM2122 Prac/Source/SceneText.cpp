@@ -8,6 +8,9 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 
+#include <numeric>
+#include <vector>
+
 using namespace std;
 
 #define ROT_LIMIT 45.f;
@@ -31,6 +34,7 @@ void SceneText::Init()
 {
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+	rotateBot = 0.f;
 	// Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
@@ -39,7 +43,7 @@ void SceneText::Init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	camera.Init(Vector3(0, 5, 10), Vector3(0, 5, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 10, 10), Vector3(0, 5, 0), Vector3(0, 1, 0));
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 50000.f);
@@ -204,9 +208,22 @@ void SceneText::Init()
 	{
 		Bot[i] = new NPC(rand() % 10000);
 
-		//meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileHead());
-		meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Head", Bot[i]->getNpcFileBody());
+		
 	}
+
+
+	meshList[GEO_HEAD] = MeshBuilder::GenerateOBJ("Head", Bot[2]->getNpcFileHead());
+	meshList[GEO_HEAD]->textureID = LoadTGA("Image//People Textures//Woman1.tga");
+	meshList[GEO_BODY] = MeshBuilder::GenerateOBJ("Body", Bot[2]->getNpcFileBody());
+	meshList[GEO_BODY]->textureID = LoadTGA("Image//People Textures//Woman1.tga");
+	meshList[GEO_LEFTARM] = MeshBuilder::GenerateOBJ("Left Arm", Bot[2]->getNpcFileLeftArm());
+	meshList[GEO_LEFTARM]->textureID = LoadTGA("Image//People Textures//Woman1.tga");
+	meshList[GEO_RIGHTARM] = MeshBuilder::GenerateOBJ("Right Arm", Bot[2]->getNpcFileRightArm());
+	meshList[GEO_RIGHTARM]->textureID = LoadTGA("Image//People Textures//Woman1.tga");
+	meshList[GEO_LEFTLEG] = MeshBuilder::GenerateOBJ("Left Leg", Bot[2]->getNpcFileLeftLeg());
+	meshList[GEO_LEFTLEG]->textureID = LoadTGA("Image//People Textures//Woman1.tga");
+	meshList[GEO_RIGHTLEG] = MeshBuilder::GenerateOBJ("Right Leg", Bot[2]->getNpcFileRightLeg());
+	meshList[GEO_RIGHTLEG]->textureID = LoadTGA("Image//People Textures//Woman1.tga");
 	OutsideMotorShow = true;//set time to day
 
 	
@@ -311,6 +328,8 @@ void SceneText::Update(double dt)
 		camera.target = camera.position + camera.view;
 	}
 
+	rotateBot += (float)(1.f + dt);
+
 	camera.Update(dt);
 
 
@@ -380,18 +399,46 @@ void SceneText::Render()
 	{
 		for (int i = 0; i < numbots; i++)
 		{
-			//modelStack.PushMatrix();
-			//modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
-			//RenderMesh(meshList[GEO_HEAD], false, true);
-			//modelStack.PopMatrix();
-
 			modelStack.PushMatrix();
-			modelStack.Translate(Bot[i]->getNPCTranslationX(), 0, Bot[i]->getNPCTranslationZ());
+			modelStack.Translate(Bot[i]->getNPCTranslationX(), 10, Bot[i]->getNPCTranslationZ());
+			modelStack.Rotate(Bot[i]->getNPCRotation(), 0, 1, 0);
 			Bot[i]->SetCollisionStorage1(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector1));
 			Bot[i]->SetCollisionStorage2(modelStack.Top().GetTranspose().Multiply(meshList[GEO_BODY]->ColisionVector2));
 			meshList[GEO_BODY]->collison = true;
 			RenderMesh(meshList[GEO_BODY], false, true);
+
+				modelStack.PushMatrix();
+			
+				RenderMesh(meshList[GEO_HEAD], false, true);
+				modelStack.PopMatrix();
+
+				modelStack.PushMatrix();
+			
+				modelStack.Rotate(sin(rotateBot/25)*50, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[GEO_LEFTARM], false, true);
+				modelStack.PopMatrix();
+
+				modelStack.PushMatrix();
+				modelStack.Rotate(-sin(rotateBot/25)*50, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[GEO_RIGHTARM], false, true);
+				modelStack.PopMatrix();
+
+				modelStack.PushMatrix();
+				modelStack.Translate(0, -4.5f, 0);
+				modelStack.Rotate(-sin(rotateBot / 25) * 50, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[GEO_LEFTLEG], false, true);
+				modelStack.PopMatrix();
+
+				modelStack.PushMatrix();
+				modelStack.Translate(0, -4.5f, 0);
+				modelStack.Rotate(sin(rotateBot / 25) * 50, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[GEO_RIGHTLEG], false, true);
+				modelStack.PopMatrix();
+
+
 			modelStack.PopMatrix();
+
+			
 		}
 		if (cars.GetnumberofCars() != 0)
 		{
@@ -520,10 +567,10 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 				mesh->collisionboxcreated = true;
 			}
 		}
-		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
-		modelStack.PushMatrix();
-		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();*/
+		//Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+		//modelStack.PushMatrix();
+		//RenderMesh(Collider, false, false);
+		//modelStack.PopMatrix();
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
@@ -800,3 +847,8 @@ void SceneText::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 }
+
+//float scalarTriple(Vector3 u, Vector3 v, Vector3 w)
+//{
+//	return inner_product((u, v), w);
+//}

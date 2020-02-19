@@ -6,9 +6,9 @@ NPC::NPC(float seed)
 {
 	srand(seed);
 
-	int declareNPC = 0;
+	declareNPC = 0;
 
-	declareNPC = 3;//rand() % 4 + 1;
+	declareNPC = 2;// rand() % 4 + 1;
 
 	if (declareNPC == 1)
 	{
@@ -139,4 +139,9 @@ Vector3 NPC::GetCollisionStorage2()
 void NPC::SetCollisionStorage2(Vector3 vector3)
 {
 	ColisionVector2Storage = vector3;
+}
+
+int NPC::getDeclareNPC()
+{
+	return declareNPC;
 }
