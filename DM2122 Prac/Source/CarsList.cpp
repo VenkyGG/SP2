@@ -33,7 +33,7 @@ CarsList::CarsList()
 		else
 		{
 			string location = p.path().filename().string();
-			for (size_t i = 0; i < location.length(); i++)
+			for (int i = 0; i < location.length(); i++)
 			{
 				if (location[i] == '.')
 				{

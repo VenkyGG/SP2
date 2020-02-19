@@ -192,28 +192,30 @@ void SceneText::Init()
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 	vector<Mesh*> MeshStorage;
-	vector<string> TextureStorage;
+
 	for (auto& q : std::experimental::filesystem::directory_iterator("OBJ//NPC"))
 	{
+		string location = q.path().filename().string();
 		for (auto& p : std::experimental::filesystem::directory_iterator(q))
 		{
 			Mesh* x = NULL;
 			x = MeshBuilder::GenerateOBJ("PPP", p.path().string());
-			cout << p.path().string() << endl;
+			x->textureID = LoadTGA(("Image//People Textures//" + location + ".tga").c_str());
 			MeshStorage.push_back(x);
 		}
+
 	}
 	for (int i = 0; i < numberofNPCs; i++)
 	{
-		//srand(time(NULL));
 		int x = rand() % 10000;
-		cout << x << endl;
-		NPCs[i] = new NPC(x);
+		int y = rand() % 10000;
+
+		NPCs[i] = new NPC(x*y);
 		for (int k = 0; k < 6; k++)
 		{
-			
 			NPCs[i]->SetMesh(MeshStorage[NPCs[i]->Gettype() * 6 + k], k);
 		}
+		
 		
 	}
 	srand(time(NULL));
@@ -402,7 +404,7 @@ void SceneText::Render()
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(NPCs[i]->getNPCTranslationX(), 0, NPCs[i]->getNPCTranslationZ());
-			//modelStack.Rotate(GetTickCount64() * 0.1f, 0.f, 1.f, 0.f);
+			modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
 			RenderMesh(NPCs[i]->GetMesh(0), false, true);
 			//cout << NPCs[i]->getNPCTranslationX() << endl;
 
