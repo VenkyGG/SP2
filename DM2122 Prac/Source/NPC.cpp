@@ -6,9 +6,9 @@ NPC::NPC(float seed)
 {
 	srand(seed);
 
-	declareNPC = 0;
+	int declareNPC = 0;
 
-	declareNPC = rand() % 4 + 1;
+	declareNPC = 3;//rand() % 4 + 1;
 
 	if (declareNPC == 1)
 	{
@@ -121,7 +121,22 @@ std::string NPC::getNpcFileRightLeg()
 	return npcFileRightLeg;
 }
 
-int NPC::getDeclare()
+Vector3 NPC::GetCollisionStorage1()
 {
-	return declareNPC;
+	return ColisionVector1Storage;
+}
+
+void NPC::SetCollisionStorage1(Vector3 vector3)
+{
+	ColisionVector1Storage = vector3;
+}
+
+Vector3 NPC::GetCollisionStorage2()
+{
+	return ColisionVector2Storage;
+}
+
+void NPC::SetCollisionStorage2(Vector3 vector3)
+{
+	ColisionVector2Storage = vector3;
 }

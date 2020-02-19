@@ -4,12 +4,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string>
+#include <Vector3.h>
 
 class NPC
 {
 private:
-	int NPCID[4];
-
 	float NPCRotationalValue;
 
 	float NPCTranslationXValue;
@@ -22,9 +21,8 @@ private:
 	std::string npcFileRightArm;
 	std::string npcFileLeftLeg;
 	std::string npcFileRightLeg;
-
-	int declareNPC;
-
+	Vector3 ColisionVector1Storage;
+	Vector3 ColisionVector2Storage;
 	
 public:
 	NPC(float seed);
@@ -45,6 +43,9 @@ public:
 	std::string getNpcFileLeftLeg();
 	std::string getNpcFileRightLeg();
 
-	int getDeclare();
+	Vector3 GetCollisionStorage1();
+	void SetCollisionStorage1(Vector3 vector3);
+	Vector3 GetCollisionStorage2();
+	void SetCollisionStorage2(Vector3 vector3);
 };
 

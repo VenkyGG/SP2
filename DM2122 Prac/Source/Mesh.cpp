@@ -16,6 +16,7 @@ Mesh::Mesh(const std::string& meshName)
 	, textureID(0)
 {
 	// Generate buffers
+	collison = false;
 	glGenBuffers(1, &vertexBuffer);
 	glGenBuffers(1, &colorBuffer);
 	glGenBuffers(1, &indexBuffer); //generate index buffer
