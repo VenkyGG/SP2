@@ -489,8 +489,9 @@ Vector3 Mtx44::Multiply(const Vector3& rhs) const
 {
 	float b[4];
 	for (int i = 0; i < 4; i++)
-		b[i] = a[i*4] * rhs.x + a[i*4 + 1] * rhs.y + a[i*4 + 2] * rhs.z + a[i*4 + 3];
-
+		b[i] = a[i * 4 + i];
+	for (int i = 0; i < 4; i++)
+		b[i] += a[i * 4 + 3];
 	return Vector3(b[0], b[1], b[2]);
 }
 

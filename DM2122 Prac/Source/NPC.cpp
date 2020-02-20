@@ -1,9 +1,5 @@
 #include "NPC.h"
 
-#include "GL\glew.h"
-#include "Application.h"
-
-
 // max -1000 x and z
 
 NPC::NPC(int seed)
@@ -13,11 +9,13 @@ NPC::NPC(int seed)
 
 	type = rand() % 4;
 	
-	
+	ismoving = false;
+	Position = Vector3(rand() % 1000 - 500, 12, rand() % 1000 - 500);
+	Target = Position;
 
-	NPCTranslationXValue = rand() % 2000 - 1000;
-
-	NPCTranslationZValue = rand() % 2000 - 1000;
+	steps = 0;
+	waittime = 0;
+	chattime = 0;
 
 	NPCRotationalValue = rand() % 360;
 }
@@ -31,30 +29,22 @@ void NPC::setNPCRotation(float degreesNPC)
 	NPCRotationalValue = degreesNPC;
 }
 
-void NPC::setNPCTranslationX(float XCoordsNPC)
-{
-	NPCTranslationXValue = XCoordsNPC;
-}
-
-void NPC::setNPCTranslationZ(float ZCoordsNPC)
-{
-	NPCTranslationZValue = ZCoordsNPC;
-}
 
 float NPC::getNPCRotation()
 {
 	return NPCRotationalValue;
 }
 
-float NPC::getNPCTranslationX()
+Vector3 NPC::GetPosition()
 {
-	return NPCTranslationXValue;
+	return Position;
 }
 
-float NPC::getNPCTranslationZ()
+void NPC::SetPosition(Vector3 pos)
 {
-	return NPCTranslationZValue;
+	Position = pos;
 }
+
 
 int NPC::Gettype()
 {
@@ -78,22 +68,32 @@ void NPC::SetMesh(Mesh* x, int index)
 	CharacterPartsOBJ[index] = x;
 }
 
-NPC* NPC::GetNext()
+bool NPC::GetIsMoving()
 {
-	return Next;
+	return ismoving;
 }
-
-NPC* NPC::Getprevious()
-{
-	return Previous;
-}
-
-void NPC::SetNext(NPC* x)
-{
-	Next = x;
-}
-
-void NPC::SetPrevious(NPC* x)
-{
-	Previous = x;
+void NPC::move()
+{	
+	//cout << GetTickCount64() << endl;
+	if (waittime < GetTickCount64() && !ismoving)
+	{
+		ismoving = true;
+		srand(time(NULL));
+		Target = Vector3(rand() % 1000-500, 10, rand() % 1000-500);
+		Target = (Target - Position).Normalized();
+		NPCRotationalValue = atan2(Target.x, Target.z) * 180 / Math::PI;
+	}
+	if (ismoving)
+	{
+		Position.x += Target.x;
+		Position.z += Target.z;
+		steps++;
+		if ((Target - Position).Length() < 2 || steps==40)
+		{
+			ismoving = false;
+			steps = 0;
+			float i = (rand() % 1500 + 500)/100;
+			waittime = GetTickCount64() + i * 1000;
+		}
+	}
 }

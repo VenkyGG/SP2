@@ -1,5 +1,5 @@
 #include "CarsList.h"
-
+#include "LoadTGA.h"
 
 
 CarsList::CarsList()
@@ -26,9 +26,10 @@ CarsList::CarsList()
 			
 			Start->setmaxSpeed(maxspeed);
 			Start->SetIsSpinning(true);
-			Start->setfileLocation("OBJ//Cars//"+location+".obj");
-			Start->SetMesh(Start->getfileLocation());
-			Start->setTextureLocation("Image//Car Textures//" + location + ".tga");
+			
+			Start->SetMesh(location, "OBJ//Cars//" + location + ".obj");
+			Start->GetMesh()->textureID=LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
+			Start->SetType("Car");
 		}
 		else
 		{
@@ -59,9 +60,9 @@ CarsList::CarsList()
 			}
 			current->setmaxSpeed(maxspeed);
 			current->SetIsSpinning(true);
-			current->setfileLocation("OBJ//Cars//" + location + ".obj");
-			current->SetMesh(current->getfileLocation());
-			current->setTextureLocation("Image//Car Textures//" + location + ".tga");
+			current->SetMesh(location, "OBJ//Cars//" + location + ".obj");
+			current->GetMesh()->textureID = LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
+			current->SetType("Car");
 		}
 		maxspeed += 25;
 	}
@@ -73,8 +74,8 @@ CarsList::CarsList()
 	float radius = 100.0f;
 	for (int i = 0; i < numcars; i++)
 	{
-		current->setxLocation(camxpos + radius * sin(Math::DegreeToRadian(currentangle)));
-		current->setzLocation(camzpos + radius * cos(Math::DegreeToRadian(currentangle)));
+		current->SetPosition(Vector3(camxpos + radius * sin(Math::DegreeToRadian(currentangle)), 0, camzpos + radius * cos(Math::DegreeToRadian(currentangle))));
+		current->SetRotation(Vector3(0, current->GetRotation().y + angleposition, 0));
 		currentangle += angleposition;
 		if (i != numcars - 1)
 		{

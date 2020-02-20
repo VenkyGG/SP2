@@ -89,7 +89,7 @@ private:
 	CarsList cars;
 	int numberofNPCs = 500;
 	NPC *NPCs[500];
-
+	Object objectlist[50];
 	Camera2 camera;
 
 	void CheckSquareCollision();

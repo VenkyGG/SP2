@@ -1,28 +1,26 @@
 #pragma once
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <time.h>
-#include <string>
-#include <experimental/filesystem> 
 #include "Mesh.h"
+#include "Application.h"
+#include <Vector3.h>
 using namespace std;
 class NPC
 {
 private:
 	float NPCRotationalValue;
 
-	float NPCTranslationXValue;
-
-	float NPCTranslationZValue;
+	Vector3 Position;
 
 
 	int type;
+	int steps;
 	Mesh* CharacterPartsOBJ[6];
-	string CharacterTexture;
-	int numpeople;
 
-	NPC* Next;
-	NPC* Previous;
+	float waittime;
+	bool ismoving;
+	Vector3 Target;
+
+	float chattime;
+
 public:
 	NPC(int seed);
 	~NPC();
@@ -32,20 +30,19 @@ public:
 	void setNPCTranslationZ(float ZCoordsNPC);
 
 	float getNPCRotation();
-	float getNPCTranslationX();
-	float getNPCTranslationZ();
+	Vector3 GetPosition();
+	void SetPosition(Vector3 pos);
 
 	int Gettype();
 	void Settype(int x);
 
-	
 	Mesh* GetMesh(int index);
 	void SetMesh(Mesh* x, int index);
+
+	bool GetIsMoving();
+
+	void move();
 	
 
-	NPC* GetNext();
-	NPC* Getprevious();
-	void SetNext(NPC* x);
-	void SetPrevious(NPC* x);
 };
 
