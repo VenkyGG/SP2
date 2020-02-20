@@ -18,6 +18,7 @@ NPC::NPC(int seed)
 	chattime = 0;
 
 	NPCRotationalValue = rand() % 360;
+	
 }
 
 NPC::~NPC()
@@ -65,7 +66,20 @@ Mesh* NPC::GetMesh(int index)
 
 void NPC::SetMesh(Mesh* x, int index)
 {
-	CharacterPartsOBJ[index] = x;
+	
+	CharacterPartsOBJ[index] = new Mesh("BODYPART");
+	
+	CharacterPartsOBJ[index]->mode = x->mode;
+	CharacterPartsOBJ[index]->colorBuffer = x->colorBuffer;
+	CharacterPartsOBJ[index]->vertexBuffer = x->vertexBuffer;
+	CharacterPartsOBJ[index]->indexBuffer = x->indexBuffer;
+	CharacterPartsOBJ[index]->ColisionVector1 = x->ColisionVector1;
+	CharacterPartsOBJ[index]->ColisionVector2 = x->ColisionVector2;
+	CharacterPartsOBJ[index]->collisionboxcreated = x->collisionboxcreated;
+	CharacterPartsOBJ[index]->collison = x->collison;
+	CharacterPartsOBJ[index]->textureID = x->textureID;
+	CharacterPartsOBJ[index]->material = x->material;
+	CharacterPartsOBJ[index]->indexSize = x->indexSize;
 }
 
 bool NPC::GetIsMoving()
@@ -96,4 +110,26 @@ void NPC::move()
 			waittime = GetTickCount64() + i * 1000;
 		}
 	}
+}
+
+bool NPC::chat(Vector3 CamPos)
+{
+	if (chattime < GetTickCount64() && (CamPos - Position).Length() <= 10)
+	{
+		chattime = GetTickCount64() + 10000;
+		return true;
+	}
+	else if (chattime < GetTickCount64() && (CamPos - Position).Length() > 10)
+	{
+		return false;
+	}
+	else if (chattime > GetTickCount64() && (chattime - 5000) > GetTickCount64())
+	{
+		return true;
+	}
+	else if (chattime > GetTickCount64() && (chattime - 5000) < GetTickCount64())
+	{
+		return false;
+	}
+	
 }

@@ -369,7 +369,7 @@ void SceneText::Update(double dt)
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
 	}
-
+	CheckSquareCollision();
 	camera.Update(dt);
 	for (int i = 0; i < numberofNPCs; i++)
 	{
@@ -451,18 +451,40 @@ void SceneText::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate(NPCs[i]->GetPosition().x, 10, NPCs[i]->GetPosition().z);
 			modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
-			RenderMesh(NPCs[i]->GetMesh(0), false, true);
+			RenderMesh(NPCs[i]->GetMesh(0), false, false);
 
 			for (int k = 1; k < 6; k++)
 			{
 				modelStack.PushMatrix();
-
+				if (k == 1 && NPCs[i]->chat(camera.position))
+				{
+					modelStack.PushMatrix();
+					Vector3 target = Vector3(camera.position.x - NPCs[i]->GetPosition().x, 0, camera.position.z - NPCs[i]->GetPosition().z).Normalized();
+					float chatbubblerotation = atan2(target.x,target.z) * 180 / Math::PI;
+					modelStack.Rotate(-NPCs[i]->getNPCRotation()+ chatbubblerotation, 0, 1, 0);
+					modelStack.Translate(2, 0, 0);
+					
+					for (int i = 0; i < numberofobjects; i++)
+					{
+						if (objectlist[i].GetMesh()->name == "chatbubble")
+						{
+							RenderMesh(objectlist[i].GetMesh(), false, false);
+						}
+					}
+					modelStack.PushMatrix();
+					modelStack.Scale(0.32f, 0.32f, 1);
+					modelStack.Translate(2.75f, 15, 0.2f);
+					RenderText(meshList[GEO_TEXT], "FUCK U LA CB", Color(0, 0, 0));
+					modelStack.PopMatrix();
+					modelStack.PopMatrix();
+				}
 				if (k == 2 || k == 5)
 				{
 					if (k == 5)
 					{
 						modelStack.Translate(0, -4.5f, 0);
 					}
+				
 					if (NPCs[i]->GetIsMoving())
 					{
 						modelStack.Rotate(sin(GetTickCount64() / 100) * 50, 1, 0, 0);
@@ -474,14 +496,13 @@ void SceneText::Render()
 					{
 						modelStack.Translate(0, -4.5f, 0);
 					}
+					
 					if (NPCs[i]->GetIsMoving())
 					{
 						modelStack.Rotate(-sin(GetTickCount64() / 100) * 50, 1, 0, 0);
 					}
 				}
-
-
-				RenderMesh(NPCs[i]->GetMesh(k), false, true);
+				RenderMesh(NPCs[i]->GetMesh(k), false, false);
 				modelStack.PopMatrix();
 			}
 			modelStack.PopMatrix();
@@ -539,21 +560,9 @@ void SceneText::Exit()
 	glDeleteProgram(m_programID);
 
 }
-bool x = false;
 void SceneText::CheckSquareCollision()
 {
-	//CCar * current = cars.GetStart();
-	//for (int i = 0; i < cars.GetnumberofCars(); i++)
-	//{
-	//	float xmin = current->GetMesh()->ColisionVector2.x;
-	//	float xmax = current->GetMesh()->ColisionVector1.x;
-	//	float ymin = current->GetMesh()->ColisionVector2.y;
-	//	float ymax = current->GetMesh()->ColisionVector1.y;
-	//	float zmin = current->GetMesh()->ColisionVector2.z;
-	//	float zmax = current->GetMesh()->ColisionVector1.z;
-	//	//cout << xmax << endl;
-	//	if (!x)
-	//	{
+	
 	//		//Vector3 A = Vector3(xmin, ymin, zmax);
 	//		//Vector3 B = Vector3(xmax, ymin, zmax);
 	//		//Vector3 C = Vector3(xmax, ymin, zmin);
@@ -565,58 +574,9 @@ void SceneText::CheckSquareCollision()
 	//		//float Area3 = ((E.x * D.z - D.x * E.z) - (E.x * C.z - C.x * E.z) + (D.x * C.z - C.x * D.z));
 	//		//float Area4 = ((E.x * D.z - D.x * E.z) - (E.x * A.z - A.x * E.z) + (D.x * A.z - A.x * D.z));
 	//		//cout << Area1 << " " << Area2 << " " << Area3 << " " << Area4 << endl;
-	//		////x = true;
-	//	}
-	//	if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
-	//	{
-	//		camera.position.x = xmax + 0.1f;
-	//	}
-	//	if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
-	//	{
-	//		camera.position.x = xmin - 0.1f;
-	//	}
-	//	if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-	//	{
-	//		camera.position.z = zmax + 0.1f;
-	//	}
-	//	if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-	//	{
-	//		camera.position.z = zmin - 0.1f;
-	//	}
+	
 
-	//	if (i != cars.GetnumberofCars() - 1)
-	//	{
-	//		current = current->GetNext();
-	//	}
-	//}
-	//for (int i = 0; i < numberofNPCs; i++)
-	//{
-	//	float xmin = NPCs[i]->GetMesh(0)->ColisionVector2.x;
-	//	float xmax = NPCs[i]->GetMesh(0)->ColisionVector1.x;
-	//	float ymin = NPCs[i]->GetMesh(0)->ColisionVector2.y;
-	//	float ymax = NPCs[i]->GetMesh(0)->ColisionVector1.y;
-	//	float zmin = NPCs[i]->GetMesh(0)->ColisionVector2.z;
-	//	float zmax = NPCs[i]->GetMesh(0)->ColisionVector1.z;
-	//	//cout << xmax << endl;
-
-	//	if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
-	//	{
-	//		camera.position.x = xmax + 0.1f;
-	//	}
-	//	if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
-	//	{
-	//		camera.position.x = xmin - 0.1f;
-	//	}
-	//	if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-	//	{
-	//		camera.position.z = zmax + 0.1f;
-	//	}
-	//	if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-	//	{
-	//		camera.position.z = zmin - 0.1f;
-	//	}
-
-	//}
+	
 	for (int current = 0; current < size(objectlist); current++)
 	{
 		for (int i = 0; i < objectlist[current].GetNumberOfOccurences(); i++)
@@ -649,20 +609,40 @@ void SceneText::CheckSquareCollision()
 					{
 						camera.position.z = zmin - 0.1f;
 					}
+
+					for (int i = 0; i < numberofNPCs; i++)
+					{
+						if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
+						{
+							NPCs[i]->SetPosition(Vector3(xmax + 0.5f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+						}
+						if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
+						{
+							NPCs[i]->SetPosition(Vector3(xmin - 0.5f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+						}
+						if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
+						{
+							NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.5f));
+						}
+						if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
+						{
+							NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.5f));
+						}
+					}
 				}
 			}
 		}
 	}
-	for (int current = 0; current < size(NPCs); current++)
+	/*for (int current = 0; current < numberofNPCs; current++)
 	{
 		if (NPCs[current]->GetMesh(0)->collison)
 		{
-			float xmin =NPCs[current]->GetMesh(0)->ColisionVector2.x;
-			float xmax =NPCs[current]->GetMesh(0)->ColisionVector1.x;
-			float ymin =NPCs[current]->GetMesh(0)->ColisionVector2.y;
-			float ymax =NPCs[current]->GetMesh(0)->ColisionVector1.y;
-			float zmin =NPCs[current]->GetMesh(0)->ColisionVector2.z;
-			float zmax =NPCs[current]->GetMesh(0)->ColisionVector1.z;
+			float xmin = NPCs[current]->GetMesh(0)->ColisionVector2.x;
+			float xmax = NPCs[current]->GetMesh(0)->ColisionVector1.x;
+			float ymin = NPCs[current]->GetMesh(0)->ColisionVector2.y;
+			float ymax = NPCs[current]->GetMesh(0)->ColisionVector1.y;
+			float zmin = NPCs[current]->GetMesh(0)->ColisionVector2.z;
+			float zmax = NPCs[current]->GetMesh(0)->ColisionVector1.z;
 
 
 			if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
@@ -684,13 +664,13 @@ void SceneText::CheckSquareCollision()
 		}
 		
 		
-	}
+	}*/
 
 }
 
 void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 {
-	mesh->collison = hasCollision;
+	
 	if (hasCollision)
 	{
 		if (!mesh->collisionboxcreated)

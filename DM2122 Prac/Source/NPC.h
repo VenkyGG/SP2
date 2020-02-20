@@ -41,6 +41,8 @@ public:
 
 	void move();
 	
+	bool chat(Vector3 CamPos);
+	
 
 };
 
