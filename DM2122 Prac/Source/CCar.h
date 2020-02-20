@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Object.h"
-using namespace std;
+
 class CCar:public Object
 {
 private:

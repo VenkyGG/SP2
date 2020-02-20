@@ -25,8 +25,6 @@ class SceneText : public Scene
 		GEO_FLATLAND,
 		GEO_LIGHTSPHERE,
 		GEO_EXTRASHAPE1,
-		GEO_CARPLATFORMBASE,
-		GEO_CARPLATFORMTOP,
 		GEO_TEXT,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
@@ -90,6 +88,7 @@ private:
 	int numberofNPCs = 500;
 	NPC *NPCs[500];
 	Object objectlist[50];
+	int numberofobjects;
 	Camera2 camera;
 
 	void CheckSquareCollision();

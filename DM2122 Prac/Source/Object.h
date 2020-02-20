@@ -8,20 +8,22 @@ using namespace std;
 class Object
 {
 private:
-	Vector3 Position;
-	Vector3 Rotation;
+	vector<Vector3> PositionList;
+	vector<Vector3> RotationList;
 	Mesh* mesh;
+	vector<Mesh*> meshlist;
 	int NumberOfOccurances;
 	string type;
 	
 public:
 	Object();
-	Vector3 GetPostition();
-	void SetPosition(Vector3 pos);
-	Vector3 GetRotation();
-	void SetRotation(Vector3 rot);
+	vector<Vector3> GetPostition();
+	void SetPosition(int index, Vector3 pos);
+	vector<Vector3> GetRotation();
+	void SetRotation(int index, Vector3 rot);
 	Mesh* GetMesh();
 	void SetMesh(string name, string filelocation);
+	vector<Mesh*> GetMeshList();
 	int GetNumberOfOccurences();
 	void SetNumberOfOccurences(int number);
 	string GetType();

@@ -26,8 +26,6 @@ public:
 	~NPC();
 
 	void setNPCRotation(float degreesNPC);
-	void setNPCTranslationX(float XCoordsNPC);
-	void setNPCTranslationZ(float ZCoordsNPC);
 
 	float getNPCRotation();
 	Vector3 GetPosition();

@@ -44,8 +44,8 @@ public:
 	Vector3 ColisionVector1;
 	Vector3 ColisionVector2;
 	
-	bool collison = false;
-	bool collisionboxcreated = false;
+	bool collison;
+	bool collisionboxcreated;
 	Material material;
 	unsigned textureID;
 };

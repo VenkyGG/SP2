@@ -53,7 +53,7 @@ void CCar::Spin()
 {
 	if (IsSpinning)
 	{
-		SetRotation(Vector3(0,GetRotation().y + 1,0));
+		SetRotation(0,Vector3(0,GetRotation()[0].y + 1,0));
 	}
 }
 

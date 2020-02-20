@@ -13,6 +13,7 @@ public:
 	int GetnumberofCars();
 	CCar* GetStart();
 	void SetStart(CCar * x);
+	CCar* GetCar(int index);
 
 };
 

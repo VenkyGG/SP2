@@ -26,7 +26,6 @@ CarsList::CarsList()
 			
 			Start->setmaxSpeed(maxspeed);
 			Start->SetIsSpinning(true);
-			
 			Start->SetMesh(location, "OBJ//Cars//" + location + ".obj");
 			Start->GetMesh()->textureID=LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
 			Start->SetType("Car");
@@ -74,8 +73,8 @@ CarsList::CarsList()
 	float radius = 100.0f;
 	for (int i = 0; i < numcars; i++)
 	{
-		current->SetPosition(Vector3(camxpos + radius * sin(Math::DegreeToRadian(currentangle)), 0, camzpos + radius * cos(Math::DegreeToRadian(currentangle))));
-		current->SetRotation(Vector3(0, current->GetRotation().y + angleposition, 0));
+		current->SetPosition(0,Vector3(camxpos + radius * sin(Math::DegreeToRadian(currentangle)), 0, camzpos + radius * cos(Math::DegreeToRadian(currentangle))));
+		current->SetRotation(0,Vector3(0, current->GetRotation()[0].y + angleposition, 0));
 		currentangle += angleposition;
 		if (i != numcars - 1)
 		{
@@ -128,4 +127,20 @@ CCar* CarsList::GetStart()
 void CarsList::SetStart(CCar* x)
 {
 	Start = x;
+}
+
+CCar* CarsList::GetCar(int index)
+{
+	CCar* current = Start;
+	for (int i = 0; i < numcars; i++)
+	{
+		if (i == index)
+		{
+			return current;
+		}
+		else if (i != numcars - 1)
+		{
+			current = current->GetNext();
+		}
+	}
 }
