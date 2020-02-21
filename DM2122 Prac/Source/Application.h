@@ -3,7 +3,7 @@
 #define APPLICATION_H
 
 #include "timer.h"
-
+using namespace std;
 class Application
 {
 public:
@@ -16,9 +16,8 @@ public:
 	static double getmouseXpos();
 	static double getmouseYpos();
 	static void mouseupdate();
-
+	
 private:
-
 	//Declare a window object
 	StopWatch m_timer;
 };

@@ -11,6 +11,7 @@
 #include "Application.h"
 
 #include "SceneText.h"
+#include "MainMenu.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -134,11 +135,14 @@ void Application::mouseupdate()//reset mouse position
 	glfwGetWindowSize(m_window, &width, &height);
 	SetCursorPos(screenoffsetx + width / 2, screenoffsety + height / 2);
 }
+
 void Application::Run()
 {
 	//Main Loop
-
-	Scene* scene = new SceneText();
+	Scene* Ptr[2];
+	Ptr[0] = new MainMenu();
+	Ptr[1] = new SceneText();
+	Scene * scene = Ptr[0];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
 
@@ -151,7 +155,16 @@ void Application::Run()
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
-		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
+		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.
+		if (scene == Ptr[0])
+		{
+			MainMenu* currentscene = static_cast<MainMenu*>(scene);
+			if (currentscene->Played)
+			{
+				scene = Ptr[1];
+				scene->Init();
+			}
+		}
 
 	} //Check if the ESC key had been pressed or if the window had been closed
 	scene->Exit();

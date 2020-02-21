@@ -27,6 +27,16 @@ float CCar::getcurrentSpeed()
 	return currentSpeed;
 }
 
+float CCar::GetPrice()
+{
+	return price;
+}
+
+void CCar::SetPrice(float Price)
+{
+	price = Price;
+}
+
 CCar* CCar::GetNext()
 {
 	return Next;

@@ -10,7 +10,7 @@ private:
 
 	bool IsSpinning;
 	float price;
-
+	bool owned;
 	
 	CCar* Next;
 	CCar* Previous;
@@ -21,7 +21,8 @@ public:
 	void setcurrentSpeed(float speed);
 	float getcurrentSpeed();
 	
-
+	float GetPrice();
+	void SetPrice(float Price);
 	CCar* GetNext();
 	CCar* Getprevious();
 	void SetNext(CCar* x);

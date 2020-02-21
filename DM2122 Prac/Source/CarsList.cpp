@@ -5,6 +5,7 @@
 CarsList::CarsList()
 {
 	int maxspeed = 25;
+	int Price = 100000;
 	CCar* current = Start;
 	numcars = 0;
 	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ//Cars"))

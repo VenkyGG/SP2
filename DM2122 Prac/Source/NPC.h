@@ -10,8 +10,8 @@ private:
 
 	Vector3 Position;
 
-
 	int type;
+
 	int steps;
 	Mesh* CharacterPartsOBJ[6];
 
