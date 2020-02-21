@@ -258,7 +258,7 @@ void SceneText::Init()
 				{
 					int currentlight = j * sqrt(numlights) + k;
 					objectlist[i].SetPosition(currentlight, currentlightpos);
-					light[currentlight].position.Set(currentlightpos.x, 5, currentlightpos.z);
+					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y, currentlightpos.z);
 					float differenceX = (finallightpos.x - initiallightpos.x) / (sqrt(numlights) - 1);
 					currentlightpos.x += differenceX;
 				}

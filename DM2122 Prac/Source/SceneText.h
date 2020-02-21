@@ -29,7 +29,7 @@ class SceneText : public Scene
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
-	const static int numlights = 1;
+	const static int numlights = 9;
 	const static int numberofNPCs = 500;
 
 	enum Scene5_UNIFORM_TYPE
