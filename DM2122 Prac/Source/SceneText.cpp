@@ -30,7 +30,6 @@ SceneText::SceneText()
 		{
 			for (int i = 0; i < size(objectlist); ++i)
 			{
-				cout << size(objectlist);
 				if (objectlist[i].GetMesh() == NULL)
 				{
 					string location = p.path().filename().string();
@@ -267,6 +266,26 @@ void SceneText::Init()
 		if (objectlist[i].GetMesh()->name == "Platformtop")
 		{
 			objectlist[i].SetNumberOfOccurences(cars.GetnumberofCars());
+		}
+		if (objectlist[i].GetMesh()->name == "LightFrame")
+		{
+			Vector3 initiallightpos = Vector3(-bordersize + (bordersize / 19), 5, -bordersize + (bordersize / 19));
+			Vector3 finallightpos = Vector3(bordersize - (bordersize / 19), 5, bordersize - (bordersize / 19));
+			Vector3 currentlightpos = initiallightpos;
+			objectlist[i].SetNumberOfOccurences(numlights);
+			for (int j = 0; j < sqrt(numlights); j++)
+			{
+				currentlightpos.x = initiallightpos.x;
+				for (int k = 0; k < sqrt(numlights); k++)
+				{
+					int currentlight = j * sqrt(numlights) + k;
+					objectlist[i].GetPostition()[currentlight] = currentlightpos;
+					float differenceX = (finallightpos.x - initiallightpos.x) / (sqrt(numlights) - 1);
+					currentlightpos.x += differenceX;
+				}
+				float differenceZ = (finallightpos.z - initiallightpos.z) / (sqrt(numlights) - 1);
+				currentlightpos.z += differenceZ;
+			}
 		}
 	}
 }
@@ -540,6 +559,21 @@ void SceneText::Render()
 				modelStack.PopMatrix();
 			}
 		}
+
+		for (int i = 0; i < numberofobjects; i++)
+		{
+			if (objectlist[i].GetMesh()->name == "LightFrame")
+			{
+				for (int k = 0; k < objectlist[i].GetNumberOfOccurences(); k++)
+				{
+					modelStack.PushMatrix();
+					//modelStack.Translate(0, objectlist[i].GetPostition()[k].y, 0);
+					modelStack.Translate(objectlist[i].GetPostition()[k].x, objectlist[i].GetPostition()[k].y, objectlist[i].GetPostition()[k].z);
+					RenderMesh(objectlist[i].GetMesh(), false, false);
+					modelStack.PopMatrix();
+				}
+			}
+		}
 	}
 
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2);//render crosshair
@@ -729,7 +763,7 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 
 void SceneText::RenderSkybox()
 {
-	float size = 500;//uniform scaling
+	float size = bordersize;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
 	if (OutsideMotorShow)//render daytime skybox
 	{

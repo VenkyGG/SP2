@@ -89,7 +89,10 @@ private:
 	NPC *NPCs[500];
 	Object objectlist[50];
 	int numberofobjects;
+	int numlights = 49;
 	Camera2 camera;
+	float bordersize = 500.0f;
+	
 
 	void CheckSquareCollision();
 	void RenderMesh(Mesh* mesh, bool enableLight,bool hasCollision);
