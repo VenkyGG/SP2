@@ -12,7 +12,7 @@
 
 MainMenu::MainMenu()
 {
-	
+
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
@@ -100,10 +100,10 @@ void MainMenu::Init()
 	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("menu", Color(0.f, 0.63f, 0.48f), 50.f, 50.f);
 
 
-	
+
 	clock = 0;
 
-	
+
 }
 
 void MainMenu::Update(double dt)
@@ -126,81 +126,26 @@ void MainMenu::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-	
 
-
-	//camera.Update(dt);
-
-	//if (pos <= 5 && pos >= -15)
-	//{
-	//	if (Application::IsKeyPressed('W'))
-	//		pos += 10;
-	//	else if (Application::IsKeyPressed('S'))
-	//		pos -= 10;
-	//}
-	//if(pos == 5 && VK_ENTER)
-	//exit current scene, call next scene, enter new scene
-	//else if(pos == -15 && VK_ENTER)
-	//exit scene
-	//else if(pos == ___ && VK_ENTER)
-	//bool == true  render settings  (not sure)
-
-	//if (Application::IsKeyPressed('W'))
-	//{
-	//	pos += 1;
-	//}
-	//else if (Application::IsKeyPressed('S'))
-	//{
-	//	pos -= 1;
-	//}
-	//else if (pos == 1 && Application::IsKeyPressed('W'))
-	//{
-	//	pos == 3;
-	//}
-	//else if (pos == 3 && Application::IsKeyPressed('S'))
-	//{
-	//	pos == 1;
-	//}
-
-	//if (pos == 1 && VK_NUMPAD1)
-	//{
-	//	chg scene
-	//}
 	float height = Application::getmouseYpos();
 	Application::mouseupdate();
-	
-	if (pos == 2 && (Application::IsKeyPressed('W')||height<0) && clock<GetTickCount64())
+
+	int offset = 6;
+	if ((Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64() && level < 3)
 	{
-		pos = -12;
+		pos -= offset;
+		level++;
 		clock = GetTickCount64() + 500;
 	}
-	else if (pos == 2 && (Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64())
+	else if ((Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64() && level>1)
 	{
-		pos = -5;
-		clock = GetTickCount64() + 500;
-	}
-	else if (pos == -5 && (Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64())
-	{
-		pos = 2;
-		clock = GetTickCount64() + 500;
-	}
-	else if (pos == -5 && (Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64())
-	{
-		pos = -12;
-		clock = GetTickCount64() + 500;
-	}
-	else if (pos == -12 && (Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64())
-	{
-		pos = -5;
-		clock = GetTickCount64() + 500;
-	}
-	else if (pos == -12 && (Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64())
-	{
-		pos = 2;
+		pos += offset;
+		level--;
 		clock = GetTickCount64() + 500;
 	}
 
-	if (pos == 2 && (Application::IsKeyPressed(VK_LBUTTON)|| Application::IsKeyPressed(VK_RETURN)))
+
+	if (pos == 2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
 		Played = true;
 	}
@@ -215,82 +160,6 @@ void MainMenu::Update(double dt)
 }
 
 
-void MainMenu::RenderText(Mesh* mesh, std::string text, Color color)
-{
-	if (!mesh || mesh->textureID <= 0)
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-
-	glActiveTexture(GL_TEXTURE0);
-
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 0.6f, 0, 0);
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	glEnable(GL_DEPTH_TEST);
-}
-
-void MainMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
-{
-	if (!mesh || mesh->textureID <= 0)
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity();
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	modelStack.Scale(size, size, size);
-	modelStack.Translate(x, y, 0);
-
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0);
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-
-	glEnable(GL_DEPTH_TEST);
-
-}
-
 
 void MainMenu::Render()
 {
@@ -302,16 +171,14 @@ void MainMenu::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-	
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0.f, -45.f, -1.f);
 	RenderMesh(meshList[GEO_MENU], false);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-10.f, pos, 1.f);
-	modelStack.Scale(0.08f, 0.08f, 0.f);
-	RenderMesh(meshList[GEO_MENUCURSOR], false);
+	RenderMeshOnScreen(meshList[GEO_MENUCURSOR], 20, 2*pos+30, 0.2f, 0.2f);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -396,4 +263,99 @@ void MainMenu::RenderMesh(Mesh* mesh, bool enableLight)
 	mesh->Render(); //this line should only be called once in the whole function
 
 	if (mesh->textureID > 0) glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void MainMenu::RenderText(Mesh* mesh, std::string text, Color color)
+{
+	if (!mesh || mesh->textureID <= 0)
+		return;
+
+	glDisable(GL_DEPTH_TEST);
+
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+
+	for (unsigned i = 0; i < text.length(); ++i)
+	{
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(i * 0.6f, 0, 0);
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void MainMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+{
+	if (!mesh || mesh->textureID <= 0)
+		return;
+
+	glDisable(GL_DEPTH_TEST);
+
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Scale(size, size, size);
+	modelStack.Translate(x, y, 0);
+
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	for (unsigned i = 0; i < text.length(); ++i)
+	{
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(i * 1.0f, 0, 0);
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	glEnable(GL_DEPTH_TEST);
+
+}
+
+void MainMenu::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
+{
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(sizex, sizey, 1);
+	RenderMesh(mesh, false);
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
 }

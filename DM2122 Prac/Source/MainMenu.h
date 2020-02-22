@@ -69,9 +69,10 @@ private:
 	Camera2 camera;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
-	void RenderSkybox();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
+	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 public:
 	MainMenu();
@@ -79,6 +80,7 @@ public:
 
 
 	float pos = 2;
+	int level = 1;
 	double clock;
 	bool Played;
 
