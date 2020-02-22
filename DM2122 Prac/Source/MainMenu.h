@@ -82,7 +82,7 @@ public:
 	float pos = 2;
 	int level = 1;
 	double clock;
-	bool Played;
+	bool Paused;
 
 	virtual void Init();
 	virtual void Update(double dt);

@@ -105,7 +105,7 @@ void MainMenu::Init()
 
 
 }
-
+int Application::state = 0;
 void MainMenu::Update(double dt)
 {
 	clock += dt;
@@ -144,18 +144,22 @@ void MainMenu::Update(double dt)
 		clock = GetTickCount64() + 500;
 	}
 
-
-	if (pos == 2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	if (level==1 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-		Played = true;
+		
+		Application::state = Application::Motorshow;
 	}
-	else if (pos == -5 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	else if (level==2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
 
 	}
-	else if (pos == -12 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	else if (level==3 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
 
+	}
+	else if (Paused)
+	{
+		//render paused texture
 	}
 }
 

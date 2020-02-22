@@ -90,6 +90,7 @@ CarsList::CarsList()
 			current = current->GetNext();
 		}
 	}
+	CurrentCar = Start;
 }
 
 CarsList::~CarsList()
@@ -152,4 +153,14 @@ CCar* CarsList::GetCar(int index)
 			current = current->GetNext();
 		}
 	}
+}
+
+CCar* CarsList::GetCurrentCar()
+{
+	return CurrentCar;
+}
+
+void CarsList::SetCurrentCar(CCar* car)
+{
+	CurrentCar = car;
 }

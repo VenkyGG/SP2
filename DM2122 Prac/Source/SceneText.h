@@ -1,4 +1,4 @@
-#ifndef SCENETEXT_H
+﻿#ifndef SCENETEXT_H
 #define SCENETEXT_H
 
 #include "Scene.h"
@@ -14,12 +14,6 @@ class SceneText : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES = 0,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
-		GEO_FRONT,
-		GEO_BACK,
 		GEO_MOTORSHOW_WALL,
 		GEO_MOTORSHOW_CEILING,
 		GEO_FLATLAND,
@@ -84,8 +78,8 @@ private:
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	bool OutsideMotorShow;
-	double TimeChangeDelay;
+
+
 	Vector3 starepoint;
 public:
 	SceneText();

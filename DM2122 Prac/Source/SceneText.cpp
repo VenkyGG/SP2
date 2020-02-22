@@ -65,10 +65,7 @@ SceneText::SceneText()
 SceneText::~SceneText()
 {
 }
-GLint GetUniformLocation(GLuint program​, const std::string& name)
-{
-	return glGetUniformLocation(program​, name.c_str());
-}
+
 void SceneText::Init()
 {
 	initialized = true;
@@ -104,17 +101,17 @@ void SceneText::Init()
 	//For First Light
 	for (int i = 0; i < numlights; i++)
 	{
-		m_parameters[8 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].position_cameraspace");
-		m_parameters[9 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].color");
-		m_parameters[10 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].power");
-		m_parameters[11 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].kC");
-		m_parameters[12 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].kL");
-		m_parameters[13 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].kQ");
-		m_parameters[14 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].type");
-		m_parameters[15 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].spotDirection");
-		m_parameters[16 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].cosCutoff");
-		m_parameters[17 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].cosInner");
-		m_parameters[18 + i * 11] = GetUniformLocation(m_programID, "lights[" + to_string(i) + "].exponent");
+		m_parameters[8 + i * 11] =  glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].position_cameraspace").c_str());
+		m_parameters[9 + i * 11] =  glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].color").c_str());
+		m_parameters[10 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].power").c_str());
+		m_parameters[11 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kC").c_str());
+		m_parameters[12 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kL").c_str());
+		m_parameters[13 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kQ").c_str());
+		m_parameters[14 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].type").c_str());
+		m_parameters[15 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].spotDirection").c_str());
+		m_parameters[16 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].cosCutoff").c_str());
+		m_parameters[17 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].cosInner").c_str());
+		m_parameters[18 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].exponent").c_str());
 	}
 	//For Second Light
 
@@ -155,29 +152,6 @@ void SceneText::Init()
 		glUniform1f(m_parameters[18 + i * 11], light[i].exponent);
 	}
 	glUniform1i(m_parameters[U_NUMLIGHTS], numlights);
-
-	//skybox outdoor
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//hills_lf.tga");
-
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//hills_rt.tga");
-
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//hills_up.tga");
-
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 104.f / 255.f, 0), 5000.f, 5000.f);
-	meshList[GEO_BOTTOM]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_BOTTOM]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_BOTTOM]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[GEO_BOTTOM]->material.kShininess = 1.f;
-
-
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//hills_ft.tga");
-
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//hills_bk.tga");
 
 	//Motorshow
 	meshList[GEO_MOTORSHOW_WALL] = MeshBuilder::GenerateQuad("wall", Color(1, 1, 1), 1.f, 1.f);
@@ -237,7 +211,7 @@ void SceneText::Init()
 	}
 	srand(time(NULL));
 
-	OutsideMotorShow = false;//set time to day
+
 
 	for (int i = 0; i < numberofobjects; i++)
 	{
@@ -297,27 +271,7 @@ void SceneText::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	if (!OutsideMotorShow)//if night
-	{
-		//light[0].position.x = 0;//set light to above tile selector
-		//light[0].position.y = 5;
-		//light[0].position.z = 0;
-		//light[0].power = 1;
-		//light[1].power = 0.5f;
-		//light[1].color.Set(0, 0, 0.5f);//make light slightly blue
-		//glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
-		//glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-		//glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	}
-	else//if day
-	{
-		/*light[0].power = 0;
-		light[1].power = 1.5f;
-		light[1].color.Set(0.5f, 0.5f, 0.5f);
-		glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
-		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-		glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);*/
-	}
+	
 
 
 
@@ -337,11 +291,7 @@ void SceneText::Update(double dt)
 
 	starepoint = Target2;
 	float speed = 2;
-	if (Application::IsKeyPressed('Z') && TimeChangeDelay < GetTickCount64())//changes night and day
-	{
-		OutsideMotorShow = !OutsideMotorShow;//day is not day
-		TimeChangeDelay = GetTickCount64() + 250;//delay so day wont be spammed
-	}
+	
 	if (Application::IsKeyPressed('W'))
 	{
 
@@ -371,6 +321,12 @@ void SceneText::Update(double dt)
 		camera.position = camera.position + camera.right * speed;
 		CheckSquareCollision();
 		camera.target = camera.position + camera.view;
+	}
+
+	if (Application::IsKeyPressed('V'))
+	{
+		Application::state = Application::Mainmenu;
+
 	}
 	CheckSquareCollision();
 	camera.Update(dt);
@@ -432,119 +388,118 @@ void SceneText::Render()
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
 	modelStack.PopMatrix();
 
-	if (!OutsideMotorShow)//Renders Motorshow stuff
+	
+	for (int i = 0; i < numberofNPCs; i++)
 	{
-		for (int i = 0; i < numberofNPCs; i++)
+		modelStack.PushMatrix();
+		modelStack.Translate(NPCs[i]->GetPosition().x, 10, NPCs[i]->GetPosition().z);
+		modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
+		RenderMesh(NPCs[i]->GetMesh(0), true, false);
+
+		for (int k = 1; k < 6; k++)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(NPCs[i]->GetPosition().x, 10, NPCs[i]->GetPosition().z);
-			modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
-			RenderMesh(NPCs[i]->GetMesh(0), true, false);
-
-			for (int k = 1; k < 6; k++)
+			if (k == 1 && NPCs[i]->chat(camera.position))
 			{
 				modelStack.PushMatrix();
-				if (k == 1 && NPCs[i]->chat(camera.position))
-				{
-					modelStack.PushMatrix();
-					Vector3 target = Vector3(camera.position.x - NPCs[i]->GetPosition().x, 0, camera.position.z - NPCs[i]->GetPosition().z).Normalized();
-					float chatbubblerotation = atan2(target.x, target.z) * 180 / Math::PI;
-					modelStack.Rotate(-NPCs[i]->getNPCRotation() + chatbubblerotation, 0, 1, 0);
-					modelStack.Translate(2, 0, 0);
+				Vector3 target = Vector3(camera.position.x - NPCs[i]->GetPosition().x, 0, camera.position.z - NPCs[i]->GetPosition().z).Normalized();
+				float chatbubblerotation = atan2(target.x, target.z) * 180 / Math::PI;
+				modelStack.Rotate(-NPCs[i]->getNPCRotation() + chatbubblerotation, 0, 1, 0);
+				modelStack.Translate(2, 0, 0);
 
-					for (int i = 0; i < numberofobjects; i++)
-					{
-						if (objectlist[i].GetMesh()->name == "chatbubble")
-						{
-							RenderMesh(objectlist[i].GetMesh(), false, false);
-						}
-					}
-					modelStack.PushMatrix();
-					modelStack.Scale(0.32f, 0.32f, 1);
-					modelStack.Translate(2.75f, 15, 0.2f);
-					RenderText(meshList[GEO_TEXT], "U are a nice guy", Color(0, 0, 0));
-					modelStack.PopMatrix();
-					modelStack.PopMatrix();
-				}
-				if (k == 2 || k == 5)
+				for (int i = 0; i < numberofobjects; i++)
 				{
-					if (k == 5)
+					if (objectlist[i].GetMesh()->name == "chatbubble")
 					{
-						modelStack.Translate(0, -4.5f, 0);
-					}
-
-					if (NPCs[i]->GetIsMoving())
-					{
-						modelStack.Rotate(sin(GetTickCount64() / 100) * 50, 1, 0, 0);
+						RenderMesh(objectlist[i].GetMesh(), false, false);
 					}
 				}
-				if (k == 3 || k == 4)
-				{
-					if (k == 3)
-					{
-						modelStack.Translate(0, -4.5f, 0);
-					}
-
-					if (NPCs[i]->GetIsMoving())
-					{
-						modelStack.Rotate(-sin(GetTickCount64() / 100) * 50, 1, 0, 0);
-					}
-				}
-				RenderMesh(NPCs[i]->GetMesh(k), true, false);
+				modelStack.PushMatrix();
+				modelStack.Scale(0.32f, 0.32f, 1);
+				modelStack.Translate(2.75f, 15, 0.2f);
+				RenderText(meshList[GEO_TEXT], "U are a nice guy", Color(0, 0, 0));
+				modelStack.PopMatrix();
 				modelStack.PopMatrix();
 			}
+			if (k == 2 || k == 5)
+			{
+				if (k == 5)
+				{
+					modelStack.Translate(0, -4.5f, 0);
+				}
+
+				if (NPCs[i]->GetIsMoving())
+				{
+					modelStack.Rotate(sin(GetTickCount64() / 100) * 50, 1, 0, 0);
+				}
+			}
+			if (k == 3 || k == 4)
+			{
+				if (k == 3)
+				{
+					modelStack.Translate(0, -4.5f, 0);
+				}
+
+				if (NPCs[i]->GetIsMoving())
+				{
+					modelStack.Rotate(-sin(GetTickCount64() / 100) * 50, 1, 0, 0);
+				}
+			}
+			RenderMesh(NPCs[i]->GetMesh(k), true, false);
 			modelStack.PopMatrix();
 		}
-		if (cars.GetnumberofCars() > 0)
+		modelStack.PopMatrix();
+	}
+	if (cars.GetnumberofCars() > 0)
+	{
+		CCar* current = cars.GetStart();
+		for (int i = 0; i < cars.GetnumberofCars(); i++)
 		{
-			CCar* current = cars.GetStart();
-			for (int i = 0; i < cars.GetnumberofCars(); i++)
+			for (int k = 0; k < numberofobjects; k++)
 			{
-				for (int k = 0; k < numberofobjects; k++)
-				{
-					if (objectlist[k].GetMesh()->name == "Platformbottom")
-					{
-						modelStack.PushMatrix();
-						modelStack.Scale(4, 4, 4);
-						modelStack.Translate(cars.GetCar(i)->GetPostition()[0].x, 0, cars.GetCar(i)->GetPostition()[0].z);
-
-						RenderMesh(objectlist[k].GetMeshList()[i], true, true);
-
-					}
-					if (objectlist[k].GetMesh()->name == "Platformtop")
-					{
-						modelStack.PushMatrix();
-						modelStack.Rotate(cars.GetCar(i)->GetRotation()[0].y, 0.f, 1.f, 0.f);
-
-						RenderMesh(objectlist[k].GetMesh(), true, false);
-					}
-				}
-				modelStack.PushMatrix();
-				modelStack.Scale(0.5, 0.5, 0.5);
-				modelStack.Translate(0, 4.5f, 0);
-				RenderMesh(cars.GetCar(i)->GetMesh(), true, false);
-				modelStack.PopMatrix();
-				modelStack.PopMatrix();
-				modelStack.PopMatrix();
-			}
-		}
-
-		for (int i = 0; i < numberofobjects; i++)
-		{
-			if (objectlist[i].GetMesh()->name == "LightFrame")
-			{
-				for (int k = 0; k < objectlist[i].GetNumberOfOccurences(); k++)
+				if (objectlist[k].GetMesh()->name == "Platformbottom")
 				{
 					modelStack.PushMatrix();
-					modelStack.Translate(objectlist[i].GetPostition()[k].x, objectlist[i].GetPostition()[k].y, objectlist[i].GetPostition()[k].z);
-					//cout << objectlist[i].GetPostition()[k] << endl;
-					RenderMesh(objectlist[i].GetMesh(), false, false);
-					modelStack.PopMatrix();
+					modelStack.Scale(4, 4, 4);
+					modelStack.Translate(cars.GetCar(i)->GetPostition()[0].x, 0, cars.GetCar(i)->GetPostition()[0].z);
+
+					RenderMesh(objectlist[k].GetMeshList()[i], true, true);
+
+				}
+				if (objectlist[k].GetMesh()->name == "Platformtop")
+				{
+					modelStack.PushMatrix();
+					modelStack.Rotate(cars.GetCar(i)->GetRotation()[0].y, 0.f, 1.f, 0.f);
+
+					RenderMesh(objectlist[k].GetMesh(), true, false);
 				}
 			}
-
+			modelStack.PushMatrix();
+			modelStack.Scale(0.5, 0.5, 0.5);
+			modelStack.Translate(0, 4.5f, 0);
+			RenderMesh(cars.GetCar(i)->GetMesh(), true, false);
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
 		}
 	}
+
+	for (int i = 0; i < numberofobjects; i++)
+	{
+		if (objectlist[i].GetMesh()->name == "LightFrame")
+		{
+			for (int k = 0; k < objectlist[i].GetNumberOfOccurences(); k++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(objectlist[i].GetPostition()[k].x, objectlist[i].GetPostition()[k].y, objectlist[i].GetPostition()[k].z);
+				//cout << objectlist[i].GetPostition()[k] << endl;
+				RenderMesh(objectlist[i].GetMesh(), false, false);
+				modelStack.PopMatrix();
+			}
+		}
+
+	}
+	
 	for (int i = 0; i < numlights; i++)
 	{
 		modelStack.PushMatrix();
@@ -743,94 +698,50 @@ void SceneText::RenderSkybox()
 {
 	float size = bordersize;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
-	if (OutsideMotorShow)//render daytime skybox
-	{
-		modelStack.PushMatrix();
-		///scale, translate, rotate
-		modelStack.Translate(-size + offset, 0.f, 0.f);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
-		RenderMesh(meshList[GEO_LEFT], false, false);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		///scale, translate, rotate 
-		modelStack.Translate(size - offset, 0.f, 0.f);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
-		RenderMesh(meshList[GEO_RIGHT], false, false);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		///scale, translate, rotate
-		modelStack.Translate(0.f, size - offset, 0.f);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
-		modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
-		RenderMesh(meshList[GEO_TOP], false, false);
-		modelStack.PopMatrix();
+	
+	
+	modelStack.PushMatrix();
+	///scale, translate, rotate
+	modelStack.Translate(-size + offset, 0.f, 0.f);
+	modelStack.Scale(size * 2, size * 2, size * 2);
+	modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
+	RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
+	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	///scale, translate, rotate 
+	modelStack.Translate(size - offset, 0.f, 0.f);
+	modelStack.Scale(size * 2, size * 2, size * 2);
+	modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
+	RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
+	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	///scale, translate, rotate
+	modelStack.PushMatrix();
+	///scale, translate, rotate
+	modelStack.Translate(0.f, 0.f, -size + offset);
+	modelStack.Scale(size * 2, size * 2, size * 2);
+	RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
+	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	///scale, translate, rotate 
+	modelStack.Translate(0.f, 0.f, size - offset);
+	modelStack.Scale(size * 2, size * 2, size * 2);
+	modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
+	RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
+	modelStack.PopMatrix();
+	modelStack.Translate(0.f, size - offset, 0.f);
+	modelStack.Scale(size * 2.75f, size * 2.75f, size * 2.75f);
+	modelStack.Rotate(GetTickCount64() * 0.01f, 0.f, 1.f, 0.f);
+	modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
+	RenderMesh(meshList[GEO_MOTORSHOW_CEILING], false, true);
+	modelStack.PopMatrix();
 
-		modelStack.PushMatrix();
-		modelStack.Rotate(-90, 1, 0, 0);
-		RenderMesh(meshList[GEO_BOTTOM], true, false);
-		modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Rotate(-90, 1, 0, 0);
 
-		modelStack.PushMatrix();
-		///scale, translate, rotate
-		modelStack.Translate(0.f, 0.f, -size + offset);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		RenderMesh(meshList[GEO_FRONT], false, false);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		///scale, translate, rotate 
-		modelStack.Translate(0.f, 0.f, size - offset);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
-		RenderMesh(meshList[GEO_BACK], false, false);
-		modelStack.PopMatrix();
-	}
-	else//render motorshow skybox
-	{
-		modelStack.PushMatrix();
-		///scale, translate, rotate
-		modelStack.Translate(-size + offset, 0.f, 0.f);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
-		RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		///scale, translate, rotate 
-		modelStack.Translate(size - offset, 0.f, 0.f);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
-		RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		///scale, translate, rotate
-		modelStack.PushMatrix();
-		///scale, translate, rotate
-		modelStack.Translate(0.f, 0.f, -size + offset);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
-		modelStack.PopMatrix();
-		modelStack.PushMatrix();
-		///scale, translate, rotate 
-		modelStack.Translate(0.f, 0.f, size - offset);
-		modelStack.Scale(size * 2, size * 2, size * 2);
-		modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
-		RenderMesh(meshList[GEO_MOTORSHOW_WALL], false, true);
-		modelStack.PopMatrix();
-		modelStack.Translate(0.f, size - offset, 0.f);
-		modelStack.Scale(size * 2.75f, size * 2.75f, size * 2.75f);
-		modelStack.Rotate(GetTickCount64() * 0.01f, 0.f, 1.f, 0.f);
-		modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
-		RenderMesh(meshList[GEO_MOTORSHOW_CEILING], false, true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Rotate(-90, 1, 0, 0);
-
-		RenderMesh(meshList[GEO_FLATLAND], true, true);
-		modelStack.PopMatrix();
-	}
+	RenderMesh(meshList[GEO_FLATLAND], true, true);
+	modelStack.PopMatrix();
+	
 }
 
 void SceneText::RenderText(Mesh* mesh, std::string text, Color color)

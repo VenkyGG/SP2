@@ -7,6 +7,7 @@ class CarsList
 private:
 	int numcars;
 	CCar* Start;
+	CCar* CurrentCar;
 public:
 	CarsList();
 	~CarsList();
@@ -14,6 +15,7 @@ public:
 	CCar* GetStart();
 	void SetStart(CCar * x);
 	CCar* GetCar(int index);
-
+	CCar* GetCurrentCar();
+	void SetCurrentCar(CCar* car);
 };
 
