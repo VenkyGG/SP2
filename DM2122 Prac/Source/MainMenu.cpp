@@ -78,10 +78,6 @@ void MainMenu::Init()
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
-	
-
-	
-	
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
@@ -204,15 +200,15 @@ void MainMenu::Update(double dt)
 		clock = GetTickCount64() + 500;
 	}
 
-	if (pos == 2 && Application::IsKeyPressed(VK_LBUTTON))
+	if (pos == 2 && (Application::IsKeyPressed(VK_LBUTTON)|| Application::IsKeyPressed(VK_RETURN)))
 	{
 		Played = true;
 	}
-	else if (pos == -5 && Application::IsKeyPressed(VK_LBUTTON))
+	else if (pos == -5 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
 
 	}
-	else if (pos == -12 && Application::IsKeyPressed(VK_LBUTTON))
+	else if (pos == -12 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
 
 	}

@@ -43,9 +43,8 @@ class SceneText : public Scene
 		U_MATERIAL_SHININESS,
 		U_LIGHTENABLED,
 
-
-
-		U_NUMLIGHTS = numlights * 11 + U_LIGHTENABLED,
+		
+		U_NUMLIGHTS = 500 ,
 		// add these enum for texture
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,

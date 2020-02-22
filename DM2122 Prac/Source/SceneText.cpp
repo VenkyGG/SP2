@@ -131,10 +131,10 @@ void SceneText::Init()
 	//Initialize First light
 	for (int i = 0; i < numlights; i++)
 	{
-		light[i].type = Light::LIGHT_DIRECTIONAL;
+		light[i].type = Light::LIGHT_SPOT;
 		light[i].position.Set(0, 5, 0);
 		light[i].color.Set(0.5f, 0.5f, 0.5f);
-		light[i].power = 10;
+		light[i].power = 100;
 		light[i].kC = 1.f;
 		light[i].kL = 0.01f;
 		light[i].kQ = 0.001f;
@@ -211,8 +211,12 @@ void SceneText::Init()
 		for (auto& p : std::experimental::filesystem::directory_iterator(q))
 		{
 			Mesh* x = NULL;
-			x = MeshBuilder::GenerateOBJ("PPP", p.path().string());
+			x = MeshBuilder::GenerateOBJ(location, p.path().string());
 			x->textureID = LoadTGA(("Image//People Textures//" + location + ".tga").c_str());
+			x->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+			x->material.kDiffuse.Set(0.1f, 0.1f, 0.1f);
+			x->material.kSpecular.Set(.5f, .5f, .5f);
+			x->material.kShininess = 1.f;
 			MeshStorage.push_back(x);
 		}
 
@@ -232,7 +236,7 @@ void SceneText::Init()
 	}
 	srand(time(NULL));
 
-	OutsideMotorShow = true;//set time to day
+	OutsideMotorShow = false;//set time to day
 
 	for (int i = 0; i < numberofobjects; i++)
 	{
@@ -258,7 +262,7 @@ void SceneText::Init()
 				{
 					int currentlight = j * sqrt(numlights) + k;
 					objectlist[i].SetPosition(currentlight, currentlightpos);
-					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y, currentlightpos.z);
+					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y-10, currentlightpos.z);
 					float differenceX = (finallightpos.x - initiallightpos.x) / (sqrt(numlights) - 1);
 					currentlightpos.x += differenceX;
 				}
@@ -434,7 +438,7 @@ void SceneText::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate(NPCs[i]->GetPosition().x, 10, NPCs[i]->GetPosition().z);
 			modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
-			RenderMesh(NPCs[i]->GetMesh(0), false, false);
+			RenderMesh(NPCs[i]->GetMesh(0), true, false);
 
 			for (int k = 1; k < 6; k++)
 			{
@@ -485,7 +489,7 @@ void SceneText::Render()
 						modelStack.Rotate(-sin(GetTickCount64() / 100) * 50, 1, 0, 0);
 					}
 				}
-				RenderMesh(NPCs[i]->GetMesh(k), false, false);
+				RenderMesh(NPCs[i]->GetMesh(k), true, false);
 				modelStack.PopMatrix();
 			}
 			modelStack.PopMatrix();
@@ -517,7 +521,7 @@ void SceneText::Render()
 				modelStack.PushMatrix();
 				modelStack.Scale(0.5, 0.5, 0.5);
 				modelStack.Translate(0, 4.5f, 0);
-				RenderMesh(cars.GetCar(i)->GetMesh(), false, false);
+				RenderMesh(cars.GetCar(i)->GetMesh(), true, false);
 				modelStack.PopMatrix();
 				modelStack.PopMatrix();
 				modelStack.PopMatrix();

@@ -29,6 +29,10 @@ CarsList::CarsList()
 			Start->SetIsSpinning(true);
 			Start->SetMesh(location, "OBJ//Cars//" + location + ".obj");
 			Start->GetMesh()->textureID=LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
+			Start->GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
+			Start->GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
+			Start->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
+			Start->GetMesh()->material.kShininess = 1.f;
 			Start->SetType("Car");
 		}
 		else
@@ -62,6 +66,10 @@ CarsList::CarsList()
 			current->SetIsSpinning(true);
 			current->SetMesh(location, "OBJ//Cars//" + location + ".obj");
 			current->GetMesh()->textureID = LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
+			current->GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
+			current->GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
+			current->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
+			current->GetMesh()->material.kShininess = 1.f;
 			current->SetType("Car");
 		}
 		maxspeed += 25;
