@@ -36,7 +36,7 @@ void MainMenu::Init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	camera.Init(Vector3(0, -42, 42), Vector3(0, -45, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 1, 1), Vector3(0, 1, 0), Vector3(0, 1, 0));
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
@@ -174,35 +174,26 @@ void MainMenu::Render()
 
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, -45.f, -1.f);
-	RenderMesh(meshList[GEO_MENU], false);
+	RenderMeshOnScreen(meshList[GEO_MENU], 30.f, 25.f, 2.f, 2.f);
 
 	modelStack.PushMatrix();
 	RenderMeshOnScreen(meshList[GEO_MENUCURSOR], 20, 2*pos+30, 0.2f, 0.2f);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 13.f, 1.f);
-	modelStack.Scale(0.4f, 0.3f, 0.f);
-	RenderMesh(meshList[GEO_GAMENAME], false);
+	RenderMeshOnScreen(meshList[GEO_GAMENAME], 40.f, 50.f, 0.6f, 0.5f);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 2.f, 1.f);
-	modelStack.Scale(0.2f, 0.1f, 1.f);
-	RenderMesh(meshList[GEO_PLAYBUTTON], false);
+	RenderMeshOnScreen(meshList[GEO_PLAYBUTTON], 40.f, 34.f, 0.4f, 0.2f);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, -5.f, 1.f);
-	modelStack.Scale(0.2f, 0.1f, 1.f);
-	RenderMesh(meshList[GEO_SETTINGSBUTTON], false);
+	RenderMeshOnScreen(meshList[GEO_SETTINGSBUTTON], 40.f, 22.f, 0.4f, 0.2f);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, -12.f, 1.f);
-	modelStack.Scale(0.2f, 0.1f, 1.f);
-	RenderMesh(meshList[GEO_EXITBUTTON], false);
+	RenderMeshOnScreen(meshList[GEO_EXITBUTTON], 40.f, 10.f, 0.4f, 0.2f);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
