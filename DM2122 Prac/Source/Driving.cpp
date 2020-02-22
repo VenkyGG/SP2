@@ -1,4 +1,4 @@
-#include "MainMenu.h"
+#include "Driving.h"
 #include "GL\glew.h"
 #include <Mtx44.h>
 #include "shader.hpp"
@@ -10,22 +10,21 @@
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
 
-MainMenu::MainMenu()
+DrivingScene::DrivingScene()
 {
-	
+	initialized = true;
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
 	}
 }
 
-MainMenu::~MainMenu()
+DrivingScene::~DrivingScene()
 {
 }
 
-void MainMenu::Init()
+void DrivingScene::Init()
 {
-	initialized = true;
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Generate a default VAO for now
@@ -82,31 +81,17 @@ void MainMenu::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
-	meshList[GEO_EXITBUTTON] = MeshBuilder::GenerateQuad("exitButton", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_EXITBUTTON]->textureID = LoadTGA("Image//MainMenu Textures//ExitBtn.tga");
-
-	meshList[GEO_SETTINGSBUTTON] = MeshBuilder::GenerateQuad("settingsButton", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_SETTINGSBUTTON]->textureID = LoadTGA("Image//MainMenu Textures//SettingsBtn.tga");
-
-	meshList[GEO_PLAYBUTTON] = MeshBuilder::GenerateQuad("playButton", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_PLAYBUTTON]->textureID = LoadTGA("Image//MainMenu Textures//PlayBtn.tga");
-
-	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//MainMenu Textures//LOGO.tga");
-
-	meshList[GEO_MENUCURSOR] = MeshBuilder::GenerateQuad("menuCursor", Color(0.f, 0.23f, 0.68f), 50.f, 50.f);
-	meshList[GEO_MENUCURSOR]->textureID = LoadTGA("Image//MainMenu Textures//Arrow.tga");
-
-	meshList[GEO_MENU] = MeshBuilder::GenerateQuad("menu", Color(0.f, 0.63f, 0.48f), 50.f, 50.f);
-
+	
 
 	
+
+
 	clock = 0;
 
-	
+
 }
 
-void MainMenu::Update(double dt)
+void DrivingScene::Update(double dt)
 {
 	clock += dt;
 
@@ -126,7 +111,7 @@ void MainMenu::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-	
+
 
 
 	//camera.Update(dt);
@@ -167,9 +152,10 @@ void MainMenu::Update(double dt)
 	//	chg scene
 	//}
 	float height = Application::getmouseYpos();
+	cout << height << endl;
 	Application::mouseupdate();
-	
-	if (pos == 2 && (Application::IsKeyPressed('W')||height<0) && clock<GetTickCount64())
+
+	if (pos == 2 && (Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64())
 	{
 		pos = -12;
 		clock = GetTickCount64() + 500;
@@ -200,7 +186,7 @@ void MainMenu::Update(double dt)
 		clock = GetTickCount64() + 500;
 	}
 
-	if (pos == 2 && (Application::IsKeyPressed(VK_LBUTTON)|| Application::IsKeyPressed(VK_RETURN)))
+	if (pos == 2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
 		Played = true;
 	}
@@ -215,7 +201,7 @@ void MainMenu::Update(double dt)
 }
 
 
-void MainMenu::RenderText(Mesh* mesh, std::string text, Color color)
+void DrivingScene::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0)
 		return;
@@ -247,7 +233,7 @@ void MainMenu::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void MainMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void DrivingScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0)
 		return;
@@ -292,7 +278,7 @@ void MainMenu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
 }
 
 
-void MainMenu::Render()
+void DrivingScene::Render()
 {
 	//Clear color & depth buffer every frame
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -302,7 +288,7 @@ void MainMenu::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-	
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0.f, -45.f, -1.f);
@@ -341,7 +327,7 @@ void MainMenu::Render()
 	modelStack.PopMatrix();
 }
 
-void MainMenu::Exit()
+void DrivingScene::Exit()
 {
 	// Cleanup here
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
@@ -356,7 +342,7 @@ void MainMenu::Exit()
 }
 
 
-void MainMenu::RenderMesh(Mesh* mesh, bool enableLight)
+void DrivingScene::RenderMesh(Mesh* mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 

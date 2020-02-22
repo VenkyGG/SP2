@@ -12,6 +12,7 @@
 
 #include "SceneText.h"
 #include "MainMenu.h"
+#include "Driving.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -139,9 +140,10 @@ void Application::mouseupdate()//reset mouse position
 void Application::Run()
 {
 	//Main Loop
-	Scene* Ptr[2];
-	Ptr[0] = new MainMenu();
-	Ptr[1] = new SceneText();
+	Scene* Ptr[TOTALSCENES];
+	Ptr[Mainmenu] = new MainMenu();
+	Ptr[Motorshow] = new SceneText();
+	Ptr[Driving] = new DrivingScene();
 	Scene * scene = Ptr[0];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
@@ -162,7 +164,10 @@ void Application::Run()
 			if (currentscene->Played)
 			{
 				scene = Ptr[1];
-				scene->Init();
+				if (scene->initialized == false)
+				{
+					scene->Init();
+				}
 			}
 		}
 

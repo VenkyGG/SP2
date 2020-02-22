@@ -131,6 +131,7 @@
     <ClInclude Include="Source\Camera2.h" />
     <ClInclude Include="Source\CarsList.h" />
     <ClInclude Include="Source\CCar.h" />
+    <ClInclude Include="Source\Driving.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
@@ -152,6 +153,7 @@
     <ClCompile Include="Source\Camera2.cpp" />
     <ClCompile Include="Source\CarsList.cpp" />
     <ClCompile Include="Source\CCar.cpp" />
+    <ClCompile Include="Source\Driving.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />

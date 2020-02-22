@@ -19,7 +19,7 @@ using namespace std;
 
 SceneText::SceneText()
 {
-	initialized = true;
+	
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
@@ -71,6 +71,7 @@ GLint GetUniformLocation(GLuint program​, const std::string& name)
 }
 void SceneText::Init()
 {
+	initialized = true;
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Generate a default VAO for now

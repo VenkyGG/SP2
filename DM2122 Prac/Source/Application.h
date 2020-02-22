@@ -7,6 +7,13 @@ using namespace std;
 class Application
 {
 public:
+	enum States
+	{
+		Mainmenu,
+		Motorshow,
+		Driving,
+		TOTALSCENES
+	};
 	Application();
 	~Application();
 	void Init();
@@ -16,7 +23,7 @@ public:
 	static double getmouseXpos();
 	static double getmouseYpos();
 	static void mouseupdate();
-	
+	static int state;
 private:
 	//Declare a window object
 	StopWatch m_timer;
