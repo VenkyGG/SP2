@@ -141,9 +141,11 @@
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Object.h" />
+    <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneText.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\Shop.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
   </ItemGroup>
@@ -162,8 +164,10 @@
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\NPC.cpp" />
     <ClCompile Include="Source\Object.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SceneText.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\Shop.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
