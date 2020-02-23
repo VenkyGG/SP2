@@ -530,17 +530,7 @@ void SceneText::Exit()
 void SceneText::CheckSquareCollision()
 {
 
-	//		//Vector3 A = Vector3(xmin, ymin, zmax);
-	//		//Vector3 B = Vector3(xmax, ymin, zmax);
-	//		//Vector3 C = Vector3(xmax, ymin, zmin);
-	//		//Vector3 D = Vector3(xmin, ymin, zmin);
-	//		//Vector3 E = camera.position;
-
-	//		//float Area1 = ((E.x * B.z - B.x * E.z) - (E.x * A.z - A.x * E.z) + (B.x * A.z - A.x * B.z));
-	//		//float Area2 = ((E.x * B.z - B.x * E.z) - (E.x * C.z - C.x * E.z) + (B.x * C.z - C.x * B.z));
-	//		//float Area3 = ((E.x * D.z - D.x * E.z) - (E.x * C.z - C.x * E.z) + (D.x * C.z - C.x * D.z));
-	//		//float Area4 = ((E.x * D.z - D.x * E.z) - (E.x * A.z - A.x * E.z) + (D.x * A.z - A.x * D.z));
-	//		//cout << Area1 << " " << Area2 << " " << Area3 << " " << Area4 << endl;
+			
 
 
 
@@ -558,6 +548,26 @@ void SceneText::CheckSquareCollision()
 					float ymax = objectlist[current].GetMeshList()[i]->ColisionVector1.y;
 					float zmin = objectlist[current].GetMeshList()[i]->ColisionVector2.z;
 					float zmax = objectlist[current].GetMeshList()[i]->ColisionVector1.z;
+
+
+					/*Vector3 A = Vector3(xmin, ymin, zmax);
+					Vector3 B = Vector3(xmax, ymin, zmax);
+					Vector3 C = Vector3(xmax, ymin, zmin);
+					Vector3 D = Vector3(xmin, ymin, zmin);
+					Vector3 E = camera.position;
+
+					float distances[4];
+					distances[0] = (A - E).Length();
+					distances[1] = (B - E).Length();
+					distances[2] = (C - E).Length();
+					distances[3] = (D - E).Length();
+					float max = 100000000000.0f;
+					for (int i = 0; i < 4; i++)
+					{
+
+					}*/
+
+
 
 
 					if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
