@@ -19,7 +19,7 @@ using namespace std;
 
 SceneText::SceneText()
 {
-	
+
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
@@ -101,8 +101,8 @@ void SceneText::Init()
 	//For First Light
 	for (int i = 0; i < numlights; i++)
 	{
-		m_parameters[8 + i * 11] =  glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].position_cameraspace").c_str());
-		m_parameters[9 + i * 11] =  glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].color").c_str());
+		m_parameters[8 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].position_cameraspace").c_str());
+		m_parameters[9 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].color").c_str());
 		m_parameters[10 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].power").c_str());
 		m_parameters[11 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kC").c_str());
 		m_parameters[12 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kL").c_str());
@@ -237,7 +237,7 @@ void SceneText::Init()
 				{
 					int currentlight = j * sqrt(numlights) + k;
 					objectlist[i].SetPosition(currentlight, currentlightpos);
-					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y-10, currentlightpos.z);
+					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y - 10, currentlightpos.z);
 					float differenceX = (finallightpos.x - initiallightpos.x) / (sqrt(numlights) - 1);
 					currentlightpos.x += differenceX;
 				}
@@ -271,7 +271,7 @@ void SceneText::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	
+
 
 
 
@@ -291,7 +291,7 @@ void SceneText::Update(double dt)
 
 	starepoint = Target2;
 	float speed = 2;
-	
+
 	if (Application::IsKeyPressed('W'))
 	{
 
@@ -388,7 +388,7 @@ void SceneText::Render()
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
 	modelStack.PopMatrix();
 
-	
+
 	for (int i = 0; i < numberofNPCs; i++)
 	{
 		modelStack.PushMatrix();
@@ -499,7 +499,7 @@ void SceneText::Render()
 		}
 
 	}
-	
+
 	for (int i = 0; i < numlights; i++)
 	{
 		modelStack.PushMatrix();
@@ -530,7 +530,7 @@ void SceneText::Exit()
 void SceneText::CheckSquareCollision()
 {
 
-			
+
 
 
 
@@ -708,8 +708,8 @@ void SceneText::RenderSkybox()
 {
 	float size = bordersize;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
-	
-	
+
+
 	modelStack.PushMatrix();
 	///scale, translate, rotate
 	modelStack.Translate(-size + offset, 0.f, 0.f);
@@ -751,7 +751,7 @@ void SceneText::RenderSkybox()
 
 	RenderMesh(meshList[GEO_FLATLAND], true, true);
 	modelStack.PopMatrix();
-	
+
 }
 
 void SceneText::RenderText(Mesh* mesh, std::string text, Color color)
