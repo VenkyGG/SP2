@@ -7,6 +7,7 @@
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
+#include "Physics.h"
 
 using namespace std;
 
@@ -146,6 +147,8 @@ void DrivingScene::Init()
 
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
+
+	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sun", "OBJ//Cars//ChengFengcar.obj");
 	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
 
 
@@ -199,10 +202,11 @@ void DrivingScene::Update(double dt)
 	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
 	offsetPerFrame = rotation.Multiply(offsetPerFrame);
 	float RotationSpeed = 5;
-	camera.position += offsetPerFrame;
-	camera.offset += offsetPerFrame;
 	Vector3 futurepos = currentcar->GetPostition()[0] + offsetPerFrame;
 	currentcar->SetPosition(0, futurepos);
+	camera.position += offsetPerFrame;
+	camera.offset += offsetPerFrame;
+	CheckSquareCollision();
 	if (Application::IsKeyPressed('W'))
 	{
 		if (currentcar->getcurrentSpeed() < currentcar->getmaxSpeed())
@@ -274,7 +278,7 @@ void DrivingScene::Update(double dt)
 	{
 		Application::state = Application::Mainmenu;
 	}
-	CheckSquareCollision();
+
 	camera.target = cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);
 	
@@ -328,42 +332,22 @@ void DrivingScene::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 50);
+	RenderMesh(cars.GetCar(0)->GetMeshList()[0], false, true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(cars.GetCurrentCar()->GetPostition()[0].x, cars.GetCurrentCar()->GetPostition()[0].y, cars.GetCurrentCar()->GetPostition()[0].z);
-	modelStack.Rotate(cars.GetCurrentCar()->GetRotation()[0].y, 0,1,0);
-	RenderMesh(cars.GetCurrentCar()->GetMesh(), false, false);
+	modelStack.Rotate(cars.GetCurrentCar()->GetRotation()[0].y, 0, 1, 0);
+	RenderMesh(cars.GetCurrentCar()->GetMeshList()[0], false, true);
+	cout << cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4 << endl;
 	modelStack.PopMatrix();
 		
-	if (cars.GetnumberofCars() > 0)
-	{
-		CCar* current = cars.GetCurrentCar();
-		
-	}
-
-	for (int i = 0; i < numberofobjects; i++)
-	{
-		if (objectlist[i].GetMesh()->name == "LightFrame")
-		{
-			for (int k = 0; k < objectlist[i].GetNumberOfOccurences(); k++)
-			{
-				modelStack.PushMatrix();
-				modelStack.Translate(objectlist[i].GetPostition()[k].x, objectlist[i].GetPostition()[k].y, objectlist[i].GetPostition()[k].z);
-				
-				RenderMesh(objectlist[i].GetMesh(), false, false);
-				modelStack.PopMatrix();
-			}
-		}
-
-	}
 	
-	for (int i = 0; i < numlights; i++)
-	{
-		modelStack.PushMatrix();
 
-		modelStack.Translate(light[i].position.x, light[i].position.y, light[i].position.z);
-		modelStack.Scale(5, 5, 5);
-		RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
-		modelStack.PopMatrix();
-	}
+	
+	
+	
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2);//render crosshair
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
 	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
@@ -384,109 +368,91 @@ void DrivingScene::Exit()
 }
 void DrivingScene::CheckSquareCollision()
 {
-
-	//		//Vector3 A = Vector3(xmin, ymin, zmax);
-	//		//Vector3 B = Vector3(xmax, ymin, zmax);
-	//		//Vector3 C = Vector3(xmax, ymin, zmin);
-	//		//Vector3 D = Vector3(xmin, ymin, zmin);
-	//		//Vector3 E = camera.position;
-
-	//		//float Area1 = ((E.x * B.z - B.x * E.z) - (E.x * A.z - A.x * E.z) + (B.x * A.z - A.x * B.z));
-	//		//float Area2 = ((E.x * B.z - B.x * E.z) - (E.x * C.z - C.x * E.z) + (B.x * C.z - C.x * B.z));
-	//		//float Area3 = ((E.x * D.z - D.x * E.z) - (E.x * C.z - C.x * E.z) + (D.x * C.z - C.x * D.z));
-	//		//float Area4 = ((E.x * D.z - D.x * E.z) - (E.x * A.z - A.x * E.z) + (D.x * A.z - A.x * D.z));
-	//		//cout << Area1 << " " << Area2 << " " << Area3 << " " << Area4 << endl;
-
-
-
-	for (int current = 0; current < size(objectlist); current++)
+	Mesh* currentmesh = cars.GetCar(0)->GetMeshList()[0];
+	if (currentmesh->collison)
 	{
-		for (int i = 0; i < objectlist[current].GetNumberOfOccurences(); i++)
+		float xmin =currentmesh->ColisionVector4.x;
+		float xmax =currentmesh->ColisionVector3.x;
+		float ymin =currentmesh->ColisionVector4.y;
+		float ymax =currentmesh->ColisionVector3.y;
+		float zmin =currentmesh->ColisionVector4.z;
+		float zmax =currentmesh->ColisionVector3.z;
+
+		float xmin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.x;
+		float xmax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.x;
+		float ymin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.y;
+		float ymax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.y;
+		float zmin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.z;
+		float zmax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.z;
+
+		Vector3 A = Vector3(xmin, ymin, zmax);
+		Vector3 B = Vector3(xmax, ymin, zmax);
+		Vector3 C = Vector3(xmax, ymin, zmin);
+		Vector3 D = Vector3(xmin, ymin, zmin);
+
+		Vector3 A2 = Vector3(xmin2, ymin2, zmax2);
+		Vector3 B2 = Vector3(xmax2, ymin2, zmax2);
+		Vector3 C2 = Vector3(xmax2, ymin2, zmin2);
+		Vector3 D2 = Vector3(xmin2, ymin2, zmin2);
+
+		Vector3 MidAB = (A + B) * 0.5f;
+		Vector3 MidCD = (C + D) * 0.5f;
+		Vector3 Center = (MidAB + MidCD) * 0.5f;
+
+		
+		
+		
+		if (currentmesh->camcollided == false)
 		{
-			if (objectlist[current].GetType() == "Object")
+			bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
+
+			if (x)
 			{
-				if (objectlist[current].GetMeshList()[i]->collison)
+				currentmesh->camcollided = true;
+				bool foundposition = true;
+				Vector3 pushback = (cars.GetCurrentCar()->GetPostition()[0]- Center).Normalized();
+				currentmesh->camfreezeposition = cars.GetCurrentCar()->GetPostition()[0] + pushback;
+				A2 += pushback;
+				B2 += pushback;
+				C2 += pushback;
+				D2 += pushback;
+				while (foundposition)
 				{
-					float xmin = objectlist[current].GetMeshList()[i]->ColisionVector2.x;
-					float xmax = objectlist[current].GetMeshList()[i]->ColisionVector1.x;
-					float ymin = objectlist[current].GetMeshList()[i]->ColisionVector2.y;
-					float ymax = objectlist[current].GetMeshList()[i]->ColisionVector1.y;
-					float zmin = objectlist[current].GetMeshList()[i]->ColisionVector2.z;
-					float zmax = objectlist[current].GetMeshList()[i]->ColisionVector1.z;
-
-
-					if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
+					cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
+					bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
+					if (!x)
 					{
-						camera.position.x = xmax + 0.1f;
+						break;
 					}
-					if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
+					else
 					{
-						camera.position.x = xmin - 0.1f;
+						currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback;
+						A2+=pushback;
+						B2+=pushback;
+						C2+=pushback;
+						D2+=pushback;
 					}
-					if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-					{
-						camera.position.z = zmax + 0.1f;
-					}
-					if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-					{
-						camera.position.z = zmin - 0.1f;
-					}
-
-					/*for (int i = 0; i < numberofNPCs; i++)
-					{
-						if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
-						{
-							NPCs[i]->SetPosition(Vector3(xmax + 0.5f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
-						}
-						if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
-						{
-							NPCs[i]->SetPosition(Vector3(xmin - 0.5f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
-						}
-						if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
-						{
-							NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.5f));
-						}
-						if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
-						{
-							NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.5f));
-						}
-					}*/
 				}
+				currentmesh->camfreezeposition.y = 0;
+				cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
+							
+			}
+		}
+		else if (currentmesh->camcollided)
+		{
+			cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
+			bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
+			if (!x)
+			{
+				currentmesh->camcollided = false;
+				currentmesh->camfreezeposition = Vector3(0, 0, 0);
 			}
 		}
 	}
-	/*for (int current = 0; current < numberofNPCs; current++)
-	{
-		if (NPCs[current]->GetMesh(0)->collison)
-		{
-			float xmin = NPCs[current]->GetMesh(0)->ColisionVector2.x;
-			float xmax = NPCs[current]->GetMesh(0)->ColisionVector1.x;
-			float ymin = NPCs[current]->GetMesh(0)->ColisionVector2.y;
-			float ymax = NPCs[current]->GetMesh(0)->ColisionVector1.y;
-			float zmin = NPCs[current]->GetMesh(0)->ColisionVector2.z;
-			float zmax = NPCs[current]->GetMesh(0)->ColisionVector1.z;
+			
+		
+	
 
-
-			if (camera.position.x <= xmax && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmax) <= 2)
-			{
-				camera.position.x = xmax + 0.1f;
-			}
-			if (camera.position.x >= xmin && camera.position.z <= zmax && camera.position.z >= zmin && abs(camera.position.x - xmin) <= 2)
-			{
-				camera.position.x = xmin - 0.1f;
-			}
-			if (camera.position.z <= zmax && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmax) <= 2)
-			{
-				camera.position.z = zmax + 0.1f;
-			}
-			if (camera.position.z >= zmin && camera.position.x <= xmax && camera.position.x >= xmin && abs(camera.position.z - zmin) <= 2)
-			{
-				camera.position.z = zmin - 0.1f;
-			}
-		}
-
-
-	}*/
 
 }
 
@@ -495,13 +461,12 @@ void DrivingScene::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 
 	if (hasCollision)
 	{
-		if (!mesh->collisionboxcreated)
-		{
-			mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
-			mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
-			mesh->collison = true;
-			mesh->collisionboxcreated = true;
-		}
+		
+		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
+		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
+		mesh->collison = true;
+		mesh->collisionboxcreated = true;
+		
 
 		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		modelStack.PushMatrix();

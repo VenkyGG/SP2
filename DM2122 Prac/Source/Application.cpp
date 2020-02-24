@@ -144,7 +144,7 @@ void Application::Run()
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
-	state = Motorshow;
+	state = Driving;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);

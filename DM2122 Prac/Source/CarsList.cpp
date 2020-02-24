@@ -34,6 +34,7 @@ CarsList::CarsList()
 			Start->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
 			Start->GetMesh()->material.kShininess = 1.f;
 			Start->SetType("Car");
+			Start->GetMeshList()[0]->textureID = Start->GetMesh()->textureID;
 		}
 		else
 		{
@@ -71,6 +72,7 @@ CarsList::CarsList()
 			current->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
 			current->GetMesh()->material.kShininess = 1.f;
 			current->SetType("Car");
+			current->GetMeshList()[0]->textureID = current->GetMesh()->textureID;
 		}
 		maxspeed += 25;
 	}

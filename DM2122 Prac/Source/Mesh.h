@@ -44,7 +44,10 @@ public:
 	Vector3 p8;
 	Vector3 ColisionVector1;
 	Vector3 ColisionVector2;
-	Mtx44 inversetransform;
+	Vector3 ColisionVector3;
+	Vector3 ColisionVector4;
+	bool camcollided = false;
+	Vector3 camfreezeposition;
 	
 	bool collison;
 	bool collisionboxcreated;

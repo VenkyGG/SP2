@@ -29,5 +29,7 @@ public:
 	string GetType();
 	void SetType(string type);
 
+
+
 };
 
