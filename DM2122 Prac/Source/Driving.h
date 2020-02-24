@@ -3,7 +3,7 @@
 
 #include "Scene.h"
 #include <MatrixStack.h>
-#include "Camera2.h"
+#include "ThirdPersonCam.h"
 #include "Mesh.h"
 #include "Light.h"
 #include "NPC.h"
@@ -72,7 +72,7 @@ private:
 
 	int numberofobjects;
 
-	Camera2 camera;
+	ThirdPersonCamera camera;
 	float bordersize = 500.0f;
 
 

@@ -24,42 +24,6 @@ DrivingScene::DrivingScene()
 	{
 		meshList[i] = NULL;
 	}
-	int currentindex = 0;
-	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ"))
-	{
-		if (p.path().extension() == ".obj")
-		{
-			for (int i = 0; i < size(objectlist); ++i)
-			{
-				if (objectlist[i].GetMesh() == NULL)
-				{
-					string location = p.path().filename().string();
-					for (int i = 0; i < location.length(); i++)
-					{
-						if (location[i] == '.')
-						{
-							location = location.substr(0, i);
-							break;
-						}
-					}
-					objectlist[i].SetMesh(location, p.path().string());
-					if (std::experimental::filesystem::exists("Image//" + location + ".tga"))
-					{
-						objectlist[i].GetMesh()->textureID = LoadTGA(("Image//" + location + ".tga").c_str());
-					}
-					objectlist[i].GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-					objectlist[i].GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-					objectlist[i].GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
-					objectlist[i].GetMesh()->material.kShininess = 1.f;
-					numberofobjects++;
-					currentindex++;
-					break;
-				}
-
-			}
-
-		}
-	}
 }
 
 DrivingScene::~DrivingScene()
@@ -79,7 +43,7 @@ void DrivingScene::Init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	camera.Init(Vector3(0, 12, 10), Vector3(0, 5, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 24, 20), Vector3(0, 5, 0), Vector3(0, 1, 0));
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 50000.f);
@@ -176,20 +140,6 @@ void DrivingScene::Init()
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_BACK]->textureID = LoadTGA("Image//hills_bk.tga");
 
-	//Motorshow
-	meshList[GEO_MOTORSHOW_WALL] = MeshBuilder::GenerateQuad("wall", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_MOTORSHOW_WALL]->textureID = LoadTGA("Image//wall_texture.tga");
-
-	meshList[GEO_MOTORSHOW_CEILING] = MeshBuilder::GenerateQuad("ceiling", Color(0, 0, 0), 1.f, 1.f);
-	meshList[GEO_MOTORSHOW_CEILING]->textureID = LoadTGA("Image//ceilingtexture.tga");
-
-	meshList[GEO_FLATLAND] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
-	meshList[GEO_FLATLAND]->textureID = LoadTGA("Image//floortexture.tga");
-	meshList[GEO_FLATLAND]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_FLATLAND]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_FLATLAND]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[GEO_FLATLAND]->material.kShininess = 1.f;
-
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
@@ -203,61 +153,11 @@ void DrivingScene::Init()
 
 	vector<Mesh*> MeshStorage;
 
-	for (auto& q : std::experimental::filesystem::directory_iterator("OBJ//NPC"))
-	{
-		string location = q.path().filename().string();
-		for (auto& p : std::experimental::filesystem::directory_iterator(q))
-		{
-			Mesh* x = NULL;
-			x = MeshBuilder::GenerateOBJ(location, p.path().string());
-			x->textureID = LoadTGA(("Image//People Textures//" + location + ".tga").c_str());
-			x->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
-			x->material.kDiffuse.Set(0.1f, 0.1f, 0.1f);
-			x->material.kSpecular.Set(.5f, .5f, .5f);
-			x->material.kShininess = 1.f;
-			MeshStorage.push_back(x);
-		}
-
-	}
+	
 	
 	srand(time(NULL));
-
-	for (int i = 0; i < numberofobjects; i++)
-	{
-		if (objectlist[i].GetMesh()->name == "Platformbottom")
-		{
-			objectlist[i].SetNumberOfOccurences(cars.GetnumberofCars());
-			//cout << objectlist[i].GetMeshList()[0]->collisionboxcreated;
-		}
-		if (objectlist[i].GetMesh()->name == "Platformtop")
-		{
-			objectlist[i].SetNumberOfOccurences(cars.GetnumberofCars());
-		}
-		if (objectlist[i].GetMesh()->name == "LightFrame")
-		{
-			Vector3 initiallightpos = Vector3(-bordersize + (bordersize / sqrt(numlights)), bordersize - 20, -bordersize + (bordersize / sqrt(numlights)));
-			Vector3 finallightpos = Vector3(bordersize - (bordersize / sqrt(numlights)), bordersize - 20, bordersize - (bordersize / sqrt(numlights)));
-			Vector3 currentlightpos = initiallightpos;
-			objectlist[i].SetNumberOfOccurences(numlights);
-			for (int j = 0; j < sqrt(numlights); j++)
-			{
-				currentlightpos.x = initiallightpos.x;
-				for (int k = 0; k < sqrt(numlights); k++)
-				{
-					int currentlight = j * sqrt(numlights) + k;
-					objectlist[i].SetPosition(currentlight, currentlightpos);
-					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y - 10, currentlightpos.z);
-					float differenceX = (finallightpos.x - initiallightpos.x) / (sqrt(numlights) - 1);
-					currentlightpos.x += differenceX;
-				}
-				float differenceZ = (finallightpos.z - initiallightpos.z) / (sqrt(numlights) - 1);
-				currentlightpos.z += differenceZ;
-			}
-		}
-
-
-
-	}
+	cars.GetCurrentCar()->SetPosition(0, Vector3(0, 0, 0));
+	cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
 }
 
 
@@ -280,63 +180,104 @@ void DrivingScene::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	float xoffset = -14.5f;//x offset of top left hand corner
-	float zoffset = -24;//z offset of top left hand corner
-	Vector3 Target2 = camera.position;
-	int maxdistance = 1000;
-	for (int i = 0; i < maxdistance; i++)
-	{
-		Target2 += camera.view;//raycast to 20 times player direction
-		if (Target2.y <= 0)
-		{
-			break;
-		}
-	}
-
-
-	starepoint = Target2;
-	float speed = 2;
 	
+	//Vector3 Target2 = camera.position;
+	//int maxdistance = 1000;
+	//for (int i = 0; i < maxdistance; i++)
+	//{
+	//	Target2 += camera.view;//raycast to 20 times player direction
+	//	if (Target2.y <= 0)
+	//	{
+	//		break;
+	//	}
+	//}
+	//starepoint = Target2;
+	float speed = 2;
+	CCar* currentcar = cars.GetCurrentCar();
+	Mtx44 rotation;
+	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
+	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
+	offsetPerFrame = rotation.Multiply(offsetPerFrame);
+	float RotationSpeed = 5;
+	camera.position += offsetPerFrame;
+	camera.offset += offsetPerFrame;
+	Vector3 futurepos = currentcar->GetPostition()[0] + offsetPerFrame;
+	currentcar->SetPosition(0, futurepos);
 	if (Application::IsKeyPressed('W'))
 	{
-
-		camera.position = camera.position + camera.view * speed;
-		camera.position.y = camera.playerheight;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
-
+		if (currentcar->getcurrentSpeed() < currentcar->getmaxSpeed())
+		{
+			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() + 1);
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
+		}
 	}
-	if (Application::IsKeyPressed('S'))
+	else if (Application::IsKeyPressed('S'))
 	{
-
-		camera.position = camera.position - camera.view * speed;
-		camera.position.y = camera.playerheight;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
+		if (currentcar->getcurrentSpeed() > -currentcar->getmaxSpeed())
+		{
+			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() - 1);
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
+		}
 
 	}
-	if (Application::IsKeyPressed('A'))
+	else
 	{
-		camera.position = camera.position - camera.right * speed;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		camera.position = camera.position + camera.right * speed;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
-	}
+		if (currentcar->getcurrentSpeed() > 0)
+		{
+			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() - 2);
+			if (currentcar->getcurrentSpeed() < 0)
+			{
+				currentcar->setcurrentSpeed(0);
+			}
+			if (Application::IsKeyPressed('A'))
+			{
+				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
+			}
+			if (Application::IsKeyPressed('D'))
+			{
+				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
+			}
+		}
+		if (currentcar->getcurrentSpeed()< 0)
+		{
+			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() + 2);
+			if (currentcar->getcurrentSpeed() > 0)
+			{
+				currentcar->setcurrentSpeed(0);
+			}
+			if (Application::IsKeyPressed('A'))
+			{
+				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
+			}
+			if (Application::IsKeyPressed('D'))
+			{
+				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
+			}
 
+		}
+	}
 	if (Application::IsKeyPressed('V'))
 	{
 		Application::state = Application::Mainmenu;
-
 	}
 	CheckSquareCollision();
+	camera.target = cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);
 	
-	CCar* current = cars.GetStart();
 
 
 
@@ -386,7 +327,11 @@ void DrivingScene::Render()
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
 	modelStack.PopMatrix();
 
-	
+	modelStack.PushMatrix();
+	modelStack.Translate(cars.GetCurrentCar()->GetPostition()[0].x, cars.GetCurrentCar()->GetPostition()[0].y, cars.GetCurrentCar()->GetPostition()[0].z);
+	modelStack.Rotate(cars.GetCurrentCar()->GetRotation()[0].y, 0,1,0);
+	RenderMesh(cars.GetCurrentCar()->GetMesh(), false, false);
+	modelStack.PopMatrix();
 		
 	if (cars.GetnumberofCars() > 0)
 	{

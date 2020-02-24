@@ -90,7 +90,7 @@ CarsList::CarsList()
 			current = current->GetNext();
 		}
 	}
-	CurrentCar = Start;
+	CurrentCar = current;
 }
 
 CarsList::~CarsList()

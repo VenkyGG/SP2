@@ -78,7 +78,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(800*2, 600*2, "Test Window", NULL, NULL);
 	screenoffsetx = 146;
 	screenoffsety = 213;
 	glfwSetWindowPos(m_window, screenoffsetx, screenoffsety);
@@ -144,7 +144,7 @@ void Application::Run()
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
-	state = Mainmenu;
+	state = Motorshow;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
