@@ -32,6 +32,8 @@ public:
 	bool GetIsSpinning();
 	void SetIsSpinning(bool Spin);
 
+	bool GetOwned();
+	void SetOwned(bool x);
 
 	CCar();
 	~CCar();

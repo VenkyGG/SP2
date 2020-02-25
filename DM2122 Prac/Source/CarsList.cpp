@@ -35,6 +35,7 @@ CarsList::CarsList()
 			Start->GetMesh()->material.kShininess = 1.f;
 			Start->SetType("Car");
 			Start->GetMeshList()[0]->textureID = Start->GetMesh()->textureID;
+			Start->SetOwned(true);
 		}
 		else
 		{

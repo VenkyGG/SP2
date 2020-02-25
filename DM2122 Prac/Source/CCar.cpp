@@ -77,6 +77,16 @@ void CCar::SetIsSpinning(bool Spin)
 	IsSpinning = Spin;
 }
 
+bool CCar::GetOwned()
+{
+	return owned;
+}
+
+void CCar::SetOwned(bool x)
+{
+	owned = x;
+}
+
 
 
 CCar::~CCar()

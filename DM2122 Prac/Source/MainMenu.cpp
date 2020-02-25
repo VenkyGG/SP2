@@ -94,6 +94,9 @@ void MainMenu::Init()
 	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
 	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//MainMenu Textures//LOGO.tga");
 
+	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
+	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//MainMenu Textures//Pause.tga");
+
 	meshList[GEO_MENUCURSOR] = MeshBuilder::GenerateQuad("menuCursor", Color(0.f, 0.23f, 0.68f), 50.f, 50.f);
 	meshList[GEO_MENUCURSOR]->textureID = LoadTGA("Image//MainMenu Textures//Arrow.tga");
 

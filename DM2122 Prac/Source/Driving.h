@@ -76,7 +76,7 @@ private:
 	float bordersize = 500.0f;
 
 
-	void CheckSquareCollision();
+	bool CheckSquareCollision();
 	void RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision);
 	void RenderSkybox();
 	void RenderText(Mesh* mesh, std::string text, Color color);

@@ -198,15 +198,20 @@ void DrivingScene::Update(double dt)
 	float speed = 2;
 	CCar* currentcar = cars.GetCurrentCar();
 	Mtx44 rotation;
+	bool check = CheckSquareCollision();
 	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
+	Vector3 initialpos = currentcar->GetPostition()[0];
 	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
 	offsetPerFrame = rotation.Multiply(offsetPerFrame);
-	float RotationSpeed = 5;
-	Vector3 futurepos = currentcar->GetPostition()[0] + offsetPerFrame;
-	currentcar->SetPosition(0, futurepos);
-	camera.position += offsetPerFrame;
-	camera.offset += offsetPerFrame;
-	CheckSquareCollision();
+	float RotationSpeed = 2;
+	if (!check)
+	{
+		Vector3 futurepos = initialpos + offsetPerFrame;
+		currentcar->SetPosition(0, futurepos);
+		camera.position += offsetPerFrame;
+		camera.offset += offsetPerFrame;
+	}
+	
 	if (Application::IsKeyPressed('W'))
 	{
 		if (currentcar->getcurrentSpeed() < currentcar->getmaxSpeed())
@@ -273,6 +278,8 @@ void DrivingScene::Update(double dt)
 			}
 
 		}
+		offsetPerFrame = currentcar->GetPostition()[0] - initialpos;
+		
 	}
 	if (Application::IsKeyPressed('V'))
 	{
@@ -366,8 +373,9 @@ void DrivingScene::Exit()
 	glDeleteProgram(m_programID);
 
 }
-void DrivingScene::CheckSquareCollision()
+bool DrivingScene::CheckSquareCollision()
 {
+	bool collided = false;
 	Mesh* currentmesh = cars.GetCar(0)->GetMeshList()[0];
 	if (currentmesh->collison)
 	{
@@ -385,10 +393,10 @@ void DrivingScene::CheckSquareCollision()
 		float zmin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.z;
 		float zmax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.z;
 
-		Vector3 A = Vector3(xmin, ymin, zmax);
-		Vector3 B = Vector3(xmax, ymin, zmax);
-		Vector3 C = Vector3(xmax, ymin, zmin);
-		Vector3 D = Vector3(xmin, ymin, zmin);
+		Vector3 A = Vector3(xmin, ymin, zmax);//front left
+		Vector3 B = Vector3(xmax, ymin, zmax);//front right
+		Vector3 C = Vector3(xmax, ymin, zmin);//back right
+		Vector3 D = Vector3(xmin, ymin, zmin);//back left
 
 		Vector3 A2 = Vector3(xmin2, ymin2, zmax2);
 		Vector3 B2 = Vector3(xmax2, ymin2, zmax2);
@@ -411,14 +419,17 @@ void DrivingScene::CheckSquareCollision()
 				currentmesh->camcollided = true;
 				bool foundposition = true;
 				Vector3 pushback = (cars.GetCurrentCar()->GetPostition()[0]- Center).Normalized();
+				cars.GetCurrentCar()->setcurrentSpeed(-((6.0f/10.0f)*cars.GetCurrentCar()->getcurrentSpeed()));
 				currentmesh->camfreezeposition = cars.GetCurrentCar()->GetPostition()[0] + pushback;
+				camera.position = camera.position + pushback;
+				camera.offset = camera.offset + pushback;
 				A2 += pushback;
 				B2 += pushback;
 				C2 += pushback;
 				D2 += pushback;
+				collided = true;
 				while (foundposition)
 				{
-					cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
 					bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
 					if (!x)
 					{
@@ -427,6 +438,8 @@ void DrivingScene::CheckSquareCollision()
 					else
 					{
 						currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback;
+						camera.position = camera.position + pushback;
+						camera.offset = camera.offset + pushback;
 						A2+=pushback;
 						B2+=pushback;
 						C2+=pushback;
@@ -452,7 +465,7 @@ void DrivingScene::CheckSquareCollision()
 			
 		
 	
-
+	return collided;
 
 }
 
