@@ -16,8 +16,6 @@ using namespace std;
 #define LSPEED 10.f
 
 
-
-
 SceneText::SceneText()
 {
 	
@@ -218,12 +216,12 @@ void SceneText::Init()
 	{
 		if (objectlist[i].GetMesh()->name == "Platformbottom")
 		{
-			objectlist[i].SetNumberOfOccurences(cars.GetnumberofCars());
+			objectlist[i].SetNumberOfOccurences(Player::instance()->cars.GetnumberofCars());
 			//cout << objectlist[i].GetMeshList()[0]->collisionboxcreated;
 		}
 		if (objectlist[i].GetMesh()->name == "Platformtop")
 		{
-			objectlist[i].SetNumberOfOccurences(cars.GetnumberofCars());
+			objectlist[i].SetNumberOfOccurences(Player::instance()->cars.GetnumberofCars());
 		}
 		if (objectlist[i].GetMesh()->name == "LightFrame")
 		{
@@ -335,10 +333,10 @@ void SceneText::Update(double dt)
 	{
 		NPCs[i]->move();
 	}
-	CCar* current = cars.GetStart();
-	for (int i = 0; i < cars.GetnumberofCars(); i++)
+	CCar* current = Player::instance()->cars.GetStart();
+	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
 	{
-		cars.GetCar(i)->Spin();
+		Player::instance()->cars.GetCar(i)->Spin();
 
 	}
 
@@ -356,7 +354,7 @@ void SceneText::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-	for (size_t i = 0; i < numlights; i++)
+	for (int i = 0; i < numlights; i++)
 	{
 		if (light[i].type == Light::LIGHT_DIRECTIONAL)
 		{
@@ -451,10 +449,9 @@ void SceneText::Render()
 		}
 		modelStack.PopMatrix();
 	}
-	if (cars.GetnumberofCars() > 0)
+	if (Player::instance()->cars.GetnumberofCars() > 0)
 	{
-		CCar* current = cars.GetStart();
-		for (int i = 0; i < cars.GetnumberofCars(); i++)
+		for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
 		{
 			for (int k = 0; k < numberofobjects; k++)
 			{
@@ -462,7 +459,7 @@ void SceneText::Render()
 				{
 					modelStack.PushMatrix();
 					modelStack.Scale(4, 4, 4);
-					modelStack.Translate(cars.GetCar(i)->GetPostition()[0].x, 0, cars.GetCar(i)->GetPostition()[0].z);
+					modelStack.Translate(Player::instance()->cars.GetCar(i)->GetPostition()[0].x, 0, Player::instance()->cars.GetCar(i)->GetPostition()[0].z);
 
 					RenderMesh(objectlist[k].GetMeshList()[i], true, true);
 
@@ -470,7 +467,7 @@ void SceneText::Render()
 				if (objectlist[k].GetMesh()->name == "Platformtop")
 				{
 					modelStack.PushMatrix();
-					modelStack.Rotate(cars.GetCar(i)->GetRotation()[0].y, 0.f, 1.f, 0.f);
+					modelStack.Rotate(Player::instance()->cars.GetCar(i)->GetRotation()[0].y, 0.f, 1.f, 0.f);
 
 					RenderMesh(objectlist[k].GetMesh(), true, false);
 				}
@@ -478,7 +475,7 @@ void SceneText::Render()
 			modelStack.PushMatrix();
 			modelStack.Scale(0.5, 0.5, 0.5);
 			modelStack.Translate(0, 4.5f, 0);
-			RenderMesh(cars.GetCar(i)->GetMesh(), true, true);
+			RenderMesh(Player::instance()->cars.GetCar(i)->GetMesh(), true, true);
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();

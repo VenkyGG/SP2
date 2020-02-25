@@ -12,6 +12,8 @@ public:
 		Mainmenu,
 		Motorshow,
 		Driving,
+		Luckyspin,
+		Slotmachine,
 		TOTALSCENES
 	};
 	Application();

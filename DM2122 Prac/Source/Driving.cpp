@@ -8,6 +8,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "Physics.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -148,10 +149,13 @@ void DrivingScene::Init()
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
 
-	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sun", "OBJ//Cars//ChengFengcar.obj");
+	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sun", "OBJ//Player::instance()->cars//ChengFengcar.obj");
 	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
 
-
+	meshList[GEO_SPEEDOMETERBACK] = MeshBuilder::GenerateQuad("speedometerback", Color(0, 0, 0), 1, 1);
+	meshList[GEO_SPEEDOMETERBACK]->textureID = LoadTGA("Image//Car Textures//speedometer_back.tga");
+	meshList[GEO_SPEEDOMETERFRONT] = MeshBuilder::GenerateQuad("speedometerfront", Color(0, 0, 0), 1, 1);
+	meshList[GEO_SPEEDOMETERFRONT]->textureID = LoadTGA("Image//Car Textures//speedometer_front.tga");
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 	vector<Mesh*> MeshStorage;
@@ -159,8 +163,8 @@ void DrivingScene::Init()
 	
 	
 	srand(time(NULL));
-	cars.GetCurrentCar()->SetPosition(0, Vector3(0, 0, 0));
-	cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
+	Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3(0, 0, 0));
+	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
 }
 
 
@@ -196,7 +200,7 @@ void DrivingScene::Update(double dt)
 	//}
 	//starepoint = Target2;
 	float speed = 2;
-	CCar* currentcar = cars.GetCurrentCar();
+	CCar* currentcar = Player::instance()->cars.GetCurrentCar();
 	Mtx44 rotation;
 	bool check = CheckSquareCollision();
 	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
@@ -286,7 +290,7 @@ void DrivingScene::Update(double dt)
 		Application::state = Application::Mainmenu;
 	}
 
-	camera.target = cars.GetCurrentCar()->GetPostition()[0];
+	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);
 	
 
@@ -340,22 +344,24 @@ void DrivingScene::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 50);
-	RenderMesh(cars.GetCar(0)->GetMeshList()[0], false, true);
+	RenderMesh(Player::instance()->cars.GetCar(0)->GetMeshList()[0], false, true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(cars.GetCurrentCar()->GetPostition()[0].x, cars.GetCurrentCar()->GetPostition()[0].y, cars.GetCurrentCar()->GetPostition()[0].z);
-	modelStack.Rotate(cars.GetCurrentCar()->GetRotation()[0].y, 0, 1, 0);
-	RenderMesh(cars.GetCurrentCar()->GetMeshList()[0], false, true);
-	cout << cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4 << endl;
+	modelStack.Translate(Player::instance()->cars.GetCurrentCar()->GetPostition()[0].x, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].y, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].z);
+	modelStack.Rotate(Player::instance()->cars.GetCurrentCar()->GetRotation()[0].y, 0, 1, 0);
+	RenderMesh(Player::instance()->cars.GetCurrentCar()->GetMeshList()[0], false, true);
 	modelStack.PopMatrix();
 		
 	
 
 	
-	
-	
-	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2);//render crosshair
+	modelStack.PushMatrix();
+	float speedometerRotation = (abs(Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()) / 125.0f) * -270.0f;
+	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERBACK], 10, 10, 20, 20, speedometerRotation);//render speedometerback
+	modelStack.PopMatrix();
+	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERFRONT], 10, 10, 20, 20, 0);//render speedometerfront
+	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0);//render crosshair
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
 	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
 }
@@ -376,7 +382,7 @@ void DrivingScene::Exit()
 bool DrivingScene::CheckSquareCollision()
 {
 	bool collided = false;
-	Mesh* currentmesh = cars.GetCar(0)->GetMeshList()[0];
+	Mesh* currentmesh = Player::instance()->cars.GetCar(0)->GetMeshList()[0];
 	if (currentmesh->collison)
 	{
 		float xmin =currentmesh->ColisionVector4.x;
@@ -386,12 +392,12 @@ bool DrivingScene::CheckSquareCollision()
 		float zmin =currentmesh->ColisionVector4.z;
 		float zmax =currentmesh->ColisionVector3.z;
 
-		float xmin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.x;
-		float xmax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.x;
-		float ymin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.y;
-		float ymax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.y;
-		float zmin2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.z;
-		float zmax2 = cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.z;
+		float xmin2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.x;
+		float xmax2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.x;
+		float ymin2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.y;
+		float ymax2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.y;
+		float zmin2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.z;
+		float zmax2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.z;
 
 		Vector3 A = Vector3(xmin, ymin, zmax);//front left
 		Vector3 B = Vector3(xmax, ymin, zmax);//front right
@@ -418,9 +424,9 @@ bool DrivingScene::CheckSquareCollision()
 			{
 				currentmesh->camcollided = true;
 				bool foundposition = true;
-				Vector3 pushback = (cars.GetCurrentCar()->GetPostition()[0]- Center).Normalized();
-				cars.GetCurrentCar()->setcurrentSpeed(-((6.0f/10.0f)*cars.GetCurrentCar()->getcurrentSpeed()));
-				currentmesh->camfreezeposition = cars.GetCurrentCar()->GetPostition()[0] + pushback;
+				Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0]- Center).Normalized();
+				Player::instance()->cars.GetCurrentCar()->setcurrentSpeed(-((6.0f/10.0f)*Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()));
+				currentmesh->camfreezeposition = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] + pushback;
 				camera.position = camera.position + pushback;
 				camera.offset = camera.offset + pushback;
 				A2 += pushback;
@@ -447,13 +453,13 @@ bool DrivingScene::CheckSquareCollision()
 					}
 				}
 				currentmesh->camfreezeposition.y = 0;
-				cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
+				Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
 							
 			}
 		}
 		else if (currentmesh->camcollided)
 		{
-			cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
+			Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
 			bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
 			if (!x)
 			{
@@ -700,7 +706,7 @@ void DrivingScene::RenderFramerate(Mesh* mesh, Color color, float size, float x,
 	glEnable(GL_DEPTH_TEST);
 }
 
-void DrivingScene::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void DrivingScene::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, float rotation)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -712,6 +718,7 @@ void DrivingScene::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int s
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
+	modelStack.Rotate(rotation, 0, 0, 1);
 	modelStack.Scale(sizex, sizey, 1);
 	RenderMesh(mesh, false, false);
 	modelStack.PopMatrix();

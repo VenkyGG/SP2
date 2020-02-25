@@ -13,6 +13,9 @@
 #include "SceneText.h"
 #include "MainMenu.h"
 #include "Driving.h"
+#include "LuckySpin.h"
+#include "SceneSlots.h"
+#include "Player.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -110,7 +113,7 @@ void Application::Init()
 	glfwSetWindowSizeCallback(m_window, resize_callback);
 	glfwSetWindowPosCallback(m_window, window_pos_callback);
 }
-
+Player* Player::instances = 0;
 double Application::getmouseXpos()//get mpouse x coord
 {
 	double xpos, ypos;
@@ -141,10 +144,13 @@ void Application::Run()
 {
 	//Main Loop
 	Scene* Ptr[TOTALSCENES];
+	
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
-	state = Driving;
+	Ptr[Luckyspin] = new LuckySpin();
+	Ptr[Slotmachine] = new SceneSlots();
+	state = Slotmachine;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
