@@ -15,10 +15,6 @@ using namespace std;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
 
-Player* Player::instances = 0;
-
-
-
 
 SceneText::SceneText()
 {
@@ -358,7 +354,7 @@ void SceneText::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-	for (size_t i = 0; i < numlights; i++)
+	for (int i = 0; i < numlights; i++)
 	{
 		if (light[i].type == Light::LIGHT_DIRECTIONAL)
 		{

@@ -25,6 +25,8 @@ class DrivingScene : public Scene
 		GEO_FLATLAND,
 		GEO_LIGHTSPHERE,
 		GEO_EXTRASHAPE1,
+		GEO_SPEEDOMETERBACK,
+		GEO_SPEEDOMETERFRONT,
 		GEO_TEXT,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
@@ -66,9 +68,6 @@ private:
 	Light light[1];
 	Object objectlist[50];
 
-	CarsList cars;
-
-	string ownedcar;
 
 	int numberofobjects;
 
@@ -82,7 +81,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, float rotation);
 
 	Vector3 starepoint;
 public:
