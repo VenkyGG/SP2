@@ -2,59 +2,23 @@
 
 // max -1000 x and z
 
-NPC::NPC(float seed)
+NPC::NPC(int seed)
 {
 	srand(seed);
 
-	int declareNPC = 0;
 
-	declareNPC = 3;//rand() % 4 + 1;
+	type = rand() % 4;
+	
+	ismoving = false;
+	Position = Vector3(rand() % 1000 - 500, 12, rand() % 1000 - 500);
+	Target = Position;
 
-	if (declareNPC == 1)
-	{
-		npcFileHead = "OBJ//Man1//Man1Head.obj";
-		npcFileBody = "OBJ//Man1//Man1Body.obj";
-		npcFileLeftArm = "OBJ//Man1//Man1LeftArm.obj";
-		npcFileRightArm = "OBJ//Man1//Man1RightArm.obj";
-		npcFileLeftLeg = "OBJ//Man1//Man1LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Man1//Man1RightLeg.obj";
-	}
-
-	if (declareNPC == 2)
-	{
-		npcFileHead = "OBJ//Woman1//Woman1Head.obj";
-		npcFileBody = "OBJ//Woman1//Woman1Body.obj";
-		npcFileLeftArm = "OBJ//Woman1//Woman1LeftArm.obj";
-		npcFileRightArm = "OBJ//Woman1//Woman1RightArm.obj";
-		npcFileLeftLeg = "OBJ//Woman1//Woman1LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Woman1//Woman1RightLeg.obj";
-	}
-
-	if (declareNPC == 3)
-	{
-		npcFileHead = "OBJ//Man2//Man2Head.obj";
-		npcFileBody = "OBJ//Man2//Man2Body.obj";
-		npcFileLeftArm = "OBJ//Man2//Man2LeftArm.obj";
-		npcFileRightArm = "OBJ//Man2//Man2RightArm.obj";
-		npcFileLeftLeg = "OBJ//Man2//Man2LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Man2//Man2RightLeg.obj";
-	}
-
-	if (declareNPC == 4)
-	{
-		npcFileHead = "OBJ//Woman2//Woman2Head.obj";
-		npcFileBody = "OBJ//Woman2//Woman2Body.obj";
-		npcFileLeftArm = "OBJ//Woman2//Woman2LeftArm.obj";
-		npcFileRightArm = "OBJ//Woman2//Woman2RightArm.obj";
-		npcFileLeftLeg = "OBJ//Woman2//Woman2LeftLeg.obj";
-		npcFileRightLeg = "OBJ//Woman2//Woman2RightLeg.obj";
-	}
-
-	NPCTranslationXValue = rand() % 2000 - 1000;
-
-	NPCTranslationZValue = rand() % 2000 - 1000;
+	steps = 0;
+	waittime = 0;
+	chattime = 0;
 
 	NPCRotationalValue = rand() % 360;
+	
 }
 
 NPC::~NPC()
@@ -66,77 +30,106 @@ void NPC::setNPCRotation(float degreesNPC)
 	NPCRotationalValue = degreesNPC;
 }
 
-void NPC::setNPCTranslationX(float XCoordsNPC)
-{
-	NPCTranslationXValue = XCoordsNPC;
-}
-
-void NPC::setNPCTranslationZ(float ZCoordsNPC)
-{
-	NPCTranslationZValue = ZCoordsNPC;
-}
 
 float NPC::getNPCRotation()
 {
 	return NPCRotationalValue;
 }
 
-float NPC::getNPCTranslationX()
+Vector3 NPC::GetPosition()
 {
-	return NPCTranslationXValue;
+	return Position;
 }
 
-float NPC::getNPCTranslationZ()
+void NPC::SetPosition(Vector3 pos)
 {
-	return NPCTranslationZValue;
+	Position = pos;
 }
 
-std::string NPC::getNpcFileHead()
+
+int NPC::Gettype()
 {
-	return npcFileHead;
+	return type;
 }
 
-std::string NPC::getNpcFileBody()
+void NPC::Settype(int x)
 {
-	return npcFileBody;
+	type = x;
 }
 
-std::string NPC::getNpcFileLeftArm()
+
+
+Mesh* NPC::GetMesh(int index)
 {
-	return npcFileLeftArm;
+	return CharacterPartsOBJ[index];
 }
 
-std::string NPC::getNpcFileRightArm()
+void NPC::SetMesh(Mesh* x, int index)
 {
-	return npcFileRightArm;
+	
+	CharacterPartsOBJ[index] = new Mesh("BODYPART");
+	
+	CharacterPartsOBJ[index]->mode = x->mode;
+	CharacterPartsOBJ[index]->colorBuffer = x->colorBuffer;
+	CharacterPartsOBJ[index]->vertexBuffer = x->vertexBuffer;
+	CharacterPartsOBJ[index]->indexBuffer = x->indexBuffer;
+	CharacterPartsOBJ[index]->ColisionVector1 = x->ColisionVector1;
+	CharacterPartsOBJ[index]->ColisionVector2 = x->ColisionVector2;
+	CharacterPartsOBJ[index]->collisionboxcreated = x->collisionboxcreated;
+	CharacterPartsOBJ[index]->collison = x->collison;
+	CharacterPartsOBJ[index]->textureID = x->textureID;
+	CharacterPartsOBJ[index]->material = x->material;
+	CharacterPartsOBJ[index]->indexSize = x->indexSize;
 }
 
-std::string NPC::getNpcFileLeftLeg()
+bool NPC::GetIsMoving()
 {
-	return npcFileLeftLeg;
+	return ismoving;
+}
+void NPC::move()
+{	
+	//cout << GetTickCount64() << endl;
+	if (waittime < GetTickCount64() && !ismoving)
+	{
+		ismoving = true;
+		srand(time(NULL));
+		Target = Vector3(rand() % 1000-500, 10, rand() % 1000-500);
+		Target = (Target - Position).Normalized();
+		NPCRotationalValue = atan2(Target.x, Target.z) * 180 / Math::PI;
+	}
+	if (ismoving)
+	{
+		Position.x += Target.x;
+		Position.z += Target.z;
+		steps++;
+		if ((Target - Position).Length() < 2 || steps==40)
+		{
+			ismoving = false;
+			steps = 0;
+			float i = (rand() % 1500 + 500)/100;
+			waittime = GetTickCount64() + i * 1000;
+		}
+	}
 }
 
-std::string NPC::getNpcFileRightLeg()
+bool NPC::chat(Vector3 CamPos)
 {
-	return npcFileRightLeg;
-}
-
-Vector3 NPC::GetCollisionStorage1()
-{
-	return ColisionVector1Storage;
-}
-
-void NPC::SetCollisionStorage1(Vector3 vector3)
-{
-	ColisionVector1Storage = vector3;
-}
-
-Vector3 NPC::GetCollisionStorage2()
-{
-	return ColisionVector2Storage;
-}
-
-void NPC::SetCollisionStorage2(Vector3 vector3)
-{
-	ColisionVector2Storage = vector3;
+	if (chattime < GetTickCount64() && (CamPos - Position).Length() <= 10)
+	{
+		chattime = GetTickCount64() + 10000;
+		return true;
+	}
+	else if (chattime < GetTickCount64() && (CamPos - Position).Length() > 10)
+	{
+		return false;
+	}
+	else if (chattime > GetTickCount64() && (chattime - 5000) > GetTickCount64())
+	{
+		return true;
+	}
+	else if (chattime > GetTickCount64() && (chattime - 5000) < GetTickCount64())
+	{
+		return false;
+	}
+	
 }

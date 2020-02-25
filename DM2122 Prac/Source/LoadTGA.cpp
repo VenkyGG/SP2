@@ -1,8 +1,3 @@
-
-#include <iostream>
-#include <fstream>
-#include <GL\glew.h>
-
 #include "LoadTGA.h"
 
 GLuint LoadTGA(const char *file_path)				// load TGA file to memory

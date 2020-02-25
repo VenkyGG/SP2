@@ -1,4 +1,4 @@
-//Include GLEW
+﻿//Include GLEW
 #include <GL/glew.h>
 
 //Include GLFW
@@ -11,6 +11,8 @@
 #include "Application.h"
 
 #include "SceneText.h"
+#include "MainMenu.h"
+#include "Driving.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -76,7 +78,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(800*2, 600*2, "Test Window", NULL, NULL);
 	screenoffsetx = 146;
 	screenoffsety = 213;
 	glfwSetWindowPos(m_window, screenoffsetx, screenoffsety);
@@ -134,14 +136,18 @@ void Application::mouseupdate()//reset mouse position
 	glfwGetWindowSize(m_window, &width, &height);
 	SetCursorPos(screenoffsetx + width / 2, screenoffsety + height / 2);
 }
+
 void Application::Run()
 {
 	//Main Loop
-
-	Scene* scene = new SceneText();
+	Scene* Ptr[TOTALSCENES];
+	Ptr[Mainmenu] = new MainMenu();
+	Ptr[Motorshow] = new SceneText();
+	Ptr[Driving] = new DrivingScene();
+	state = Driving;
+	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
-
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
@@ -151,8 +157,20 @@ void Application::Run()
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
-		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
-
+		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.
+		if (scene != Ptr[state])
+		{
+			scene = Ptr[state];
+			if (scene->initialized == false)
+			{
+				scene->Init();
+			}
+			else if (scene == Ptr[0])
+			{
+				MainMenu* currentscene = static_cast<MainMenu*>(scene);
+				currentscene->Paused = true;
+			}
+		}
 	} //Check if the ESC key had been pressed or if the window had been closed
 	scene->Exit();
 	delete scene;

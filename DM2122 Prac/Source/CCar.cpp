@@ -27,44 +27,14 @@ float CCar::getcurrentSpeed()
 	return currentSpeed;
 }
 
-string CCar::getfileLocation()
+float CCar::GetPrice()
 {
-	return fileLocation;
+	return price;
 }
 
-void CCar::setfileLocation(string x)
+void CCar::SetPrice(float Price)
 {
-	fileLocation = x;
-}
-
-string CCar::getTextureLocation()
-{
-	return textureLocation;
-}
-
-void CCar::setTextureLocation(string x)
-{
-	textureLocation = x;
-}
-
-void CCar::setxLocation(float xpos)
-{
-	xLocation = xpos;
-}
-
-float CCar::getxLocation()
-{
-	return xLocation;
-}
-
-void CCar::setzLocation(float zpos)
-{
-	zLocation = zpos;
-}
-
-float CCar::getzLocation()
-{
-	return zLocation;
+	price = Price;
 }
 
 CCar* CCar::GetNext()
@@ -87,14 +57,14 @@ void CCar::SetPrevious(CCar* x)
 	Previous = x;
 }
 
-Mesh* CCar::GetMesh()
-{
-	return mesh;
-}
 
-void CCar::SetMesh(string filelocation)
+
+void CCar::Spin()
 {
-	mesh = MeshBuilder::GenerateOBJ("CAR", filelocation);
+	if (IsSpinning)
+	{
+		SetRotation(0,Vector3(0,GetRotation()[0].y + 1,0));
+	}
 }
 
 bool CCar::GetIsSpinning()
@@ -102,10 +72,21 @@ bool CCar::GetIsSpinning()
 	return IsSpinning;
 }
 
-void CCar::SetIsSpinning(bool x)
+void CCar::SetIsSpinning(bool Spin)
 {
-	IsSpinning = x;
+	IsSpinning = Spin;
 }
+
+bool CCar::GetOwned()
+{
+	return owned;
+}
+
+void CCar::SetOwned(bool x)
+{
+	owned = x;
+}
+
 
 
 CCar::~CCar()

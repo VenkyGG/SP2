@@ -1,18 +1,19 @@
 #include "CarsList.h"
-
+#include "LoadTGA.h"
 
 
 CarsList::CarsList()
 {
 	int maxspeed = 25;
+	int Price = 100000;
 	CCar* current = Start;
 	numcars = 0;
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator("OBJ//Cars"))
+	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ//Cars"))
 	{
 		if (Start == NULL)
 		{
 			string location = p.path().filename().string();
-			for (size_t i = 0; i < location.length(); i++)
+			for (int i = 0; i < location.length(); i++)
 			{
 				if (location[i] == '.')
 				{
@@ -26,14 +27,20 @@ CarsList::CarsList()
 			
 			Start->setmaxSpeed(maxspeed);
 			Start->SetIsSpinning(true);
-			Start->setfileLocation("OBJ//Cars//"+location+".obj");
-			Start->SetMesh(Start->getfileLocation());
-			Start->setTextureLocation("Image//Car Textures//" + location + ".tga");
+			Start->SetMesh(location, "OBJ//Cars//" + location + ".obj");
+			Start->GetMesh()->textureID=LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
+			Start->GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
+			Start->GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
+			Start->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
+			Start->GetMesh()->material.kShininess = 1.f;
+			Start->SetType("Car");
+			Start->GetMeshList()[0]->textureID = Start->GetMesh()->textureID;
+			Start->SetOwned(true);
 		}
 		else
 		{
 			string location = p.path().filename().string();
-			for (size_t i = 0; i < location.length(); i++)
+			for (int i = 0; i < location.length(); i++)
 			{
 				if (location[i] == '.')
 				{
@@ -59,9 +66,14 @@ CarsList::CarsList()
 			}
 			current->setmaxSpeed(maxspeed);
 			current->SetIsSpinning(true);
-			current->setfileLocation("OBJ//Cars//" + location + ".obj");
-			current->SetMesh(current->getfileLocation());
-			current->setTextureLocation("Image//Car Textures//" + location + ".tga");
+			current->SetMesh(location, "OBJ//Cars//" + location + ".obj");
+			current->GetMesh()->textureID = LoadTGA(("Image//Car Textures//" + location + ".tga").c_str());
+			current->GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
+			current->GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
+			current->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
+			current->GetMesh()->material.kShininess = 1.f;
+			current->SetType("Car");
+			current->GetMeshList()[0]->textureID = current->GetMesh()->textureID;
 		}
 		maxspeed += 25;
 	}
@@ -70,17 +82,18 @@ CarsList::CarsList()
 	current = Start;
 	float camxpos = 0;
 	float camzpos = 0;
-	float radius = 20.0f;
+	float radius = 100.0f;
 	for (int i = 0; i < numcars; i++)
 	{
-		current->setxLocation(camxpos + radius * sin(currentangle));
-		current->setzLocation(camzpos + radius * cos(currentangle));
+		current->SetPosition(0,Vector3(camxpos + radius * sin(Math::DegreeToRadian(currentangle)), 0, camzpos + radius * cos(Math::DegreeToRadian(currentangle))));
+		current->SetRotation(0,Vector3(0, current->GetRotation()[0].y + angleposition, 0));
 		currentangle += angleposition;
 		if (i != numcars - 1)
 		{
 			current = current->GetNext();
 		}
 	}
+	CurrentCar = current;
 }
 
 CarsList::~CarsList()
@@ -127,4 +140,30 @@ CCar* CarsList::GetStart()
 void CarsList::SetStart(CCar* x)
 {
 	Start = x;
+}
+
+CCar* CarsList::GetCar(int index)
+{
+	CCar* current = Start;
+	for (int i = 0; i < numcars; i++)
+	{
+		if (i == index)
+		{
+			return current;
+		}
+		else if (i != numcars - 1)
+		{
+			current = current->GetNext();
+		}
+	}
+}
+
+CCar* CarsList::GetCurrentCar()
+{
+	return CurrentCar;
+}
+
+void CarsList::SetCurrentCar(CCar* car)
+{
+	CurrentCar = car;
 }

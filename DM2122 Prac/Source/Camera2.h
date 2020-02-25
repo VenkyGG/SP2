@@ -18,8 +18,6 @@ public:
 	float playerheight;
 	Vector3 view;
 	Vector3 right;
-	float xbounds;
-	float zbounds;
 	bool mouseenabled;
 	float sensitivity;
 

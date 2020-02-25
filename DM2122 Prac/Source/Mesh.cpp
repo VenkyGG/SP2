@@ -17,6 +17,7 @@ Mesh::Mesh(const std::string& meshName)
 {
 	// Generate buffers
 	collison = false;
+	collisionboxcreated = false;
 	glGenBuffers(1, &vertexBuffer);
 	glGenBuffers(1, &colorBuffer);
 	glGenBuffers(1, &indexBuffer); //generate index buffer

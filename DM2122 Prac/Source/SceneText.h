@@ -1,4 +1,4 @@
-#ifndef SCENETEXT_H
+﻿#ifndef SCENETEXT_H
 #define SCENETEXT_H
 
 #include "Scene.h"
@@ -14,24 +14,17 @@ class SceneText : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES = 0,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
-		GEO_FRONT,
-		GEO_BACK,
 		GEO_MOTORSHOW_WALL,
 		GEO_MOTORSHOW_CEILING,
 		GEO_FLATLAND,
 		GEO_LIGHTSPHERE,
 		GEO_EXTRASHAPE1,
-		GEO_CARPLATFORMBASE,
-		GEO_CARPLATFORMTOP,
 		GEO_TEXT,
-		GEO_BODY,
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
+	const static int numlights = 9;
+	const static int numberofNPCs = 500;
 
 	enum Scene5_UNIFORM_TYPE
 	{
@@ -43,29 +36,9 @@ class SceneText : public Scene
 		U_MATERIAL_SPECULAR,
 		U_MATERIAL_SHININESS,
 		U_LIGHTENABLED,
-		U_LIGHT0_POSITION,
-		U_LIGHT0_COLOR,
-		U_LIGHT0_POWER,
-		U_LIGHT0_KC,
-		U_LIGHT0_KL,
-		U_LIGHT0_KQ,
-		U_LIGHT0_TYPE,
-		U_LIGHT0_SPOTDIRECTION,
-		U_LIGHT0_COSCUTOFF,
-		U_LIGHT0_COSINNER,
-		U_LIGHT0_EXPONENT,
-		U_LIGHT1_POSITION,
-		U_LIGHT1_COLOR,
-		U_LIGHT1_POWER,
-		U_LIGHT1_KC,
-		U_LIGHT1_KL,
-		U_LIGHT1_KQ,
-		U_LIGHT1_TYPE,
-		U_LIGHT1_SPOTDIRECTION,
-		U_LIGHT1_COSCUTOFF,
-		U_LIGHT1_COSINNER,
-		U_LIGHT1_EXPONENT,
-		U_NUMLIGHTS,
+
+		
+		U_NUMLIGHTS = 500 ,
 		// add these enum for texture
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,
@@ -83,24 +56,30 @@ private:
 	unsigned m_parameters[U_TOTAL];
 
 	MS modelStack, viewStack, projectionStack;
-	Light light[2];
-	int numbots = 50;
-	NPC* Bot[50];
+
+	Light light[numlights];
+	NPC* NPCs[numberofNPCs];
+	Object objectlist[50];
 
 	CarsList cars;
 
+
+	int numberofobjects;
+
 	Camera2 camera;
+	float bordersize = 500.0f;
+
 
 	void CheckSquareCollision();
-	void RenderMesh(Mesh* mesh, bool enableLight,bool hasCollision);
+	void RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision);
 	void RenderSkybox();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	bool OutsideMotorShow;
-	double TimeChangeDelay;
+
+
 	Vector3 starepoint;
 public:
 	SceneText();
@@ -110,6 +89,7 @@ public:
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
+	
 };
 
 #endif

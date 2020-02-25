@@ -1,51 +1,48 @@
 #pragma once
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string>
+#include "Mesh.h"
+#include "Application.h"
 #include <Vector3.h>
-
+using namespace std;
 class NPC
 {
 private:
 	float NPCRotationalValue;
 
-	float NPCTranslationXValue;
+	Vector3 Position;
 
-	float NPCTranslationZValue;
+	int type;
 
-	std::string npcFileHead;
-	std::string npcFileBody;
-	std::string npcFileLeftArm;
-	std::string npcFileRightArm;
-	std::string npcFileLeftLeg;
-	std::string npcFileRightLeg;
-	Vector3 ColisionVector1Storage;
-	Vector3 ColisionVector2Storage;
-	
+	int steps;
+	Mesh* CharacterPartsOBJ[6];
+
+	float waittime;
+	bool ismoving;
+	Vector3 Target;
+
+	float chattime;
+
 public:
-	NPC(float seed);
+	NPC(int seed);
 	~NPC();
 
 	void setNPCRotation(float degreesNPC);
-	void setNPCTranslationX(float XCoordsNPC);
-	void setNPCTranslationZ(float ZCoordsNPC);
 
 	float getNPCRotation();
-	float getNPCTranslationX();
-	float getNPCTranslationZ();
+	Vector3 GetPosition();
+	void SetPosition(Vector3 pos);
 
-	std::string getNpcFileHead();
-	std::string getNpcFileBody();
-	std::string getNpcFileLeftArm();
-	std::string getNpcFileRightArm();
-	std::string getNpcFileLeftLeg();
-	std::string getNpcFileRightLeg();
+	int Gettype();
+	void Settype(int x);
 
-	Vector3 GetCollisionStorage1();
-	void SetCollisionStorage1(Vector3 vector3);
-	Vector3 GetCollisionStorage2();
-	void SetCollisionStorage2(Vector3 vector3);
+	Mesh* GetMesh(int index);
+	void SetMesh(Mesh* x, int index);
+
+	bool GetIsMoving();
+
+	void move();
+	
+	bool chat(Vector3 CamPos);
+	
+
 };
 

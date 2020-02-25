@@ -18,8 +18,6 @@ void Camera2::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	right = view.Cross(up).Normalized();
 	this->up = defaultUp = right.Cross(view).Normalized();
 	playerheight = pos.y;
-	xbounds = 17;//x boundary
-	zbounds = 25;//z boundary
 	mouseenabled = true;
 	sensitivity = 0.05f;
 }

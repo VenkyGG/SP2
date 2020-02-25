@@ -1,20 +1,17 @@
 #pragma once
-using namespace std;
-#include <string>
-#include "Mesh.h"
-#include "MeshBuilder.h"
-class CCar
+
+#include "Object.h"
+
+class CCar:public Object
 {
+private:
 	float maxSpeed;
 	float currentSpeed;
-	float xLocation;
-	float zLocation;
-	string fileLocation;
-	string textureLocation;
+
 	bool IsSpinning;
 	float price;
-
-	Mesh* mesh;
+	bool owned;
+	
 	CCar* Next;
 	CCar* Previous;
 
@@ -23,26 +20,20 @@ public:
 	float getmaxSpeed();
 	void setcurrentSpeed(float speed);
 	float getcurrentSpeed();
-	string getfileLocation();
-	void setfileLocation(string x);
-	string getTextureLocation();
-	void setTextureLocation(string x);
-	void setxLocation(float xpos);
-	float getxLocation();
-	void setzLocation(float zpos);
-	float getzLocation();
-
+	
+	float GetPrice();
+	void SetPrice(float Price);
 	CCar* GetNext();
 	CCar* Getprevious();
 	void SetNext(CCar* x);
 	void SetPrevious(CCar* x);
-
-	Mesh* GetMesh();
-	void SetMesh(string filelocation);
-
+	
+	void Spin();
 	bool GetIsSpinning();
-	void SetIsSpinning(bool x);
+	void SetIsSpinning(bool Spin);
 
+	bool GetOwned();
+	void SetOwned(bool x);
 
 	CCar();
 	~CCar();

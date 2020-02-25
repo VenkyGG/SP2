@@ -6,7 +6,7 @@ class Scene
 public:
 	Scene() {}
 	~Scene() {}
-
+	bool initialized = false;
 	virtual void Init() = 0;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
