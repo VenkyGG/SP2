@@ -60,8 +60,9 @@ public:
 		{
 			instances = new Player;
 
-			return instances;
+
 		}
+		return instances;
 	}
 
 	CarsList cars;
