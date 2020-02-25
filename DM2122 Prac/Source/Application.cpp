@@ -138,6 +138,7 @@ void Application::mouseupdate()//reset mouse position
 	glfwGetWindowSize(m_window, &width, &height);
 	SetCursorPos(screenoffsetx + width / 2, screenoffsety + height / 2);
 }
+
 void Application::Run()
 {
 	//Main Loop

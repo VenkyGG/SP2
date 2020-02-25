@@ -62,7 +62,7 @@ private:
 	NPC* NPCs[numberofNPCs];
 	Object objectlist[50];
 
-
+	CarsList cars;
 
 	int numberofobjects;
 
