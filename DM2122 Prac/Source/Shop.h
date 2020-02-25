@@ -7,8 +7,6 @@ class Shop
 private:
 	int priceOfCar[3];
 
-	Player User;
-
 public:
 	Shop();
 	~Shop();

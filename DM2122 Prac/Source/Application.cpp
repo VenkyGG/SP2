@@ -14,6 +14,8 @@
 #include "MainMenu.h"
 #include "Driving.h"
 
+#include "Player.h"
+
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -136,15 +138,15 @@ void Application::mouseupdate()//reset mouse position
 	glfwGetWindowSize(m_window, &width, &height);
 	SetCursorPos(screenoffsetx + width / 2, screenoffsety + height / 2);
 }
-
 void Application::Run()
 {
 	//Main Loop
 	Scene* Ptr[TOTALSCENES];
+	
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
-	state = Driving;
+	state = Motorshow;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);

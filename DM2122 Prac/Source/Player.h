@@ -5,6 +5,7 @@
 #include <ostream>
 #include <fstream>
 #include <cstdint>
+#include "CarsList.h"
 
 using namespace std;
 
@@ -14,6 +15,8 @@ private:
 	int startingBalance = 50000; // Change this to alter the starting balance.
 
 	int money;
+
+	static Player* instances;
 
 	std::string File = "player.txt"; // Change this if you want to have a different txt file for player.
 
@@ -27,10 +30,10 @@ private:
 	std::string line2; // Do not touch.
 	std::string line3; // Do not touch.
 	std::string line4; // Do not touch.
-
-public:
 	Player();
 	~Player();
+
+public:
 
 	bool hasFile();
 
@@ -51,4 +54,15 @@ public:
 	void PrintOwnedCars();
 
 	void rewriteFile();
+	static Player* instance()
+	{
+		if (!instances)
+		{
+			instances = new Player;
+
+			return instances;
+		}
+	}
+
+	CarsList cars;
 };

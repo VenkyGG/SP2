@@ -8,6 +8,7 @@
 #include "Light.h"
 #include "NPC.h"
 #include "CarsList.h"
+#include "Player.h"
 
 class SceneText : public Scene
 {
@@ -61,7 +62,6 @@ private:
 	NPC* NPCs[numberofNPCs];
 	Object objectlist[50];
 
-	CarsList cars;
 
 
 	int numberofobjects;
@@ -69,6 +69,7 @@ private:
 	Camera2 camera;
 	float bordersize = 500.0f;
 
+	
 
 	void CheckSquareCollision();
 	void RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision);
