@@ -21,6 +21,8 @@ private:
 
 	std::string carsOwned[5];
 
+	std::string storeLines[10];
+
 	std::string line1; // Do not touch.
 	std::string line2; // Do not touch.
 	std::string line3; // Do not touch.
@@ -37,7 +39,7 @@ public:
 	void initMoney();
 	void initOwnedCars();
 
-	void removeMoney(int amountToBeRemoved);
+	bool removeMoney(int amountToBeRemoved);
 	void addMoney(int amountToBeAdded);
 
 	void removeCar(int whichCar);

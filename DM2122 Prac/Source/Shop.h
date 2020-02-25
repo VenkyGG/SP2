@@ -16,6 +16,4 @@ public:
 	void buyCar(int whichCar);
 
 	void sellCar(int whichCar);
-
-
 };

@@ -8,10 +8,13 @@ Player::Player()
 	
 	if (check == false)
 	{
+		std::cout << "Generating Default file!" << std::endl;
+
 		createFile();
 
 		initMoney();
 
+		initOwnedCars();
 	}
 	else
 	{
@@ -32,7 +35,7 @@ bool Player::hasFile()
 
 	if (runTime.fail())
 	{
-		std::cout << "Unable to open file!" << std::endl;
+		std::cout << "Unable to open file! "/* << std::endl*/;
 
 		return false;
 	}
@@ -99,62 +102,27 @@ void Player::initOwnedCars()
 		{
 			if (lineNumber == 6)
 			{
-				if (line == "OWNED")
-				{
-					carsOwned[0] = line;
-				}
-				else
-				{
-					carsOwned[0] = line;
-				}
+				carsOwned[0] = line;
 			}
 
 			if (lineNumber == 7)
 			{
-				if (line == "OWNED")
-				{
-					carsOwned[1] = line;
-				}
-				else
-				{
-					carsOwned[1] = line;
-				}
+				carsOwned[1] = line;
 			}
 
 			if (lineNumber == 8)
 			{
-				if (line == "OWNED")
-				{
-					carsOwned[2] = line;
-				}
-				else
-				{
-					carsOwned[2] = line;
-				}
+				carsOwned[2] = line;
 			}
 
 			if (lineNumber == 9)
 			{
-				if (line == "OWNED")
-				{
-					carsOwned[3] = line;
-				}
-				else
-				{
-					carsOwned[3] = line;
-				}
+				carsOwned[3] = line;
 			}
 
 			if (lineNumber == 10)
 			{
-				if (line == "OWNED")
-				{
-					carsOwned[4] = line;
-				}
-				else
-				{
-					carsOwned[4] = line;
-				}
+				carsOwned[4] = line;
 			}
 
 			lineNumber++;
@@ -167,7 +135,7 @@ void Player::initOwnedCars()
 	}
 }
 
-void Player::removeMoney(int amountToBeRemoved) // Function to remove money.
+bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 {
 	int tempBalance = getMoney() - amountToBeRemoved;
 
@@ -181,10 +149,14 @@ void Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 	if (isItNegativeBalance == true) // If Player's Balance is negative, then money wont be removed.
 	{
 		std::cout << "Not enough money!" << std::endl;
+
+		return false;
 	}
 	else
 	{
 		money = getMoney() - amountToBeRemoved;
+
+		return true;
 	}
 }
 
@@ -196,13 +168,13 @@ void Player::addMoney(int amountToBeAdded) // Function to add money.
 void Player::removeCar(int whichCar)
 {
 	carsOwned[whichCar] = "UNOWNED";
+	rewriteFile();
 }
 
 void Player::addCar(int whichCar)
 {
-
-
 	carsOwned[whichCar] = "OWNED";
+	rewriteFile();
 }
 
 int Player::getMoney()
@@ -212,6 +184,12 @@ int Player::getMoney()
 
 void Player::PrintOwnedCars()
 {
+	//for (size_t i = 0; i < cars.getnumberofcars; i++)
+	//{
+	//	std::cout << "Car " + i: << cars.getCar(i).owned << std::endl;
+	//}
+	initMoney();
+	initOwnedCars();
 	std::cout << "Car 1: " << carsOwned[0] << std::endl;
 	std::cout << "Car 2: " << carsOwned[1] << std::endl;
 	std::cout << "Car 3: " << carsOwned[2] << std::endl;
@@ -242,34 +220,18 @@ void Player::rewriteFile()
 	{
 		while (getline(readTest, line))
 		{
-			if (lineNumber == 1)
-			{
-				line1 = line;
-			}
-
-			if (lineNumber == 2)
-			{
-				line2 = line;
-			}
-
-			if (lineNumber == 3)
-			{
-				line3 = line;
-			}
-
-			if (lineNumber == 4)
-			{
-				line4 = to_string(getMoney());
-			}
+			storeLines[lineNumber - 1] = line;
 
 			lineNumber++;
 
-			if (lineNumber == 11) // Break out of look such that doesnt check other lines.
+			if (lineNumber == 11) // Break out of loop such that doesnt check other lines.
 			{
 				break;
 			}
 		}
 	}
+
+	readTest.close();
 
 	if (remove("player.txt") != 0)
 	{
@@ -280,10 +242,37 @@ void Player::rewriteFile()
 		puts("File successfully deleted");
 	}
 
-	fstream write(File);
+	ofstream write(File);
 
-	write << line1 + "\n";
-	write << line2 + "\n";
-	write << line3 + "\n";
-	write << line4 + "\n";
+	for (int counter = 1; counter <= 10; ++counter)
+	{
+		if (counter == 4)
+		{
+			write << to_string(getMoney()) + "\n";
+		}
+		else if (counter == 6)
+		{
+			write << carsOwned[0] + "\n";
+		}
+		else if (counter == 7)
+		{
+			write << carsOwned[1] + "\n";
+		}
+		else if (counter == 8)
+		{
+			write << carsOwned[2] + "\n";
+		}
+		else if (counter == 9)
+		{
+			write << carsOwned[3] + "\n";
+		}
+		else if (counter == 10)
+		{
+			write << carsOwned[4] + "\n";
+		}
+		else
+		{
+			write << storeLines[counter - 1] + "\n";
+		}
+	}
 }

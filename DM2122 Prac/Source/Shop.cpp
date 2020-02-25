@@ -16,11 +16,15 @@ void Shop::buyCar(int whichCar)
 {
 	if (User.hasCar(whichCar) == false)
 	{
-		User.removeMoney(priceOfCar[whichCar]);
+		bool tmpCheck;
+		tmpCheck = User.removeMoney(priceOfCar[whichCar]);
 
-		User.addCar(whichCar);
+		if (tmpCheck == true)
+		{
+			User.addCar(whichCar);
 
-		std::cout << "You have bought the Car! " << whichCar << std::endl;
+			std::cout << "You have bought the Car! " << whichCar << std::endl;
+		}
 	}
 	else
 	{
