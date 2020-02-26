@@ -6,7 +6,7 @@
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
-
+#include "Player.h"
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
@@ -546,7 +546,6 @@ void SceneSlots::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	//Application::Player.Addmoney(5000);
 	modelStack.Translate(0, 7.5, 2.2);
 	modelStack.Rotate(rotateslot1, 0, 0, 1);
 	RenderMesh(meshList[GEO_SPINNER], false);
@@ -566,9 +565,15 @@ void SceneSlots::Render()
 	
 
 	if (threesame == true)
+	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "three in a row", Color(0, 1, 0), 3, 0, 0);
-	else if(twosame == true)
+		Player::instance()->addMoney(500);
+	}
+	else if (twosame == true)
+	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "two in a row", Color(0, 1, 0), 3, 0, 0);
+		Player::instance()->addMoney(250);
+	}
 	else if(nonesame == true)
 		RenderTextOnScreen(meshList[GEO_TEXT], "you lose", Color(0, 1, 0), 3, 0, 0);
 

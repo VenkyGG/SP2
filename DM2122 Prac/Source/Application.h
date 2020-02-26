@@ -15,6 +15,7 @@ public:
 		PreviewxD,
 		Luckyspin,
 		Slotmachine,
+		Settings,
 		TOTALSCENES
 	};
 	Application();

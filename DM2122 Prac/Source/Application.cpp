@@ -17,6 +17,7 @@
 #include "LuckySpin.h"
 #include "SceneSlots.h"
 #include "Player.h"
+#include "SceneSettings.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -153,7 +154,8 @@ void Application::Run()
 	Ptr[PreviewxD] = new Preview();
 	Ptr[Luckyspin] = new LuckySpin();
 	Ptr[Slotmachine] = new SceneSlots();
-	state = PreviewxD;
+	Ptr[Settings] = new SceneSetting();
+	state = Settings;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
