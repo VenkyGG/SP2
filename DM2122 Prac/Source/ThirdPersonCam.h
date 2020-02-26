@@ -21,6 +21,8 @@ public:
 	Vector3 right;
 	bool mouseenabled;
 	float sensitivity;
+	bool RotationEnabled = true;
+	bool useWASD;
 
 	ThirdPersonCamera();
 	~ThirdPersonCamera();

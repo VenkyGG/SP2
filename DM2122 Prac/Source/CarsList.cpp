@@ -1,11 +1,11 @@
 #include "CarsList.h"
 #include "LoadTGA.h"
-
+#include "Player.h"
 
 CarsList::CarsList()
 {
 	int maxspeed = 25;
-	int Price = 100000;
+	int Price = 0;
 	CCar* current = Start;
 	numcars = 0;
 	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ//Cars"))
@@ -35,7 +35,8 @@ CarsList::CarsList()
 			Start->GetMesh()->material.kShininess = 1.f;
 			Start->SetType("Car");
 			Start->GetMeshList()[0]->textureID = Start->GetMesh()->textureID;
-			Start->SetOwned(true);
+			Start->SetPrice(Price);
+		
 		}
 		else
 		{
@@ -73,9 +74,12 @@ CarsList::CarsList()
 			current->GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
 			current->GetMesh()->material.kShininess = 1.f;
 			current->SetType("Car");
+			current->SetPrice(Price);
 			current->GetMeshList()[0]->textureID = current->GetMesh()->textureID;
+			
 		}
 		maxspeed += 25;
+		Price += 100000;
 	}
 	float angleposition = 360.0f / numcars;
 	float currentangle = 0;

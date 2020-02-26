@@ -22,7 +22,7 @@ private:
 
 	float time;
 
-	std::string carsOwned[5];
+	
 
 	std::string storeLines[10];
 
@@ -49,18 +49,16 @@ public:
 	void addCar(int whichCar);
 
 	int getMoney();
-	bool hasCar(int whichCar);
 
 	void PrintOwnedCars();
 
 	void rewriteFile();
+	bool carsOwned[5];
 	static Player* instance()
 	{
 		if (!instances)
 		{
 			instances = new Player;
-
-
 		}
 		return instances;
 	}
