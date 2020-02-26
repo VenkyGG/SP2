@@ -213,13 +213,12 @@ void DrivingScene::Update(double dt)
 	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
 	offsetPerFrame = rotation.Multiply(offsetPerFrame);
 	float RotationSpeed = 2;
-	if (!check)
-	{
+	
 		Vector3 futurepos = initialpos + offsetPerFrame;
 		currentcar->SetPosition(0, futurepos);
 		camera.position += offsetPerFrame;
 		camera.offset += offsetPerFrame;
-	}
+	
 	
 	if (Application::IsKeyPressed('W'))
 	{
@@ -445,10 +444,11 @@ bool DrivingScene::CheckSquareCollision()
 			if (currentmesh->camcollided == false)
 			{
 				bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-				cout << x;
+				
 				if (x)
 				{
-					currentmesh->camcollided = true;
+					cout << x;
+					/*currentmesh->camcollided = true;
 					bool foundposition = true;
 					Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - Center).Normalized();
 					Player::instance()->cars.GetCurrentCar()->setcurrentSpeed(-((6.0f / 10.0f) * Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()));
@@ -479,7 +479,7 @@ bool DrivingScene::CheckSquareCollision()
 						}
 					}
 					currentmesh->camfreezeposition.y = 0;
-					Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
+					Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);*/
 
 				}
 			}
