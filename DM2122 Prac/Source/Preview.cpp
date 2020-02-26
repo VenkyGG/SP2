@@ -41,7 +41,8 @@ void Preview::Init()
 
 	camera.Init(Vector3(0, 24, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	camera.RotationEnabled = false;
-	camera.useWASD = true;
+	camera.useWASD = false;
+	camera.mouseenabled = false;
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 50000.f);
 	projectionStack.LoadMatrix(projection);
@@ -124,7 +125,7 @@ void Preview::Init()
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_TOP]->textureID = LoadTGA("Image//hills_up.tga");
 
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 104.f / 255.f, 0), 5000.f, 5000.f); // THIS CHANGES COLOR OF FLOOR
+	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 0, 0), 5000.f, 5000.f); // THIS CHANGES COLOR OF FLOOR
 	meshList[GEO_BOTTOM]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_BOTTOM]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
 	meshList[GEO_BOTTOM]->material.kSpecular.Set(1.f, 1.f, 1.f);
@@ -140,6 +141,9 @@ void Preview::Init()
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
+
+	meshList[GEO_TEXT2] = MeshBuilder::GenerateText("SecondaryText", 16, 16);
+	meshList[GEO_TEXT2]->textureID = LoadTGA("Image//secondaryFont.tga");
 
 	meshList[GEO_MONEYTEXT] = MeshBuilder::GenerateText("MoneyText", 16, 16);
 	meshList[GEO_MONEYTEXT]->textureID = LoadTGA("Image//moneyFont.tga");
@@ -157,8 +161,6 @@ void Preview::Init()
 	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sun", "OBJ//Cars//ChengFengcar.obj");
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
-
-	
 
 	vector<Mesh*> MeshStorage;
 
@@ -189,6 +191,13 @@ void Preview::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+
+	static const float CAMERA_SPEED = 50.f;
+	float yaw = (float)(CAMERA_SPEED * dt);
+	Mtx44 rotation;
+	rotation.SetToRotation(yaw, 0, 1, 0);
+	camera.position = rotation * camera.position;
+	camera.up = rotation * camera.up;
 	
 	if (Application::IsKeyPressed(VK_LEFT) && bouncetime<GetTickCount64()) // This will change to the previous Car
 	{
@@ -196,7 +205,7 @@ void Preview::Update(double dt)
 		{
 			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->Getprevious());
 
-			bouncetime = GetTickCount64() + 500;
+			bouncetime = GetTickCount64() + 200;
 		}
 	}
 
@@ -206,7 +215,7 @@ void Preview::Update(double dt)
 		{
 			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->GetNext());
 
-			bouncetime = GetTickCount64() + 500;
+			bouncetime = GetTickCount64() + 200;
 		}
 	}
 	
@@ -214,7 +223,7 @@ void Preview::Update(double dt)
 	{
 		User2.buyCar(Player::instance()->cars.GetCurrentCar());
 
-		bouncetime = GetTickCount64() + 500;
+		bouncetime = GetTickCount64() + 200;
 	}
 
 	if (Application::IsKeyPressed('V')) // Change to the Main Menu
@@ -228,9 +237,10 @@ void Preview::Update(double dt)
 
 void Preview::Render()
 {
-
 	//Clear color & depth buffer every frame
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z, camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
@@ -261,12 +271,12 @@ void Preview::Render()
 		}
 	}
 
-	RenderSkybox();
+	//RenderSkybox();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
-	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
+	//RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
+	//modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(Player::instance()->cars.GetCurrentCar()->GetPostition()[0].x, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].y, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].z);
@@ -284,12 +294,11 @@ void Preview::Render()
 		RenderMeshOnScreen(meshList[GEO_LEFTARROW], 23, 7, 20, 20, 0);
 	}
 
+	//RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0); // This renders the crosshair. REMOVE WHEN FINALISING
 
-		
-	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0); // This renders the crosshair. REMOVE WHEN FINALISING
-	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
+	RenderFramerate(meshList[GEO_TEXT], Color(1, 1, 1), 3, 21, 19);
 
-	RenderTextOnScreen(meshList[GEO_MONEYTEXT], ("Money:$" + to_string(Player::instance()->getMoney())), Color(0, 0, 0), 2, 0.5, 28.5f); // This prints the Money the player has onto the top left of the Screen
+	RenderTextOnScreen(meshList[GEO_MONEYTEXT], ("Money:$" + to_string(Player::instance()->getMoney())), Color(1, 1, 1), 2, 0.5, 28.5f); // This prints the Money the player has onto the top left of the Screen
 
 	renderPrice();
 
@@ -307,11 +316,11 @@ void Preview::renderPrice()
 			hello = "FREE";
 		}
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "Price:" + hello, Color(0, 0, 0), 5, 2, 10.5f);
+		RenderTextOnScreen(meshList[GEO_TEXT2], "Price:" + hello, Color(1, 1, 1), 3, 6.2f, 14.5f);
 	}
 	else
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "OWNED", Color(0, 0, 0), 5, 2, 10.5f);
+		RenderTextOnScreen(meshList[GEO_TEXT2], "OWNED", Color(1, 1, 1), 3, 10.6f, 2.f);
 	}
 
 }
