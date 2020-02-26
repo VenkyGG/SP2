@@ -66,7 +66,7 @@ private:
 	MS modelStack, viewStack, projectionStack;
 
 	Light light[1];
-	Object objectlist[50];
+	Object objectlist[2];
 
 
 	int numberofobjects;

@@ -237,7 +237,7 @@ void SceneSlots::Update(double dt)
 	}
 	if (rotate1 == true)
 	{
-		rotateslot1 += (float)(3000 * dt);
+		rotateslot1 += (float)(1500 * dt);
 		if (rotateslot1 >= 360)
 			rotateslot1 = 0;
 	}
@@ -291,7 +291,7 @@ void SceneSlots::Update(double dt)
 	}
 	if (rotate2 == true)
 	{
-		rotateslot2 += (float)(3000 * dt);
+		rotateslot2 += (float)(1500 * dt);
 		if (rotateslot2 >= 360)
 			rotateslot2 = 0;
 	}
@@ -345,7 +345,7 @@ void SceneSlots::Update(double dt)
 	}
 	if (rotate3 == true)
 	{
-		rotateslot3 += (float)(3000 * dt);
+		rotateslot3 += (float)(1500 * dt);
 		if (rotateslot3 >= 360)
 			rotateslot3 = 0;
 	}
