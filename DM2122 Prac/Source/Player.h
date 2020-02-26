@@ -12,7 +12,7 @@ using namespace std;
 class Player
 {
 private:
-	int startingBalance = 50000; // Change this to alter the starting balance.
+	int startingBalance = 100000; // Change this to alter the starting balance.
 
 	int money;
 
@@ -20,16 +20,8 @@ private:
 
 	std::string File = "player.txt"; // Change this if you want to have a different txt file for player.
 
-	float time;
+	std::string storeLines[4];
 
-	
-
-	std::string storeLines[10];
-
-	std::string line1; // Do not touch.
-	std::string line2; // Do not touch.
-	std::string line3; // Do not touch.
-	std::string line4; // Do not touch.
 	Player();
 	~Player();
 
@@ -53,7 +45,7 @@ public:
 	void PrintOwnedCars();
 
 	void rewriteFile();
-	bool carsOwned[5];
+	
 	static Player* instance()
 	{
 		if (!instances)
@@ -64,4 +56,6 @@ public:
 	}
 
 	CarsList cars;
+
+	bool carsOwned[5];
 };
