@@ -209,7 +209,8 @@ void DrivingScene::Update(double dt)
 	{
 		futurepos = initialpos + offsetPerFrame;
 		currentcar->SetPosition(0, futurepos);
-		camera.position = futurepos - rotation.Multiply(Vector3(0, -15, 60));
+		camera.position += offsetPerFrame;
+		camera.offset += offsetPerFrame;
 	}
 	
 	if (Application::IsKeyPressed('W'))
@@ -425,6 +426,8 @@ bool DrivingScene::CheckSquareCollision()
 					Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - Center).Normalized();
 					Player::instance()->cars.GetCurrentCar()->setcurrentSpeed(-((6.0f / 10.0f) * Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()));
 					currentmesh->camfreezeposition = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] + pushback*0.1f;
+					camera.position += pushback * 0.1f;
+					camera.offset += pushback * 0.1f;
 					A2 += pushback*0.1f;
 					B2 += pushback*0.1f;
 					C2 += pushback*0.1f;
@@ -440,6 +443,8 @@ bool DrivingScene::CheckSquareCollision()
 						else
 						{
 							currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback*0.1f;
+							camera.position += pushback * 0.1f;
+							camera.offset += pushback * 0.1f;
 							A2 += pushback*0.1f;
 							B2 += pushback*0.1f;
 							C2 += pushback*0.1f;
