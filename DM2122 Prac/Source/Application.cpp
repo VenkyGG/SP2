@@ -155,7 +155,7 @@ void Application::Run()
 	Ptr[Luckyspin] = new LuckySpin();
 	Ptr[Slotmachine] = new SceneSlots();
 	Ptr[Settings] = new SceneSetting();
-	state = Driving;
+	state = Motorshow;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
