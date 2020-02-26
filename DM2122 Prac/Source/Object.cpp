@@ -57,6 +57,14 @@ void Object::SetMesh(string name, string filelocation)
 		meshlist[i]->textureID = mesh->textureID;
 		meshlist[i]->material = mesh->material;
 		meshlist[i]->indexSize = mesh->indexSize;
+		meshlist[i]->initColisionVector1 = mesh->initColisionVector1;
+		meshlist[i]->initColisionVector2 = mesh->initColisionVector2;
+		meshlist[i]->initColisionVector3 = mesh->initColisionVector3;
+		meshlist[i]->initColisionVector4 = mesh->initColisionVector4;
+		meshlist[i]->ColisionVector1 = mesh->ColisionVector1;
+		meshlist[i]->ColisionVector2 = mesh->ColisionVector2;
+		meshlist[i]->ColisionVector3 = mesh->ColisionVector3;
+		meshlist[i]->ColisionVector4 = mesh->ColisionVector4;
 	}
 
 }
@@ -88,6 +96,14 @@ void Object::SetNumberOfOccurences(int number)
 		x->textureID = mesh->textureID;
 		x->material = mesh->material;
 		x->indexSize = mesh->indexSize;
+		x->initColisionVector1 = mesh->initColisionVector1;
+		x->initColisionVector2 = mesh->initColisionVector2;
+		x->initColisionVector3 = mesh->initColisionVector3;
+		x->initColisionVector4 = mesh->initColisionVector4;
+		x->ColisionVector1 = mesh->ColisionVector1;
+		x->ColisionVector2 = mesh->ColisionVector2;
+		x->ColisionVector3 = mesh->ColisionVector3;
+		x->ColisionVector4 = mesh->ColisionVector4;
 		meshlist.push_back(x);
 		PositionList.push_back(Vector3(0, 0, 0));
 		RotationList.push_back(Vector3(0, 0, 0));

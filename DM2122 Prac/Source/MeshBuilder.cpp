@@ -628,14 +628,16 @@ Mesh* MeshBuilder::InitializeCollisionPoints(Mesh* mesh, std::vector<Vertex> ver
 		if (p.pos.x < max)
 		{
 			max = p.pos.x;
-			xmin = max;
+			
 		}
 		if (p.pos.x > min)
 		{
 			min = p.pos.x;
-			xmax = min;
+			
 		}
 	}
+	xmin = max;
+	xmax = min;
 	max = 100000.0f;
 	min = -100000.0f;
 	for (auto&& p : vertex_buffer_data)
@@ -644,14 +646,16 @@ Mesh* MeshBuilder::InitializeCollisionPoints(Mesh* mesh, std::vector<Vertex> ver
 		if (p.pos.y < max)
 		{
 			max = p.pos.y;
-			ymin = max;
+			
 		}
 		if (p.pos.y > min)
 		{
 			min = p.pos.y;
-			ymax = min;
+			
 		}
 	}
+	ymin = max;
+	ymax = min;
 	max = 100000.0f;
 	min = -100000.0f;
 	for (auto&& p : vertex_buffer_data)
@@ -660,14 +664,16 @@ Mesh* MeshBuilder::InitializeCollisionPoints(Mesh* mesh, std::vector<Vertex> ver
 		if (p.pos.z < max)
 		{
 			max = p.pos.z;
-			zmin = max;
+			
 		}
 		if (p.pos.z > min)
 		{
 			min = p.pos.z;
-			zmax = min;
+			
 		}
 	}
+	zmin = max;
+	zmax = min;
 	mesh->p1 = Vector3(xmin, ymin, zmax);
 	mesh->p2 = Vector3(xmax, ymin, zmax);
 	mesh->p3 = Vector3(xmax, ymax, zmax);
@@ -676,8 +682,14 @@ Mesh* MeshBuilder::InitializeCollisionPoints(Mesh* mesh, std::vector<Vertex> ver
 	mesh->p6 = Vector3(xmax, ymin, zmin);
 	mesh->p7 = Vector3(xmax, ymax, zmin);
 	mesh->p8 = Vector3(xmin, ymax, zmin);
-	mesh->ColisionVector1 = Vector3(xmax, ymax, zmax);
-	mesh->ColisionVector2 = Vector3(xmin, ymin, zmin);
+	mesh->initColisionVector1 = mesh->p1;
+	mesh->initColisionVector2 = mesh->p2;
+	mesh->initColisionVector3 = mesh->p6;
+	mesh->initColisionVector4 = mesh->p5;
+	mesh->ColisionVector1 = mesh->initColisionVector1;
+	mesh->ColisionVector2 = mesh->initColisionVector2;
+	mesh->ColisionVector3 = mesh->initColisionVector3;
+	mesh->ColisionVector4 = mesh->initColisionVector4;
 	return mesh;
 }
 
@@ -762,8 +774,6 @@ Mesh* MeshBuilder::GenerateCollisonBox(const std::string& meshname, Vector3 p1, 
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	
 
 	mesh->indexSize = 36;
 	mesh->mode = Mesh::DRAW_TRIANGLES;

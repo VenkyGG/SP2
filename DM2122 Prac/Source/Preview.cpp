@@ -1,5 +1,5 @@
 ﻿
-#include "Driving.h"
+#include "Preview.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include <Mtx44.h>
@@ -10,29 +10,23 @@
 #include "Physics.h"
 #include "Player.h"
 
-using namespace std;
-
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
 
-
-
-
-DrivingScene::DrivingScene()
+Preview::Preview()
 {
-
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
 	}
 }
 
-DrivingScene::~DrivingScene()
+Preview::~Preview()
 {
 }
 
-void DrivingScene::Init()
+void Preview::Init()
 {
 	initialized = true;
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -45,8 +39,9 @@ void DrivingScene::Init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	camera.Init(Vector3(0, 24, 20), Vector3(0, 5, 0), Vector3(0, 1, 0));
-
+	camera.Init(Vector3(0, 24, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	camera.RotationEnabled = false;
+	camera.useWASD = true;
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 50000.f);
 	projectionStack.LoadMatrix(projection);
@@ -129,7 +124,7 @@ void DrivingScene::Init()
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_TOP]->textureID = LoadTGA("Image//hills_up.tga");
 
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 104.f / 255.f, 0), 5000.f, 5000.f);
+	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 104.f / 255.f, 0), 5000.f, 5000.f); // THIS CHANGES COLOR OF FLOOR
 	meshList[GEO_BOTTOM]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_BOTTOM]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
 	meshList[GEO_BOTTOM]->material.kSpecular.Set(1.f, 1.f, 1.f);
@@ -150,30 +145,21 @@ void DrivingScene::Init()
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
 
 	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sun", "OBJ//Cars//ChengFengcar.obj");
-	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
 
-	meshList[GEO_SPEEDOMETERBACK] = MeshBuilder::GenerateQuad("speedometerback", Color(0, 0, 0), 1, 1);
-	meshList[GEO_SPEEDOMETERBACK]->textureID = LoadTGA("Image//Car Textures//speedometer_back.tga");
-	meshList[GEO_SPEEDOMETERFRONT] = MeshBuilder::GenerateQuad("speedometerfront", Color(0, 0, 0), 1, 1);
-	meshList[GEO_SPEEDOMETERFRONT]->textureID = LoadTGA("Image//Car Textures//speedometer_front.tga");
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 	vector<Mesh*> MeshStorage;
 
-	objectlist[0].SetMesh("InnerTrack", "OBJ//Tracks//track_inneredge.obj");
-	objectlist[0].SetNumberOfOccurences(20);
-	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
-	objectlist[1].SetNumberOfOccurences(20);
-
 	srand(time(NULL));
-	Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3(275, 0, 0));
-	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
-	camera.position += Vector3(275, 0, 0);
-	camera.offset += Vector3(275, 0, 0);
+	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
+	{
+		Player::instance()->cars.GetCar(i)->SetPosition(0, Vector3(0, 0, 0));
+		Player::instance()->cars.GetCar(i)->SetRotation(0, Vector3(0, 0, 0));
+	}
 }
 
 
-void DrivingScene::Update(double dt)
+void Preview::Update(double dt)
 {
 	if (Application::IsKeyPressed(0x31))
 	{
@@ -191,119 +177,41 @@ void DrivingScene::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-
 	
-	//Vector3 Target2 = camera.position;
-	//int maxdistance = 1000;
-	//for (int i = 0; i < maxdistance; i++)
-	//{
-	//	Target2 += camera.view;//raycast to 20 times player direction
-	//	if (Target2.y <= 0)
-	//	{
-	//		break;
-	//	}
-	//}
-	//starepoint = Target2;
-	float speed = 2;
-	CCar* currentcar = Player::instance()->cars.GetCurrentCar();
-	Mtx44 rotation;
-	bool check = CheckSquareCollision();
-	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
-	Vector3 initialpos = currentcar->GetPostition()[0];
-	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
-	offsetPerFrame = rotation.Multiply(offsetPerFrame);
-	float RotationSpeed = 2;
-	Vector3 futurepos;
-	if (!check)
+	if (Application::IsKeyPressed(VK_LEFT) && bouncetime<GetTickCount64()) // This will change to the previous Car
 	{
-		futurepos = initialpos + offsetPerFrame;
-		currentcar->SetPosition(0, futurepos);
+		if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart())
+		{
+			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->Getprevious());
+			bouncetime = GetTickCount64() + 500;
+		}
 	}
-	camera.position = futurepos - rotation.Multiply(Vector3(0, -15, 60));
+
+	if (Application::IsKeyPressed(VK_RIGHT) && bouncetime < GetTickCount64()) // This will change to the next Car
+	{
+		if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr)
+		{
+			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->GetNext());
+			bouncetime = GetTickCount64() + 500;
+		}
+	}
 	
-	if (Application::IsKeyPressed('W'))
+	if (Application::IsKeyPressed(VK_RETURN))
 	{
-		if (currentcar->getcurrentSpeed() < currentcar->getmaxSpeed())
-		{
-			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() + 1);
-		}
-		if (Application::IsKeyPressed('A'))
-		{
-			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
-		}
-		if (Application::IsKeyPressed('D'))
-		{
-			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
-		}
-	}
-	else if (Application::IsKeyPressed('S'))
-	{
-		if (currentcar->getcurrentSpeed() > -currentcar->getmaxSpeed())
-		{
-			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() - 1);
-		}
-		if (Application::IsKeyPressed('A'))
-		{
-			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
-		}
-		if (Application::IsKeyPressed('D'))
-		{
-			currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
-		}
+		//Player::instance()->cars.GetCurrentCar()
 
+		User2.buyCar(Player::instance()->cars.GetCurrentCar());
 	}
-	else
-	{
-		if (currentcar->getcurrentSpeed() > 0)
-		{
-			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() - 2);
-			if (currentcar->getcurrentSpeed() < 0)
-			{
-				currentcar->setcurrentSpeed(0);
-			}
-			if (Application::IsKeyPressed('A'))
-			{
-				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
-			}
-			if (Application::IsKeyPressed('D'))
-			{
-				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
-			}
-		}
-		if (currentcar->getcurrentSpeed()< 0)
-		{
-			currentcar->setcurrentSpeed(currentcar->getcurrentSpeed() + 2);
-			if (currentcar->getcurrentSpeed() > 0)
-			{
-				currentcar->setcurrentSpeed(0);
-			}
-			if (Application::IsKeyPressed('A'))
-			{
-				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, -RotationSpeed, 0));
-			}
-			if (Application::IsKeyPressed('D'))
-			{
-				currentcar->SetRotation(0, currentcar->GetRotation()[0] + Vector3(0, RotationSpeed, 0));
-			}
-
-		}
-		offsetPerFrame = currentcar->GetPostition()[0] - initialpos;
-		
-	}
-	if (Application::IsKeyPressed('V'))
+	if (Application::IsKeyPressed('V')) // Change to the Main Menu
 	{
 		Application::state = Application::Mainmenu;
 	}
-	CheckSquareCollision();
+
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);
-	
-
-
-
 }
 
-void DrivingScene::Render()
+void Preview::Render()
 {
 
 	//Clear color & depth buffer every frame
@@ -338,8 +246,6 @@ void DrivingScene::Render()
 		}
 	}
 
-
-
 	RenderSkybox();
 
 	modelStack.PushMatrix();
@@ -348,48 +254,42 @@ void DrivingScene::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 50);
-	RenderMesh(Player::instance()->cars.GetCar(0)->GetMeshList()[0], false, true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
 	modelStack.Translate(Player::instance()->cars.GetCurrentCar()->GetPostition()[0].x, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].y, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].z);
 	modelStack.Rotate(Player::instance()->cars.GetCurrentCar()->GetRotation()[0].y, 0, 1, 0);
 	RenderMesh(Player::instance()->cars.GetCurrentCar()->GetMeshList()[0], false, true);
 	modelStack.PopMatrix();
 		
-	
-	for (int j = 0; j < objectlist[0].GetNumberOfOccurences(); j++)
-	{
-		modelStack.PushMatrix();
-		modelStack.Rotate((j*(360/objectlist[0].GetNumberOfOccurences())),0, 1, 0);
-		modelStack.Translate(0, 0, 150);
-		modelStack.Rotate(90, 0, 1, 0);
-		RenderMesh(objectlist[0].GetMeshList()[j], false, true);
-		modelStack.PopMatrix();
-	}
-	
-	for (int j = 0; j < objectlist[1].GetNumberOfOccurences(); j++)
-	{
-		modelStack.PushMatrix();
-		modelStack.Rotate((j * (360 / objectlist[1].GetNumberOfOccurences())), 0, 1, 0);
-		modelStack.Translate(0, 0, 400);
-		modelStack.Rotate(90, 0, 1, 0);
-		RenderMesh(objectlist[1].GetMeshList()[j], false, true);
-		modelStack.PopMatrix();
-	}
-	
-	modelStack.PushMatrix();
-	float speedometerRotation = (abs(Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()) / 125.0f) * -270.0f;
-	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERBACK], 10, 10, 20, 20, speedometerRotation);//render speedometerback
-	modelStack.PopMatrix();
-	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERFRONT], 10, 10, 20, 20, 0);//render speedometerfront
-	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0);//render crosshair
+	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0); // This renders the crosshair. REMOVE WHEN FINALISING
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
+
+	
+
+	renderPrice();
+
 	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
 }
 
-void DrivingScene::Exit()
+void Preview::renderPrice()
+{
+	if (!Player::instance()->cars.GetCurrentCar()->GetOwned())
+	{
+		string hello = "$" + to_string(Player::instance()->cars.GetCurrentCar()->GetPrice());
+
+		if (hello == "$0")
+		{
+			hello = "FREE";
+		}
+
+		RenderTextOnScreen(meshList[GEO_TEXT], "Price: " + hello, Color(0, 0, 0), 5, 2, 10.5f);
+	}
+	else
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "OWNED", Color(0, 0, 0), 5, 2, 10.5f);
+	}
+
+}
+
+void Preview::Exit()
 {
 	// Cleanup here
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
@@ -403,109 +303,21 @@ void DrivingScene::Exit()
 
 }
 
-bool DrivingScene::CheckSquareCollision()
-{
-	bool collided = false;
-	for (int i = 0; i < 2; i++)
-	{
-		for (int j = 0; j < objectlist[i].GetNumberOfOccurences(); j++)
-		{
-			Mesh* currentmesh = objectlist[i].GetMeshList()[j];
-			
-			Vector3 A = currentmesh->ColisionVector1;//front left object
-			Vector3 B = currentmesh->ColisionVector2;//front right
-			Vector3 C = currentmesh->ColisionVector3;//back right
-			Vector3 D = currentmesh->ColisionVector4;//back left
-
-			Vector3 A2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1;
-			Vector3 B2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2;
-			Vector3 C2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3;
-			Vector3 D2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4;
-
-			Vector3 MidAB = (A + B) * 0.5f;
-			Vector3 MidCD = (C + D) * 0.5f;
-			Vector3 Center = (MidAB + MidCD) * 0.5f;
-
-
-
-			if (currentmesh->camcollided == false)
-			{
-				bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-				if (x && Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()!=0)
-				{
-					currentmesh->camcollided = true;
-					bool foundposition = true;
-					Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - Center).Normalized();
-					Player::instance()->cars.GetCurrentCar()->setcurrentSpeed(-((6.0f / 10.0f) * Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()));
-					currentmesh->camfreezeposition = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] + pushback;
-					
-					A2 += pushback*0.1f;
-					B2 += pushback*0.1f;
-					C2 += pushback*0.1f;
-					D2 += pushback*0.1f;
-					collided = true;
-					while (foundposition)
-					{
-						bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-						if (!x)
-						{
-							break;
-						}
-						else
-						{
-							currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback*0.1f;
-							
-							A2 += pushback*0.1f;
-							B2 += pushback*0.1f;
-							C2 += pushback*0.1f;
-							D2 += pushback*0.1f;
-						}
-					}
-					currentmesh->camfreezeposition.y = 0;
-					Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
-
-				}
-			}
-			else if (currentmesh->camcollided)
-			{
-				Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
-				bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-				if (!x)
-				{
-					currentmesh->camcollided = false;
-					currentmesh->camfreezeposition = Vector3(0, 0, 0);
-				}
-			}
-			
-		}
-	}
-	
-	return collided;
-
-}
-
-void DrivingScene::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
+void Preview::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 {
 
 	if (hasCollision)
 	{
 		
-		mesh->ColisionVector1 = mesh->initColisionVector1;
-		mesh->ColisionVector2 = mesh->initColisionVector2;
-		mesh->ColisionVector3 = mesh->initColisionVector3;
-		mesh->ColisionVector4 = mesh->initColisionVector4;
-		mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
-		mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
-		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector3);
-		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector4);
+		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
+		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
 		mesh->collison = true;
 		mesh->collisionboxcreated = true;
 		
-		
-		
-		/*mesh->Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+
+		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		modelStack.PushMatrix();
-		RenderMesh(mesh->Collider, false, false);
+		RenderMesh(Collider, false, false);
 		modelStack.PopMatrix();*/
 
 	}
@@ -549,7 +361,7 @@ void DrivingScene::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 	if (mesh->textureID > 0) glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void DrivingScene::RenderSkybox()
+void Preview::RenderSkybox()
 {
 	float size = bordersize;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
@@ -599,7 +411,7 @@ void DrivingScene::RenderSkybox()
 	
 }
 
-void DrivingScene::RenderText(Mesh* mesh, std::string text, Color color)
+void Preview::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0)
 		return;
@@ -625,7 +437,7 @@ void DrivingScene::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void DrivingScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void Preview::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0)
 		return;
@@ -666,7 +478,7 @@ void DrivingScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color,
 
 	glEnable(GL_DEPTH_TEST);
 }
-void DrivingScene::RenderFramerate(Mesh* mesh, Color color, float size, float x, float y)
+void Preview::RenderFramerate(Mesh* mesh, Color color, float size, float x, float y)
 {
 
 	static float framesPerSecond = 0.0f;
@@ -722,7 +534,7 @@ void DrivingScene::RenderFramerate(Mesh* mesh, Color color, float size, float x,
 	glEnable(GL_DEPTH_TEST);
 }
 
-void DrivingScene::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, float rotation)
+void Preview::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, float rotation)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;

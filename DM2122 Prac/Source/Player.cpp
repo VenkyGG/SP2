@@ -102,27 +102,73 @@ void Player::initOwnedCars()
 		{
 			if (lineNumber == 6)
 			{
-				carsOwned[0] = line;
+				if (line == "OWNED")
+				{
+					carsOwned[0] = true;
+					cars.GetCar(0)->SetOwned(true);
+				}
+				else
+				{
+					carsOwned[0] = false;
+					cars.GetCar(0)->SetOwned(false);
+				}
 			}
 
 			if (lineNumber == 7)
 			{
-				carsOwned[1] = line;
+				if (line == "OWNED")
+				{
+					carsOwned[1] = true;
+					cars.GetCar(1)->SetOwned(true);
+				}
+				else
+				{
+					carsOwned[1] = false;
+					cars.GetCar(1)->SetOwned(false);
+
+				}
 			}
 
 			if (lineNumber == 8)
 			{
-				carsOwned[2] = line;
+				if (line == "OWNED")
+				{
+					carsOwned[2] = true;
+					cars.GetCar(2)->SetOwned(true);
+				}
+				else
+				{
+					carsOwned[2] = false;
+					cars.GetCar(2)->SetOwned(false);
+				}
 			}
 
 			if (lineNumber == 9)
 			{
-				carsOwned[3] = line;
+				if (line == "OWNED")
+				{
+					carsOwned[3] = true;
+					cars.GetCar(3)->SetOwned(true);
+				}
+				else
+				{
+					carsOwned[3] = false;
+					cars.GetCar(3)->SetOwned(false);
+				}
 			}
 
 			if (lineNumber == 10)
 			{
-				carsOwned[4] = line;
+				if (line == "OWNED")
+				{
+					carsOwned[4] = true;
+					cars.GetCar(4)->SetOwned(true);
+				}
+				else
+				{
+					carsOwned[4] = false;
+					cars.GetCar(4)->SetOwned(false);
+				}
 			}
 
 			lineNumber++;
@@ -133,6 +179,8 @@ void Player::initOwnedCars()
 			}
 		}
 	}
+	
+
 }
 
 bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
@@ -195,18 +243,6 @@ void Player::PrintOwnedCars()
 	std::cout << "Car 3: " << carsOwned[2] << std::endl;
 	std::cout << "Car 4: " << carsOwned[3] << std::endl;
 	std::cout << "Car 5: " << carsOwned[4] << std::endl;
-}
-
-bool Player::hasCar(int whichCar) // If returns TRUE, Player own the car.
-{
-	if (carsOwned[whichCar] ==  "OWNED")
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 void Player::rewriteFile()

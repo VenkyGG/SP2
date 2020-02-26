@@ -12,6 +12,7 @@ public:
 		Mainmenu,
 		Motorshow,
 		Driving,
+		PreviewxD,
 		Luckyspin,
 		Slotmachine,
 		TOTALSCENES
