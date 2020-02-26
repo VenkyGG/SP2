@@ -46,6 +46,11 @@ public:
 	Vector3 ColisionVector2;
 	Vector3 ColisionVector3;
 	Vector3 ColisionVector4;
+	Vector3 initColisionVector1;
+	Vector3 initColisionVector2;
+	Vector3 initColisionVector3;
+	Vector3 initColisionVector4;
+	Mesh* Collider;
 	bool camcollided = false;
 	Vector3 camfreezeposition;
 	
