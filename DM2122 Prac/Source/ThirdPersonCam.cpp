@@ -30,34 +30,35 @@ void ThirdPersonCamera::Update(double dt)
 	static const float CAMERA_SPEED = 50.f;
 	Vector3 up2 = Vector3(0, 1, 0);
 
+	if (mouseenabled)
+	{
+		double xpos = Application::getmouseXpos();
+		double ypos = Application::getmouseYpos();
+		float yaw = sensitivity * -xpos;
+		Mtx44 rotation;
+		rotation.SetToRotation(yaw, 0, 1, 0);
+		position -= offset;
+		position = rotation * position;
+		position += offset;
+		up = rotation * up;
+
+		float pitch = sensitivity * -ypos;
+
+		view = (target - position).Normalized();
+		right = view.Cross(up);
+		right.y = 0;
+		right.Normalize();
+		up = right.Cross(view).Normalized();
+		rotation.SetToRotation(pitch, right.x, right.y, right.z);
+		position -= offset;
+		position = rotation * position;
+		position += offset;
+
+		Application::mouseupdate();
+	}
 	if (RotationEnabled)
 	{
-		if (mouseenabled)
-		{
-			double xpos = Application::getmouseXpos();
-			double ypos = Application::getmouseYpos();
-			float yaw = sensitivity * -xpos;
-			Mtx44 rotation;
-			rotation.SetToRotation(yaw, 0, 1, 0);
-			position -= offset;
-			position = rotation * position;
-			position += offset;
-			up = rotation * up;
-
-			float pitch = sensitivity * -ypos;
-
-			view = (target - position).Normalized();
-			right = view.Cross(up);
-			right.y = 0;
-			right.Normalize();
-			up = right.Cross(view).Normalized();
-			rotation.SetToRotation(pitch, right.x, right.y, right.z);
-			position -= offset;
-			position = rotation * position;
-			position += offset;
-
-			Application::mouseupdate();
-		}
+		
 		if (Application::IsKeyPressed(VK_LEFT))
 		{
 			float yaw = (float)(-CAMERA_SPEED * dt);
