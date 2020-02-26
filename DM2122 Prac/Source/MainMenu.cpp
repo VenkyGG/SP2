@@ -130,17 +130,14 @@ void MainMenu::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	float height = Application::getmouseYpos();
-	Application::mouseupdate();
-
 	int offset = 6;
-	if ((Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64() && level < 3)
+	if (Application::IsKeyPressed('S') && clock < GetTickCount64() && level < 3)
 	{
 		pos -= offset;
 		level++;
 		clock = GetTickCount64() + 500;
 	}
-	else if ((Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64() && level>1)
+	else if (Application::IsKeyPressed('W') && clock < GetTickCount64() && level>1)
 	{
 		pos += offset;
 		level--;
@@ -149,12 +146,11 @@ void MainMenu::Update(double dt)
 
 	if (level==1 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-		
 		Application::state = Application::Motorshow;
 	}
 	else if (level==2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-
+		Application::state = Application::Settings;
 	}
 	else if (level==3 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{

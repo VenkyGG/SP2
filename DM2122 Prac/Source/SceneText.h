@@ -25,7 +25,7 @@ class SceneText : public Scene
 		NUM_GEOMETRY,
 	};
 	const static int numlights = 9;
-	const static int numberofNPCs = 500;
+	const static int numberofNPCs = 300;
 
 	enum Scene5_UNIFORM_TYPE
 	{

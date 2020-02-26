@@ -23,6 +23,19 @@ SceneText::SceneText()
 	{
 		meshList[i] = NULL;
 	}
+	
+}
+
+SceneText::~SceneText()
+{
+}
+
+void SceneText::Init()
+{
+
+
+	initialized = true;
+
 	int currentindex = 0;
 	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ"))
 	{
@@ -42,10 +55,9 @@ SceneText::SceneText()
 						}
 					}
 					objectlist[i].SetMesh(location, p.path().string());
-					if (std::experimental::filesystem::exists("Image//" + location + ".tga"))
-					{
-						objectlist[i].GetMesh()->textureID = LoadTGA(("Image//" + location + ".tga").c_str());
-					}
+					
+					objectlist[i].GetMesh()->textureID = LoadTGA(("Image//" + location + ".tga").c_str());
+					
 					objectlist[i].GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
 					objectlist[i].GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
 					objectlist[i].GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
@@ -59,15 +71,6 @@ SceneText::SceneText()
 
 		}
 	}
-}
-
-SceneText::~SceneText()
-{
-}
-
-void SceneText::Init()
-{
-	initialized = true;
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Generate a default VAO for now
@@ -416,7 +419,7 @@ void SceneText::Render()
 				modelStack.PushMatrix();
 				modelStack.Scale(0.32f, 0.32f, 1);
 				modelStack.Translate(2.75f, 15, 0.2f);
-				RenderText(meshList[GEO_TEXT], "U are a nice guy", Color(0, 0, 0));
+				RenderText(meshList[GEO_TEXT], "Hello!", Color(0, 0, 0));
 				modelStack.PopMatrix();
 				modelStack.PopMatrix();
 			}
@@ -491,9 +494,25 @@ void SceneText::Render()
 				modelStack.PushMatrix();
 				modelStack.Translate(objectlist[i].GetPostition()[k].x, objectlist[i].GetPostition()[k].y, objectlist[i].GetPostition()[k].z);
 				//cout << objectlist[i].GetPostition()[k] << endl;
-				RenderMesh(objectlist[i].GetMesh(), false, false);
+				RenderMesh(objectlist[i].GetMeshList()[k], false, false);
 				modelStack.PopMatrix();
 			}
+		}
+		
+		if (objectlist[i].GetMesh()->name == "spinningWheel")
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(300,0,0);
+			modelStack.Scale(5, 5, 5);
+			RenderMesh(objectlist[i].GetMeshList()[0], true, true);
+		}
+		if (objectlist[i].GetMesh()->name == "spinningWheelBase")
+		{
+			modelStack.PushMatrix();
+			RenderMesh(objectlist[i].GetMeshList()[0], true, true);
+			modelStack.PopMatrix();
+			modelStack.PopMatrix();
+
 		}
 
 	}
@@ -527,7 +546,7 @@ void SceneText::Exit()
 }
 void SceneText::CheckSquareCollision()
 {
-	for (int current = 0; current < size(objectlist); current++)
+	for (int current = 0; current < numberofobjects; current++)
 	{
 		for (int i = 0; i < objectlist[current].GetNumberOfOccurences(); i++)
 		{
@@ -585,60 +604,76 @@ void SceneText::CheckSquareCollision()
 						}
 						camera.target = camera.position + camera.view;
 
-
 						for (int t = 0; t < numberofNPCs; t++)
 						{
-							Mesh* currentmesh = NPCs[t]->GetMesh(0);
+							Mesh* currentmesh = objectlist[current].GetMeshList()[i];
+
 							Vector3 A = currentmesh->ColisionVector1;//front left 
 							Vector3 B = currentmesh->ColisionVector2;//front right
 							Vector3 C = currentmesh->ColisionVector3;//back right
 							Vector3 D = currentmesh->ColisionVector4;//back left
+
+							Mtx44 scaling;
+							scaling.SetToScale(2, 2, 2);
+							Vector3 A2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector1);
+							Vector3 B2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector2);
+							Vector3 C2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector3);
+							Vector3 D2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector4);
+
 							Vector3 MidAB = (A + B) * 0.5f;
 							Vector3 MidCD = (C + D) * 0.5f;
 							Vector3 Center = (MidAB + MidCD) * 0.5f;
-							Vector3 E = NPCs[t]->GetPosition();
-							
-							bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
-							if (x)
+
+
+
+							if (currentmesh->camcollided == false)
 							{
-								objectlist[current].GetMeshList()[t]->camcollided = true;
-								bool foundposition = true;
-								Vector3 pushback = (NPCs[t]->GetPosition() - Center).Normalized();
-								Vector3 F = NPCs[t]->GetPosition() + pushback * 0.1f;
-								while (foundposition)
+								bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
+								if (x)
 								{
-									bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
-									if (!x)
+									currentmesh->camcollided = true;
+									bool foundposition = true;
+									Vector3 pushback = (NPCs[t]->GetPosition() - Center).Normalized();
+									currentmesh->camfreezeposition = NPCs[t]->GetPosition() + pushback * 0.1f;
+									A2 += pushback * 0.1f;
+									B2 += pushback * 0.1f;
+									C2 += pushback * 0.1f;
+									D2 += pushback * 0.1f;
+									while (foundposition)
 									{
-										break;
+										bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
+										if (!x)
+										{
+											break;
+										}
+										else
+										{
+											currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback * 0.1f;
+											A2 += pushback * 0.1f;
+											B2 += pushback * 0.1f;
+											C2 += pushback * 0.1f;
+											D2 += pushback * 0.1f;
+										}
 									}
-									else
-									{
-										F = F + pushback * 0.1f;
-									}
+									currentmesh->camfreezeposition.y = 0;
+									NPCs[t]->SetPosition(currentmesh->camfreezeposition);
+
 								}
-								F.y = 0;
-								NPCs[t]->SetPosition(F);
 							}
-							
-							
-							/*if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
+							else if (currentmesh->camcollided)
 							{
-								NPCs[i]->SetPosition(Vector3(xmax + 0.5f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+								NPCs[t]->SetPosition(currentmesh->camfreezeposition);
+								bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
+								if (!x)
+								{
+									currentmesh->camcollided = false;
+									currentmesh->camfreezeposition = Vector3(0, 0, 0);
+								}
 							}
-							if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
-							{
-								NPCs[i]->SetPosition(Vector3(xmin - 0.5f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
-							}
-							if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
-							{
-								NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.5f));
-							}
-							if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
-							{
-								NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.5f));
-							}*/
 						}
+							
+						
+						
 					}
 				}
 			}

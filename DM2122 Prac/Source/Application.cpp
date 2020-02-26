@@ -83,7 +83,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800*2, 600*2, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
 	screenoffsetx = 146;
 	screenoffsety = 213;
 	glfwSetWindowPos(m_window, screenoffsetx, screenoffsety);
@@ -155,7 +155,7 @@ void Application::Run()
 	Ptr[Luckyspin] = new LuckySpin();
 	Ptr[Slotmachine] = new SceneSlots();
 	Ptr[Settings] = new SceneSetting();
-	state = Motorshow;
+	state = Mainmenu;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
@@ -172,11 +172,8 @@ void Application::Run()
 		if (scene != Ptr[state])
 		{
 			scene = Ptr[state];
-			if (scene->initialized == false)
-			{
-				scene->Init();
-			}
-			else if (scene == Ptr[0])
+			scene->Init();
+			if (scene == Ptr[0])
 			{
 				MainMenu* currentscene = static_cast<MainMenu*>(scene);
 				currentscene->Paused = true;

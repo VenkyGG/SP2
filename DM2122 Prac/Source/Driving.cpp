@@ -194,17 +194,7 @@ void DrivingScene::Update(double dt)
 	}
 
 	
-	//Vector3 Target2 = camera.position;
-	//int maxdistance = 1000;
-	//for (int i = 0; i < maxdistance; i++)
-	//{
-	//	Target2 += camera.view;//raycast to 20 times player direction
-	//	if (Target2.y <= 0)
-	//	{
-	//		break;
-	//	}
-	//}
-	//starepoint = Target2;
+
 	float speed = 2;
 	CCar* currentcar = Player::instance()->cars.GetCurrentCar();
 	Mtx44 rotation;
@@ -295,7 +285,6 @@ void DrivingScene::Update(double dt)
 	{
 		Application::state = Application::Mainmenu;
 	}
-	CheckSquareCollision();
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);
 	
