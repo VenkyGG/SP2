@@ -574,7 +574,7 @@ void SceneText::CheckSquareCollision()
 						Vector3 E = camera.position;
 						if (objectlist[current].GetMeshList()[i]->camcollided == false)
 						{
-							bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+							bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
 							if (x)
 							{
 								objectlist[current].GetMeshList()[i]->camcollided = true;
@@ -584,7 +584,7 @@ void SceneText::CheckSquareCollision()
 								Vector3 F = objectlist[current].GetMeshList()[i]->camfreezeposition;
 								while (foundposition)
 								{
-									bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
+									bool x = Physics::CheckCollision(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
 									if (!x)
 									{
 										break;
@@ -602,7 +602,7 @@ void SceneText::CheckSquareCollision()
 						else if (objectlist[current].GetMeshList()[i]->camcollided)
 						{
 							camera.position = objectlist[current].GetMeshList()[i]->camfreezeposition;
-							bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+							bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
 							if (!x)
 							{
 								objectlist[current].GetMeshList()[i]->camcollided = false;
@@ -622,7 +622,7 @@ void SceneText::CheckSquareCollision()
 							Vector3 Center = (MidAB + MidCD) * 0.5f;
 							Vector3 E = NPCs[t]->GetPosition();
 
-							bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+							bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
 							if (x)
 							{
 								objectlist[current].GetMeshList()[i]->camcollided = true;
@@ -631,7 +631,7 @@ void SceneText::CheckSquareCollision()
 								Vector3 F = NPCs[t]->GetPosition() + pushback * 0.1f;
 								while (foundposition)
 								{
-									bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
+									bool x = Physics::CheckCollision(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
 									if (!x)
 									{
 										break;

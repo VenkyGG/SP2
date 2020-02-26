@@ -41,9 +41,9 @@ void ThirdPersonCamera::Update(double dt)
 		position = rotation * position;
 		position += offset;
 		up = rotation * up;
+		Rotationfloat += yaw;
 
 		float pitch = sensitivity * -ypos;
-
 		view = (target - position).Normalized();
 		right = view.Cross(up);
 		right.y = 0;
@@ -53,7 +53,7 @@ void ThirdPersonCamera::Update(double dt)
 		position -= offset;
 		position = rotation * position;
 		position += offset;
-
+		Rotationfloat2 += pitch;
 		Application::mouseupdate();
 	}
 	if (RotationEnabled)

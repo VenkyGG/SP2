@@ -13,8 +13,8 @@ public:
 	Vector3 defaultPosition;
 	Vector3 defaultTarget;
 	Vector3 defaultUp;
-	float Rotationfloat;
-	float Rotationfloat2;
+	float Rotationfloat = 0;
+	float Rotationfloat2 = 0;
 	
 	Vector3 offset;
 	Vector3 view;
