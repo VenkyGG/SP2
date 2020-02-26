@@ -588,8 +588,7 @@ void SceneText::CheckSquareCollision()
 
 						for (int t = 0; t < numberofNPCs; t++)
 						{
-
-							Mesh* currentmesh = objectlist[current].GetMeshList()[t];
+							Mesh* currentmesh = NPCs[t]->GetMesh(0);
 							Vector3 A = currentmesh->ColisionVector1;//front left 
 							Vector3 B = currentmesh->ColisionVector2;//front right
 							Vector3 C = currentmesh->ColisionVector3;//back right
