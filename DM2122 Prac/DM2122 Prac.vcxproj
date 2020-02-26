@@ -144,7 +144,6 @@
     <ClInclude Include="Source\Object.h" />
     <ClInclude Include="Source\Physics.h" />
     <ClInclude Include="Source\Player.h" />
-    <ClInclude Include="Source\Preview.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneSlots.h" />
     <ClInclude Include="Source\SceneText.h" />
@@ -172,7 +171,6 @@
     <ClCompile Include="Source\Object.cpp" />
     <ClCompile Include="Source\Physics.cpp" />
     <ClCompile Include="Source\Player.cpp" />
-    <ClCompile Include="Source\Preview.cpp" />
     <ClCompile Include="Source\SceneSlots.cpp" />
     <ClCompile Include="Source\SceneText.cpp" />
     <ClCompile Include="Source\shader.cpp" />

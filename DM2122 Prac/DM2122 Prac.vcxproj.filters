@@ -93,9 +93,6 @@
     <ClInclude Include="Source\SceneSlots.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Preview.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\shader.cpp">
@@ -165,9 +162,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneSlots.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Preview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
