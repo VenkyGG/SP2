@@ -13,6 +13,7 @@
 #include "SceneText.h"
 #include "MainMenu.h"
 #include "Driving.h"
+#include "Preview.h"
 #include "LuckySpin.h"
 #include "SceneSlots.h"
 #include "Player.h"
@@ -142,15 +143,17 @@ void Application::mouseupdate()//reset mouse position
 
 void Application::Run()
 {
+	Player::instance();
 	//Main Loop
 	Scene* Ptr[TOTALSCENES];
 	
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
+	Ptr[PreviewxD] = new Preview();
 	Ptr[Luckyspin] = new LuckySpin();
 	Ptr[Slotmachine] = new SceneSlots();
-	state = Driving;
+	state = PreviewxD;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
