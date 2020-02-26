@@ -260,7 +260,7 @@ void Player::rewriteFile()
 
 			lineNumber++;
 
-			if (lineNumber == 5) // Break out of loop such that doesnt check other lines.
+			if (lineNumber == 6) // Break out of loop such that doesnt check other lines.
 			{
 				break;
 			}
@@ -282,13 +282,17 @@ void Player::rewriteFile()
 
 	for (int counter = 1; counter <= 10; ++counter)
 	{
+		if (counter >= 1 && counter <= 5  && counter!=4)
+		{
+			write << storeLines[counter - 1] + "\n";
+		}
 		if (counter == 4)
 		{
 			write << to_string(getMoney()) + "\n";
 		}
 		else if (counter == 6)
 		{
-			if (carsOwned[0] == true)
+			if (cars.GetCar(0)->GetOwned())
 			{
 				write << "OWNED\n";
 			}
@@ -299,7 +303,7 @@ void Player::rewriteFile()
 		}
 		else if (counter == 7)
 		{
-			if (carsOwned[1] == true)
+			if (cars.GetCar(1)->GetOwned())
 			{
 				write << "OWNED\n";
 			}
@@ -310,7 +314,7 @@ void Player::rewriteFile()
 		}
 		else if (counter == 8)
 		{
-			if (carsOwned[2] == true)
+			if (cars.GetCar(2)->GetOwned())
 			{
 				write << "OWNED\n";
 			}
@@ -321,7 +325,7 @@ void Player::rewriteFile()
 		}
 		else if (counter == 9)
 		{
-			if (carsOwned[3] == true)
+			if (cars.GetCar(3)->GetOwned())
 			{
 				write << "OWNED\n";
 			}
@@ -332,7 +336,7 @@ void Player::rewriteFile()
 		}
 		else if (counter == 10)
 		{
-			if (carsOwned[4] == true)
+			if (cars.GetCar(4)->GetOwned())
 			{
 				write << "OWNED\n";
 			}
@@ -341,9 +345,6 @@ void Player::rewriteFile()
 				write << "UNOWNED\n";
 			}
 		}
-		else
-		{
-			write << storeLines[counter - 1] + "\n";
-		}
+		
 	}
 }

@@ -26,10 +26,12 @@ void Shop::buyCar(CCar* whichCar)
 
 			std::cout << "You have bought the Car! " << whichCar << std::endl;
 		}
+		Player::instance()->rewriteFile();
 	}
 	else
 	{
 		std::cout << "You already have the car!" << std::endl;
+		Application::state = Application::Driving;
 	}
 }
 //

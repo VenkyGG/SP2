@@ -12,7 +12,7 @@ using namespace std;
 class Player
 {
 private:
-	int startingBalance = 100000; // Change this to alter the starting balance.
+	int startingBalance = 500000; // Change this to alter the starting balance.
 
 	int money;
 
@@ -20,7 +20,7 @@ private:
 
 	std::string File = "player.txt"; // Change this if you want to have a different txt file for player.
 
-	std::string storeLines[4];
+	std::string storeLines[5];
 
 	Player();
 	~Player();

@@ -201,7 +201,7 @@ void DrivingScene::Update(double dt)
 	bool check = CheckSquareCollision();
 	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
 	Vector3 initialpos = currentcar->GetPostition()[0];
-	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
+	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 4));
 	offsetPerFrame = rotation.Multiply(offsetPerFrame);
 	float RotationSpeed = 2;
 	Vector3 futurepos;
@@ -367,7 +367,7 @@ void DrivingScene::Render()
 	}
 	
 	modelStack.PushMatrix();
-	float speedometerRotation = (abs(Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()) / 125.0f) * -270.0f;
+	float speedometerRotation = ((abs(Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()/5)*25) / 125.0f) * -270.0f;
 	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERBACK], 10, 10, 20, 20, speedometerRotation);//render speedometerback
 	modelStack.PopMatrix();
 	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERFRONT], 10, 10, 20, 20, 0);//render speedometerfront

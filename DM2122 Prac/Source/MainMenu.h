@@ -19,6 +19,7 @@ class MainMenu : public Scene
 		GEO_GAMENAME,
 		GEO_MENU,
 		GEO_MENUCURSOR,
+		GEO_PAUSED,
 		NUM_GEOMETRY,
 	};
 
@@ -82,7 +83,7 @@ public:
 	float pos = 2;
 	int level = 1;
 	double clock;
-	bool Paused;
+	bool Paused = false;
 
 	virtual void Init();
 	virtual void Update(double dt);

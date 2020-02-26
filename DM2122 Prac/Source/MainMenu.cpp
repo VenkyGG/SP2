@@ -94,8 +94,8 @@ void MainMenu::Init()
 	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
 	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//MainMenu Textures//LOGO.tga");
 
-	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//MainMenu Textures//Pause.tga");
+	meshList[GEO_PAUSED] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
+	meshList[GEO_PAUSED]->textureID = LoadTGA("Image//MainMenu Textures//Pause.tga");
 
 	meshList[GEO_MENUCURSOR] = MeshBuilder::GenerateQuad("menuCursor", Color(0.f, 0.23f, 0.68f), 50.f, 50.f);
 	meshList[GEO_MENUCURSOR]->textureID = LoadTGA("Image//MainMenu Textures//Arrow.tga");
@@ -156,10 +156,7 @@ void MainMenu::Update(double dt)
 	{
 
 	}
-	else if (Paused)
-	{
-		//render paused texture
-	}
+	
 }
 
 
@@ -182,9 +179,15 @@ void MainMenu::Render()
 	modelStack.PushMatrix();
 	RenderMeshOnScreen(meshList[GEO_MENUCURSOR], 20, 2*pos+30, 0.2f, 0.2f);
 	modelStack.PopMatrix();
-
 	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_GAMENAME], 40.f, 50.f, 0.6f, 0.5f);
+	if (!Paused)
+	{
+		RenderMeshOnScreen(meshList[GEO_GAMENAME], 40.f, 50.f, 0.6f, 0.5f);
+	}
+	else
+	{
+		RenderMeshOnScreen(meshList[GEO_PAUSED], 40.f, 50.f, 0.6f, 0.5f);
+	}
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();

@@ -18,12 +18,12 @@ using namespace std;
 
 SceneText::SceneText()
 {
-	
+
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
 	}
-	
+
 }
 
 SceneText::~SceneText()
@@ -55,13 +55,15 @@ void SceneText::Init()
 						}
 					}
 					objectlist[i].SetMesh(location, p.path().string());
-					
-					objectlist[i].GetMesh()->textureID = LoadTGA(("Image//" + location + ".tga").c_str());
-					
+					if (std::experimental::filesystem::exists("Image//" + location + ".tga"))
+					{
+						objectlist[i].GetMesh()->textureID = LoadTGA(("Image//" + location + ".tga").c_str());
+					}
 					objectlist[i].GetMesh()->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
 					objectlist[i].GetMesh()->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
 					objectlist[i].GetMesh()->material.kSpecular.Set(1.f, 1.f, 1.f);
 					objectlist[i].GetMesh()->material.kShininess = 1.f;
+					objectlist[i].SetNumberOfOccurences(1);
 					numberofobjects++;
 					currentindex++;
 					break;
@@ -103,8 +105,8 @@ void SceneText::Init()
 	//For First Light
 	for (int i = 0; i < numlights; i++)
 	{
-		m_parameters[8 + i * 11] =  glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].position_cameraspace").c_str());
-		m_parameters[9 + i * 11] =  glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].color").c_str());
+		m_parameters[8 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].position_cameraspace").c_str());
+		m_parameters[9 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].color").c_str());
 		m_parameters[10 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].power").c_str());
 		m_parameters[11 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kC").c_str());
 		m_parameters[12 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].kL").c_str());
@@ -239,7 +241,7 @@ void SceneText::Init()
 				{
 					int currentlight = j * sqrt(numlights) + k;
 					objectlist[i].SetPosition(currentlight, currentlightpos);
-					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y-10, currentlightpos.z);
+					light[currentlight].position.Set(currentlightpos.x, currentlightpos.y - 10, currentlightpos.z);
 					float differenceX = (finallightpos.x - initiallightpos.x) / (sqrt(numlights) - 1);
 					currentlightpos.x += differenceX;
 				}
@@ -256,7 +258,7 @@ void SceneText::Init()
 
 void SceneText::Update(double dt)
 {
-	
+
 	if (Application::IsKeyPressed(0x31))
 	{
 		glDisable(GL_CULL_FACE);
@@ -274,7 +276,7 @@ void SceneText::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	
+
 
 
 
@@ -293,7 +295,7 @@ void SceneText::Update(double dt)
 
 	starepoint = Target2;
 	float speed = 2;
-	
+
 	if (Application::IsKeyPressed('W'))
 	{
 
@@ -328,6 +330,11 @@ void SceneText::Update(double dt)
 	if (Application::IsKeyPressed('V'))
 	{
 		Application::state = Application::Mainmenu;
+
+	}
+	if (Application::IsKeyPressed('G'))
+	{
+		Application::state = Application::PreviewxD;
 
 	}
 	CheckSquareCollision();
@@ -390,7 +397,7 @@ void SceneText::Render()
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
 	modelStack.PopMatrix();
 
-	
+
 	for (int i = 0; i < numberofNPCs; i++)
 	{
 		modelStack.PushMatrix();
@@ -418,7 +425,7 @@ void SceneText::Render()
 				}
 				modelStack.PushMatrix();
 				modelStack.Scale(0.32f, 0.32f, 1);
-				modelStack.Translate(2.75f, 15, 0.2f);
+				modelStack.Translate(3.75f, 15, 0.2f);
 				RenderText(meshList[GEO_TEXT], "Hello!", Color(0, 0, 0));
 				modelStack.PopMatrix();
 				modelStack.PopMatrix();
@@ -498,25 +505,25 @@ void SceneText::Render()
 				modelStack.PopMatrix();
 			}
 		}
-		
+
 		if (objectlist[i].GetMesh()->name == "spinningWheel")
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(300,0,0);
+			modelStack.Translate(300, 25, 0);
 			modelStack.Scale(5, 5, 5);
 			RenderMesh(objectlist[i].GetMeshList()[0], true, true);
 		}
 		if (objectlist[i].GetMesh()->name == "spinningWheelBase")
 		{
 			modelStack.PushMatrix();
+			modelStack.Translate(0, -3.5f, 0);
 			RenderMesh(objectlist[i].GetMeshList()[0], true, true);
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
-
 		}
 
 	}
-	
+
 	for (int i = 0; i < numlights; i++)
 	{
 		modelStack.PushMatrix();
@@ -603,83 +610,47 @@ void SceneText::CheckSquareCollision()
 							}
 						}
 						camera.target = camera.position + camera.view;
-
 						for (int t = 0; t < numberofNPCs; t++)
 						{
-							Mesh* currentmesh = objectlist[current].GetMeshList()[i];
-
+							Mesh* currentmesh = NPCs[t]->GetMesh(0);
 							Vector3 A = currentmesh->ColisionVector1;//front left 
 							Vector3 B = currentmesh->ColisionVector2;//front right
 							Vector3 C = currentmesh->ColisionVector3;//back right
 							Vector3 D = currentmesh->ColisionVector4;//back left
-
-							Mtx44 scaling;
-							scaling.SetToScale(2, 2, 2);
-							Vector3 A2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector1);
-							Vector3 B2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector2);
-							Vector3 C2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector3);
-							Vector3 D2 = scaling.Multiply(NPCs[t]->GetMesh(0)->ColisionVector4);
-
 							Vector3 MidAB = (A + B) * 0.5f;
 							Vector3 MidCD = (C + D) * 0.5f;
 							Vector3 Center = (MidAB + MidCD) * 0.5f;
+							Vector3 E = NPCs[t]->GetPosition();
 
-
-
-							if (currentmesh->camcollided == false)
+							bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+							if (x)
 							{
-								bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-								if (x)
+								objectlist[current].GetMeshList()[i]->camcollided = true;
+								bool foundposition = true;
+								Vector3 pushback = (NPCs[t]->GetPosition() - Center).Normalized();
+								Vector3 F = NPCs[t]->GetPosition() + pushback * 0.1f;
+								while (foundposition)
 								{
-									currentmesh->camcollided = true;
-									bool foundposition = true;
-									Vector3 pushback = (NPCs[t]->GetPosition() - Center).Normalized();
-									currentmesh->camfreezeposition = NPCs[t]->GetPosition() + pushback * 0.1f;
-									A2 += pushback * 0.1f;
-									B2 += pushback * 0.1f;
-									C2 += pushback * 0.1f;
-									D2 += pushback * 0.1f;
-									while (foundposition)
+									bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
+									if (!x)
 									{
-										bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-										if (!x)
-										{
-											break;
-										}
-										else
-										{
-											currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback * 0.1f;
-											A2 += pushback * 0.1f;
-											B2 += pushback * 0.1f;
-											C2 += pushback * 0.1f;
-											D2 += pushback * 0.1f;
-										}
+										break;
 									}
-									currentmesh->camfreezeposition.y = 0;
-									NPCs[t]->SetPosition(currentmesh->camfreezeposition);
-
+									else
+									{
+										F = F + pushback * 0.1f;
+									}
 								}
-							}
-							else if (currentmesh->camcollided)
-							{
-								NPCs[t]->SetPosition(currentmesh->camfreezeposition);
-								bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-								if (!x)
-								{
-									currentmesh->camcollided = false;
-									currentmesh->camfreezeposition = Vector3(0, 0, 0);
-								}
+								F.y = 0;
+								NPCs[t]->SetPosition(F);
 							}
 						}
-							
-						
-						
 					}
 				}
 			}
 		}
 	}
-	
+
 
 }
 
@@ -749,8 +720,8 @@ void SceneText::RenderSkybox()
 {
 	float size = bordersize;//uniform scaling
 	float offset = size / 200;//used to prevent lines appearing
-	
-	
+
+
 	modelStack.PushMatrix();
 	///scale, translate, rotate
 	modelStack.Translate(-size + offset, 0.f, 0.f);
@@ -792,7 +763,7 @@ void SceneText::RenderSkybox()
 
 	RenderMesh(meshList[GEO_FLATLAND], true, true);
 	modelStack.PopMatrix();
-	
+
 }
 
 void SceneText::RenderText(Mesh* mesh, std::string text, Color color)

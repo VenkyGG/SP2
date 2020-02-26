@@ -4,7 +4,7 @@
 
 CarsList::CarsList()
 {
-	int maxspeed = 25;
+	int maxspeed = 5;
 	int Price = 0;
 	CCar* current = Start;
 	numcars = 0;
@@ -78,7 +78,7 @@ CarsList::CarsList()
 			current->GetMeshList()[0]->textureID = current->GetMesh()->textureID;
 			
 		}
-		maxspeed += 25;
+		maxspeed += 5;
 		Price += 100000;
 	}
 	float angleposition = 360.0f / numcars;
