@@ -333,10 +333,10 @@ void DrivingScene::Render()
 
 	RenderSkybox();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
-	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
+	//RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
+	//modelStack.PopMatrix();
 
 
 
