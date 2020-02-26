@@ -44,7 +44,7 @@ Mesh* Object::GetMesh()
 void Object::SetMesh(string name, string filelocation)
 {
 	mesh = MeshBuilder::GenerateOBJ(name, filelocation);
-	for (size_t i = 0; i < NumberOfOccurances; i++)
+	for (int i = 0; i < NumberOfOccurances; i++)
 	{
 		meshlist[i]->mode = mesh->mode;
 		meshlist[i]->colorBuffer = mesh->colorBuffer;
@@ -82,6 +82,25 @@ int Object::GetNumberOfOccurences()
 void Object::SetNumberOfOccurences(int number)
 {
 	NumberOfOccurances = number;
+	meshlist[0]->mode = mesh->mode;
+	meshlist[0]->colorBuffer = mesh->colorBuffer;
+	meshlist[0]->vertexBuffer = mesh->vertexBuffer;
+	meshlist[0]->indexBuffer = mesh->indexBuffer;
+	meshlist[0]->ColisionVector1 = mesh->ColisionVector1;
+	meshlist[0]->ColisionVector2 = mesh->ColisionVector2;
+	meshlist[0]->collisionboxcreated = mesh->collisionboxcreated;
+	meshlist[0]->collison = mesh->collison;
+	meshlist[0]->textureID = mesh->textureID;
+	meshlist[0]->material = mesh->material;
+	meshlist[0]->indexSize = mesh->indexSize;
+	meshlist[0]->initColisionVector1 = mesh->initColisionVector1;
+	meshlist[0]->initColisionVector2 = mesh->initColisionVector2;
+	meshlist[0]->initColisionVector3 = mesh->initColisionVector3;
+	meshlist[0]->initColisionVector4 = mesh->initColisionVector4;
+	meshlist[0]->ColisionVector1 = mesh->ColisionVector1;
+	meshlist[0]->ColisionVector2 = mesh->ColisionVector2;
+	meshlist[0]->ColisionVector3 = mesh->ColisionVector3;
+	meshlist[0]->ColisionVector4 = mesh->ColisionVector4;
 	for (int i = 0; i < number-1; i++)
 	{
 		Mesh* x = new Mesh("COPY");
