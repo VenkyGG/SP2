@@ -162,7 +162,7 @@ void DrivingScene::Init()
 
 	objectlist[0].SetMesh("InnerTrack", "OBJ//Tracks//track_inneredge.obj");
 	objectlist[0].SetNumberOfOccurences(20);
-	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outteredge.obj");
+	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
 	objectlist[1].SetNumberOfOccurences(20);
 
 	srand(time(NULL));
@@ -213,12 +213,13 @@ void DrivingScene::Update(double dt)
 	Vector3 offsetPerFrame = Vector3(0, 0, (currentcar->getcurrentSpeed() / 20));
 	offsetPerFrame = rotation.Multiply(offsetPerFrame);
 	float RotationSpeed = 2;
-	
-		Vector3 futurepos = initialpos + offsetPerFrame;
+	Vector3 futurepos;
+	if (!check)
+	{
+		futurepos = initialpos + offsetPerFrame;
 		currentcar->SetPosition(0, futurepos);
-		camera.position += offsetPerFrame;
-		camera.offset += offsetPerFrame;
-	
+	}
+	camera.position = futurepos - rotation.Multiply(Vector3(0, -15, 60));
 	
 	if (Application::IsKeyPressed('W'))
 	{
@@ -293,7 +294,7 @@ void DrivingScene::Update(double dt)
 	{
 		Application::state = Application::Mainmenu;
 	}
-
+	CheckSquareCollision();
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);
 	
@@ -401,38 +402,25 @@ void DrivingScene::Exit()
 	glDeleteProgram(m_programID);
 
 }
+
 bool DrivingScene::CheckSquareCollision()
 {
 	bool collided = false;
-	for (int i = 0; i < size(objectlist); i++)
+	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < objectlist[i].GetNumberOfOccurences(); j++)
 		{
 			Mesh* currentmesh = objectlist[i].GetMeshList()[j];
 			
-			float xmin = currentmesh->ColisionVector4.x;
-			float xmax = currentmesh->ColisionVector3.x;
-			float ymin = currentmesh->ColisionVector4.y;
-			float ymax = currentmesh->ColisionVector3.y;
-			float zmin = currentmesh->ColisionVector4.z;
-			float zmax = currentmesh->ColisionVector3.z;
+			Vector3 A = currentmesh->ColisionVector1;//front left object
+			Vector3 B = currentmesh->ColisionVector2;//front right
+			Vector3 C = currentmesh->ColisionVector3;//back right
+			Vector3 D = currentmesh->ColisionVector4;//back left
 
-			float xmin2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.x;
-			float xmax2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.x;
-			float ymin2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.y;
-			float ymax2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.y;
-			float zmin2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4.z;
-			float zmax2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3.z;
-
-			Vector3 A = Vector3(xmin, ymin, zmax);//front left
-			Vector3 B = Vector3(xmax, ymin, zmax);//front right
-			Vector3 C = Vector3(xmax, ymin, zmin);//back right
-			Vector3 D = Vector3(xmin, ymin, zmin);//back left
-
-			Vector3 A2 = Vector3(xmin2, ymin2, zmax2);
-			Vector3 B2 = Vector3(xmax2, ymin2, zmax2);
-			Vector3 C2 = Vector3(xmax2, ymin2, zmin2);
-			Vector3 D2 = Vector3(xmin2, ymin2, zmin2);
+			Vector3 A2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1;
+			Vector3 B2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2;
+			Vector3 C2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3;
+			Vector3 D2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4;
 
 			Vector3 MidAB = (A + B) * 0.5f;
 			Vector3 MidCD = (C + D) * 0.5f;
@@ -440,21 +428,17 @@ bool DrivingScene::CheckSquareCollision()
 
 
 
-
 			if (currentmesh->camcollided == false)
 			{
 				bool x = Physics::IsIntersectingOBBRectangleRectangle(A, B, C, D, A2, B2, C2, D2);
-				
-				if (x)
+				if (x && Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()!=0)
 				{
-					cout << x;
-					/*currentmesh->camcollided = true;
+					currentmesh->camcollided = true;
 					bool foundposition = true;
 					Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - Center).Normalized();
 					Player::instance()->cars.GetCurrentCar()->setcurrentSpeed(-((6.0f / 10.0f) * Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()));
 					currentmesh->camfreezeposition = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] + pushback;
-					camera.position = camera.position + pushback * 0.1f;
-					camera.offset = camera.offset + pushback * 0.1f;
+					
 					A2 += pushback*0.1f;
 					B2 += pushback*0.1f;
 					C2 += pushback*0.1f;
@@ -470,8 +454,7 @@ bool DrivingScene::CheckSquareCollision()
 						else
 						{
 							currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback*0.1f;
-							camera.position = camera.position + pushback * 0.1f;
-							camera.offset = camera.offset + pushback * 0.1f;
+							
 							A2 += pushback*0.1f;
 							B2 += pushback*0.1f;
 							C2 += pushback*0.1f;
@@ -479,7 +462,7 @@ bool DrivingScene::CheckSquareCollision()
 						}
 					}
 					currentmesh->camfreezeposition.y = 0;
-					Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);*/
+					Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
 
 				}
 			}
@@ -507,15 +490,22 @@ void DrivingScene::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 	if (hasCollision)
 	{
 		
-		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
-		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
+		mesh->ColisionVector1 = mesh->initColisionVector1;
+		mesh->ColisionVector2 = mesh->initColisionVector2;
+		mesh->ColisionVector3 = mesh->initColisionVector3;
+		mesh->ColisionVector4 = mesh->initColisionVector4;
+		mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
+		mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
+		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector3);
+		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector4);
 		mesh->collison = true;
 		mesh->collisionboxcreated = true;
 		
-
-		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+		
+		
+		/*mesh->Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		modelStack.PushMatrix();
-		RenderMesh(Collider, false, false);
+		RenderMesh(mesh->Collider, false, false);
 		modelStack.PopMatrix();*/
 
 	}

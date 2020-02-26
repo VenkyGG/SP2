@@ -527,7 +527,7 @@ void SceneText::Exit()
 }
 void SceneText::CheckSquareCollision()
 {
-	for (int current = 0; current < size(objectlist); current++)
+	for (int current = 0; current < 2; current++)
 	{
 		for (int i = 0; i < objectlist[current].GetNumberOfOccurences(); i++)
 		{
@@ -535,12 +535,12 @@ void SceneText::CheckSquareCollision()
 			{
 				if (objectlist[current].GetMeshList()[i]->collison)
 				{
-					float xmin = objectlist[current].GetMeshList()[i]->ColisionVector2.x;
-					float xmax = objectlist[current].GetMeshList()[i]->ColisionVector1.x;
-					float ymin = objectlist[current].GetMeshList()[i]->ColisionVector2.y;
-					float ymax = objectlist[current].GetMeshList()[i]->ColisionVector1.y;
-					float zmin = objectlist[current].GetMeshList()[i]->ColisionVector2.z;
-					float zmax = objectlist[current].GetMeshList()[i]->ColisionVector1.z;
+					float xmin = objectlist[current].GetMeshList()[i]->ColisionVector4.x;
+					float xmax = objectlist[current].GetMeshList()[i]->ColisionVector3.x;
+					float ymin = objectlist[current].GetMeshList()[i]->ColisionVector4.y;
+					float ymax = objectlist[current].GetMeshList()[i]->ColisionVector3.y;
+					float zmin = objectlist[current].GetMeshList()[i]->ColisionVector4.z;
+					float zmax = objectlist[current].GetMeshList()[i]->ColisionVector3.z;
 
 
 					Vector3 A = Vector3(xmin, ymin, zmax);
@@ -623,18 +623,29 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 
 	if (hasCollision)
 	{
-		if (!mesh->collisionboxcreated)
-		{
-			mesh->ColisionVector1 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
-			mesh->ColisionVector2 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
-			mesh->collison = true;
-			mesh->collisionboxcreated = true;
-		}
+		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
+		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
+		mesh->collison = true;
+		mesh->collisionboxcreated = true;
 
-		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
+		float xmin = mesh->ColisionVector2.x;
+		float xmax = mesh->ColisionVector1.x;
+		float ymin = mesh->ColisionVector2.y;
+		float ymax = mesh->ColisionVector1.y;
+		float zmin = mesh->ColisionVector2.z;
+		float zmax = mesh->ColisionVector1.z;
+		mesh->p1 = Vector3(xmin, ymin, zmax);
+		mesh->p2 = Vector3(xmax, ymin, zmax);
+		mesh->p3 = Vector3(xmax, ymax, zmax);
+		mesh->p4 = Vector3(xmin, ymax, zmax);
+		mesh->p5 = Vector3(xmin, ymin, zmin);
+		mesh->p6 = Vector3(xmax, ymin, zmin);
+		mesh->p7 = Vector3(xmax, ymax, zmin);
+		mesh->p8 = Vector3(xmin, ymax, zmin);
+		Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
 		modelStack.PushMatrix();
 		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();*/
+		modelStack.PopMatrix();
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
