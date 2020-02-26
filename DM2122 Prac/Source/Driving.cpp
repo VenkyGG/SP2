@@ -410,7 +410,7 @@ bool DrivingScene::CheckSquareCollision()
 		{
 			Mesh* currentmesh = objectlist[i].GetMeshList()[j];
 			
-			Vector3 A = currentmesh->ColisionVector1;//front left object
+			Vector3 A = currentmesh->ColisionVector1;//front left 
 			Vector3 B = currentmesh->ColisionVector2;//front right
 			Vector3 C = currentmesh->ColisionVector3;//back right
 			Vector3 D = currentmesh->ColisionVector4;//back left
