@@ -54,7 +54,7 @@ void Player::createFile()
 	runTime << "fb1217a508f8bf839aba8b87afaef694\n";
 	runTime << to_string(startingBalance) + "\n";
 	runTime << "b799f7f2affa11d74804bd574f04de8a\n";
-	runTime << "OWNED\n";
+	runTime << "UNOWNED\n";
 	runTime << "UNOWNED\n";
 	runTime << "UNOWNED\n";
 	runTime << "UNOWNED\n";
@@ -260,7 +260,7 @@ void Player::rewriteFile()
 
 			lineNumber++;
 
-			if (lineNumber == 11) // Break out of loop such that doesnt check other lines.
+			if (lineNumber == 5) // Break out of loop such that doesnt check other lines.
 			{
 				break;
 			}
@@ -288,23 +288,58 @@ void Player::rewriteFile()
 		}
 		else if (counter == 6)
 		{
-			write << carsOwned[0] + "\n";
+			if (carsOwned[0] == true)
+			{
+				write << "OWNED\n";
+			}
+			else
+			{
+				write << "UNOWNED\n";
+			}
 		}
 		else if (counter == 7)
 		{
-			write << carsOwned[1] + "\n";
+			if (carsOwned[1] == true)
+			{
+				write << "OWNED\n";
+			}
+			else
+			{
+				write << "UNOWNED\n";
+			}
 		}
 		else if (counter == 8)
 		{
-			write << carsOwned[2] + "\n";
+			if (carsOwned[2] == true)
+			{
+				write << "OWNED\n";
+			}
+			else
+			{
+				write << "UNOWNED\n";
+			}
 		}
 		else if (counter == 9)
 		{
-			write << carsOwned[3] + "\n";
+			if (carsOwned[3] == true)
+			{
+				write << "OWNED\n";
+			}
+			else
+			{
+				write << "UNOWNED\n";
+			}
 		}
 		else if (counter == 10)
 		{
-			write << carsOwned[4] + "\n";
+			if (carsOwned[4] == true)
+			{
+				write << "OWNED\n";
+			}
+			else
+			{
+				write << "UNOWNED\n";
+			}
 		}
 		else
 		{

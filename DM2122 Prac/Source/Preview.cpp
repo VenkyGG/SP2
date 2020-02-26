@@ -141,12 +141,24 @@ void Preview::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
+	meshList[GEO_MONEYTEXT] = MeshBuilder::GenerateText("MoneyText", 16, 16);
+	meshList[GEO_MONEYTEXT]->textureID = LoadTGA("Image//moneyFont.tga");
+
+	// Arrows
+	meshList[GEO_LEFTARROW] = MeshBuilder::GenerateQuad("LeftArrow", Color(0.f, 0.f, 0.f), 1, 1);
+	meshList[GEO_LEFTARROW]->textureID = LoadTGA("Image//leftArrow.tga");
+
+	meshList[GEO_RIGHTARROW] = MeshBuilder::GenerateQuad("RightArrow", Color(0.f, 0.f, 0.f), 1, 1);
+	meshList[GEO_RIGHTARROW]->textureID = LoadTGA("Image//rightArrow.tga");
+
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
 
 	meshList[GEO_EXTRASHAPE1] = MeshBuilder::GenerateOBJ("sun", "OBJ//Cars//ChengFengcar.obj");
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
+
+	
 
 	vector<Mesh*> MeshStorage;
 
@@ -183,6 +195,7 @@ void Preview::Update(double dt)
 		if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart())
 		{
 			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->Getprevious());
+
 			bouncetime = GetTickCount64() + 500;
 		}
 	}
@@ -192,16 +205,18 @@ void Preview::Update(double dt)
 		if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr)
 		{
 			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->GetNext());
+
 			bouncetime = GetTickCount64() + 500;
 		}
 	}
 	
-	if (Application::IsKeyPressed(VK_RETURN))
+	if (Application::IsKeyPressed(VK_RETURN) && bouncetime < GetTickCount64()) // This is the shop function.
 	{
-		//Player::instance()->cars.GetCurrentCar()
-
 		User2.buyCar(Player::instance()->cars.GetCurrentCar());
+
+		bouncetime = GetTickCount64() + 500;
 	}
+
 	if (Application::IsKeyPressed('V')) // Change to the Main Menu
 	{
 		Application::state = Application::Mainmenu;
@@ -258,11 +273,23 @@ void Preview::Render()
 	modelStack.Rotate(Player::instance()->cars.GetCurrentCar()->GetRotation()[0].y, 0, 1, 0);
 	RenderMesh(Player::instance()->cars.GetCurrentCar()->GetMeshList()[0], false, true);
 	modelStack.PopMatrix();
+
+	if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr)
+	{
+		RenderMeshOnScreen(meshList[GEO_RIGHTARROW], 55, 7, 20, 20, 0);
+	}
+
+	if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart())
+	{
+		RenderMeshOnScreen(meshList[GEO_LEFTARROW], 23, 7, 20, 20, 0);
+	}
+
+
 		
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0); // This renders the crosshair. REMOVE WHEN FINALISING
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
 
-	
+	RenderTextOnScreen(meshList[GEO_MONEYTEXT], ("Money:$" + to_string(Player::instance()->getMoney())), Color(0, 0, 0), 2, 0.5, 28.5f); // This prints the Money the player has onto the top left of the Screen
 
 	renderPrice();
 
@@ -280,7 +307,7 @@ void Preview::renderPrice()
 			hello = "FREE";
 		}
 
-		RenderTextOnScreen(meshList[GEO_TEXT], "Price: " + hello, Color(0, 0, 0), 5, 2, 10.5f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Price:" + hello, Color(0, 0, 0), 5, 2, 10.5f);
 	}
 	else
 	{
