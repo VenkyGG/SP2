@@ -39,6 +39,21 @@ void Preview::Init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	rgbRed = 255.f;
+	rgbGreen = 0.f;
+	rgbBlue = 0.f;
+
+	done1 = false;
+	done2 = false;
+	done3 = false;
+	done4 = false;
+	done5 = false;
+	done6;
+
+	tickDelay = 0;
+
+	test = false;
+
 	camera.Init(Vector3(0, 24, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	camera.RotationEnabled = false;
 	camera.useWASD = false;
@@ -221,10 +236,21 @@ void Preview::Update(double dt)
 	
 	if (Application::IsKeyPressed(VK_RETURN) && bouncetime < GetTickCount64()) // This is the shop function.
 	{
-		User2.buyCar(Player::instance()->cars.GetCurrentCar());
+		bool tmp;
+
+		tmp = User2.buyCar(Player::instance()->cars.GetCurrentCar());
+
+		if (tmp == false)
+		{
+			printNotEnufMoney = true;
+
+			printNotEnufMoneyDelay = GetTickCount64() + 500;
+		}
 
 		bouncetime = GetTickCount64() + 200;
 	}
+
+	RGBChroma(dt);
 
 	if (Application::IsKeyPressed('V')) // Change to the Main Menu
 	{
@@ -284,6 +310,11 @@ void Preview::Render()
 	RenderMesh(Player::instance()->cars.GetCurrentCar()->GetMeshList()[0], false, true);
 	modelStack.PopMatrix();
 
+	if (printNotEnufMoney == true && printNotEnufMoneyDelay > GetTickCount64())
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT2], "Not enough money", Color(1, 0, 0), 3, 5.0f, 5.f);
+	}
+
 	if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr)
 	{
 		RenderMeshOnScreen(meshList[GEO_RIGHTARROW], 55, 7, 20, 20, 0);
@@ -305,6 +336,101 @@ void Preview::Render()
 	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
 }
 
+void Preview::RGBChroma(double dt)
+{
+	// Red must be at 255
+	// Increase Blue to 255
+	// Reduce Red to 0
+	// Increase Green to 255
+	// Decrease Blue to 0
+	// Increase Red to 255
+	// Decrease Green to 0
+
+	bool incBlue = true;
+
+	if (incBlue == true && done1 != true)
+	{
+		rgbBlue += (float)(150.f * dt);
+
+		if (rgbBlue > 255.f)
+		{
+			rgbBlue = 255.f;
+
+			done1 = true;
+		}
+	}
+
+	if (done1 == true && rgbBlue == 255.f && done2 != true)
+	{
+		rgbRed -= (float)(150.f * dt);
+
+		if (rgbRed < 0.f)
+		{
+			rgbRed = 0.f;
+
+			done2 = true;
+		}
+	}
+
+	if (done2 == true && rgbRed == 0.f && done3 != true)
+	{
+		rgbGreen += (float)(150.f * dt);
+
+		if (rgbGreen > 255.f)
+		{
+			rgbGreen = 255.f;
+
+			done3 = true;
+		}
+	}
+
+	if (done3 == true && rgbGreen == 255.f && done4 != true)
+	{
+		rgbBlue -= (float)(150.f * dt);
+		
+		if (rgbBlue < 0.f)
+		{
+			rgbBlue = 0.f;
+
+			done4 = true;
+		}
+	}
+
+	if (done4 == true && rgbBlue == 0.f && done5 != true)
+	{
+		rgbRed += (float)(150.f * dt);
+
+		if (rgbRed > 255.f)
+		{
+			rgbRed = 255.f;
+
+			done5 = true;
+		}
+	}
+
+	if (done5 == true && rgbRed == 255.f && done6 != true)
+	{
+		rgbGreen -= (float)(150.f * dt);
+
+		if (rgbGreen < 0.f)
+		{
+			rgbGreen = 0.f;
+
+			done6 = true;
+		}
+	}
+
+	if (done6 == true)
+	{
+		done1 = false;
+		done2 = false;
+		done3 = false;
+		done4 = false;
+		done5 = false;
+		done6 = false;
+	}
+}
+
 void Preview::renderPrice()
 {
 	if (!Player::instance()->cars.GetCurrentCar()->GetOwned())
@@ -320,7 +446,7 @@ void Preview::renderPrice()
 	}
 	else
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT2], "OWNED", Color(1, 1, 1), 3, 10.6f, 2.f);
+		RenderTextOnScreen(meshList[GEO_TEXT2], "OWNED", Color(rgbRed / 255.f, rgbGreen / 255.f, rgbBlue / 255.f), 3, 10.6f, 2.f);
 	}
 
 }

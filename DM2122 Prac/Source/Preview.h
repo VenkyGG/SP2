@@ -78,6 +78,21 @@ private:
 	int currentcar = 1;
 	int numberofobjects;
 
+	float rgbRed;
+	float rgbGreen;
+	float rgbBlue;
+
+	bool done1;
+	bool done2;
+	bool done3;
+	bool done4;
+	bool done5;
+	bool done6;
+
+	double tickDelay;
+
+	bool test;
+
 	double bouncetime;
 
 	ThirdPersonCamera camera;
@@ -92,9 +107,15 @@ private:
 
 	void renderPrice();
 
+	void RGBChroma(double dt);
+
 	Vector3 starepoint;
 
 	Shop User2;
+
+	bool printNotEnufMoney;
+	double printNotEnufMoneyDelay;
+
 public:
 	Preview();
 	~Preview();

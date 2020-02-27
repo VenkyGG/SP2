@@ -2,6 +2,10 @@
 
 Player::Player()
 {
+	startingBalance = 100000;
+
+	File = "player.txt";
+
 	bool check = false;
 
 	check = hasFile();
@@ -196,7 +200,7 @@ bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 
 	if (isItNegativeBalance == true) // If Player's Balance is negative, then money wont be removed.
 	{
-		std::cout << "Not enough money!" << std::endl;
+		//std::cout << "Not enough money!" << std::endl;
 
 		return false;
 	}
@@ -206,11 +210,15 @@ bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 
 		return true;
 	}
+
+	rewriteFile();
 }
 
 void Player::addMoney(int amountToBeAdded) // Function to add money.
 {
 	money = getMoney() + amountToBeAdded;
+
+	rewriteFile();
 }
 
 void Player::removeCar(int whichCar)
@@ -228,17 +236,6 @@ void Player::addCar(int whichCar)
 int Player::getMoney()
 {
 	return money;
-}
-
-void Player::PrintOwnedCars()
-{
-	initMoney();
-	initOwnedCars();
-	std::cout << "Car 1: " << carsOwned[0] << std::endl;
-	std::cout << "Car 2: " << carsOwned[1] << std::endl;
-	std::cout << "Car 3: " << carsOwned[2] << std::endl;
-	std::cout << "Car 4: " << carsOwned[3] << std::endl;
-	std::cout << "Car 5: " << carsOwned[4] << std::endl;
 }
 
 void Player::rewriteFile()

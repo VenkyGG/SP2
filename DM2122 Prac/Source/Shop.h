@@ -13,7 +13,7 @@ public:
 	Shop();
 	~Shop();
 
-	void buyCar(CCar* whichCar);
+	bool buyCar(CCar* whichCar);
 
 	///void sellCar(int whichCar);
 };
