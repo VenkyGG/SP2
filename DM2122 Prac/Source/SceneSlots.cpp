@@ -200,17 +200,24 @@ void SceneSlots::Update(double dt)
 
 	if (Application::IsKeyPressed('L') && rotate1 == false && rotate2 == false && rotate3 == false)
 	{
-		rotate1 = true;
-		rotate2 = true;
-		rotate3 = true;
-		threesame = false;
-		twosame = false;
-		nonesame = false;
-		gameStart = true;
-		gameEnd = false;
-		handleforward = true;
-		handleback = false;
-
+		bool tmp = false;
+		tmp = Player::instance()->removeMoney(100);
+		if (tmp == true)
+		{
+			rotate1 = true;
+			rotate2 = true;
+			rotate3 = true;
+			threesame = false;
+			twosame = false;
+			nonesame = false;
+			threesame2 = false;
+			twosame2 = false;
+			nonesame2 = false;
+			gameStart = true;
+			gameEnd = false;
+			handleforward = true;
+			handleback = false;
+		}
 	}
 	if (Application::IsKeyPressed('1'))
 	{
@@ -566,17 +573,47 @@ void SceneSlots::Render()
 
 	if (threesame == true)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "three in a row", Color(0, 1, 0), 3, 0, 0);
+		threesame2 = true;
 		Player::instance()->addMoney(500);
+		facenum[0] = 1;
+		facenum[1] = 1;
+		facenum[2] = 1;
+		gameStart = false;
+		threesame = false;
 	}
 	else if (twosame == true)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "two in a row", Color(0, 1, 0), 3, 0, 0);
+		twosame2 = true;
 		Player::instance()->addMoney(250);
+		facenum[0] = 1;
+		facenum[1] = 1;
+		facenum[2] = 1;
+		gameStart = false;
+		twosame = false;
 	}
-	else if(nonesame == true)
+	else if (nonesame == true)
+	{
+		nonesame2 = true;
+		facenum[0] = 1;
+		facenum[1] = 1;
+		facenum[2] = 1;
+		gameStart = false;
+		nonesame = false;
+	}
+	if (threesame2)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "three in a row", Color(0, 1, 0), 3, 0, 0);
+	}
+	if (twosame2)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "two in a row", Color(0, 1, 0), 3, 0, 0);
+	}
+	if (nonesame2)
+	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "you lose", Color(0, 1, 0), 3, 0, 0);
+	}
 
+	RenderTextOnScreen(meshList[GEO_TEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(0, 1, 0), 2, 0.5, 28.5f);
 }
 
 void SceneSlots::Exit()

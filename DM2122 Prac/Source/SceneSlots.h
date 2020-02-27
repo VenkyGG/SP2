@@ -84,6 +84,9 @@ private:
 	bool threesame;
 	bool twosame;
 	bool nonesame;
+	bool threesame2;
+	bool twosame2;
+	bool nonesame2;
 	bool gameStart;
 	bool gameEnd = false;
 	bool handleforward;
