@@ -29,6 +29,7 @@ class DodgeCar : public Scene
 		GEO_CURTAIN,
 		GEO_WALL,
 		GEO_WALL2,
+
 		NUM_GEOMETRY,
 	};
 
@@ -79,14 +80,19 @@ private:
 	float Car2Z = -50.f;
 	float Car3Z = -50.f;
 
+	int Dodgepoints = 0.f;
+	float LosetextY = -10.f;
+	float WintextY = -10.f;
+	float timer = 0.f;
+
 	float Car1Timer;
 	float Car2Timer;
 	float Car3Timer;
-	float GameStart;
 	//pos.z += (float)(LSPEED * dt);
 	//pos.z -= (float)(LSPEED * dt);
 
 	bool Carsmove = false;
+	bool Gamelose = false;
 
 	Camera2 camera;
 

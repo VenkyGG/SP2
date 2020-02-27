@@ -5,6 +5,7 @@
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
+#include "Player.h"
 
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
@@ -26,7 +27,7 @@ DodgeCar::~DodgeCar()
 void DodgeCar::Init()
 {
 	initialized = true;
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.41f, 0.41f, 0.41f, 0.41f);
 
 	// Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -41,8 +42,6 @@ void DodgeCar::Init()
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
-
-	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Blending.fragmentshader");
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 
@@ -79,29 +78,6 @@ void DodgeCar::Init()
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
-	/*meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
-
-	meshList[GEO_EXITBUTTON] = MeshBuilder::GenerateQuad("exitButton", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_EXITBUTTON]->textureID = LoadTGA("Image//MainMenu Textures//ExitBtn.tga");
-
-	meshList[GEO_SETTINGSBUTTON] = MeshBuilder::GenerateQuad("settingsButton", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_SETTINGSBUTTON]->textureID = LoadTGA("Image//MainMenu Textures//SettingsBtn.tga");
-
-	meshList[GEO_PLAYBUTTON] = MeshBuilder::GenerateQuad("playButton", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_PLAYBUTTON]->textureID = LoadTGA("Image//MainMenu Textures//PlayBtn.tga");
-
-	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//MainMenu Textures//LOGO.tga");
-
-	meshList[GEO_GAMENAME] = MeshBuilder::GenerateQuad("gameName", Color(1, 1, 1), 50.f, 50.f);
-	meshList[GEO_GAMENAME]->textureID = LoadTGA("Image//DodgeCar Textures//Pause.tga");
-
-	meshList[GEO_MENUCURSOR] = MeshBuilder::GenerateQuad("menuCursor", Color(0.f, 0.23f, 0.68f), 50.f, 50.f);
-	meshList[GEO_MENUCURSOR]->textureID = LoadTGA("Image//MainMenu Textures//Arrow.tga");*/
-
-	/*meshList[GEO_MENU] = MeshBuilder::GenerateQuad("menu", Color(0.f, 0.63f, 0.48f), 50.f, 50.f);*/
-
 	meshList[GEO_LANES] = MeshBuilder::GenerateOBJ("Lanes", "Obj//dodgetrack.obj");
 	meshList[GEO_LANES]->textureID = LoadTGA("image//dodgetrack.tga");
 
@@ -123,15 +99,13 @@ void DodgeCar::Init()
 	meshList[GEO_WALL2] = MeshBuilder::GenerateOBJ("Wall", "Obj//Dodgecarswall2.obj");
 	meshList[GEO_WALL2]->textureID = LoadTGA("image//Dodgecarswall.tga");
 
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
+
 	clock = 0;
 
 
 }
-//VVVVVVVVVVVVVVVVV TAKE NOTE OF THIS BLOODY SHIT VVVVVVVVVVVVV
-
-
-
-//^^^^^^^^^^^^^^^^^ TAKE NOTE OF THIS BLOODY SHIT ^^^^^^^^^^^^^
 void DodgeCar::Update(double dt)
 {
 	clock += dt;
@@ -157,39 +131,19 @@ void DodgeCar::Update(double dt)
 	Application::mouseupdate();
 
 	int offset = 6;
-	/*if ((Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64() && level < 3)
-	{
-		pos -= offset;
-		level++;
-		clock = GetTickCount64() + 500;
-	}
-	else if ((Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64() && level>1)
-	{
-		pos += offset;
-		level--;
-		clock = GetTickCount64() + 500;
-	}*/
-	/*if (Application::IsKeyPressed('A'))
-	{
-		camera.position.z += dt;
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		camera.position.z -= dt;
-	}*/
 	float speed = 0.3;
+
+	if (Application::IsKeyPressed(VK_RETURN))
+	{
+		Application::state = Application::Motorshow;
+	}
+
 	if (Application::IsKeyPressed('A'))
 	{
 		camera.position = camera.position - camera.right * speed;
 		camera.target = camera.position + camera.view;
 		/*camera.position.z = 3.5f;*/
 	}
-	//if (Application::IsKeyPressed('S'))
-	//{
-	//	camera.position = camera.position - camera.right * speed;
-	//	camera.target = camera.position + camera.view;
-	//	/*camera.position.z = 0.f;*/
-	//}
 	if (Application::IsKeyPressed('D'))
 	{
 		camera.position = camera.position + camera.right * speed;
@@ -212,8 +166,6 @@ void DodgeCar::Update(double dt)
 		Car2Timer += dt;
 		Car3Timer += dt;
 
-		GameStart += dt;
-
 
 		if (Car1Timer > 0.1f && Car1Timer <= 1.5f)
 		{
@@ -221,6 +173,7 @@ void DodgeCar::Update(double dt)
 		}
 		if (Car1Timer > 1.5f)
 		{
+			Dodgepoints = Dodgepoints + 1;
 			Car1Timer = 0.1f;
 			Car1Z = -50.f;
 		}
@@ -231,6 +184,7 @@ void DodgeCar::Update(double dt)
 		}
 		if (Car2Timer > 1.1f)
 		{
+			Dodgepoints = Dodgepoints + 1;
 			Car2Timer = 0.5f;
 			Car2Z = -50.f;
 		}
@@ -240,6 +194,7 @@ void DodgeCar::Update(double dt)
 		}
 		if (Car3Timer > 2.2f)
 		{
+			Dodgepoints = Dodgepoints + 1;
 			Car3Timer = 0.5f;
 			Car3Z = -50.f;
 		}
@@ -256,10 +211,6 @@ void DodgeCar::Update(double dt)
 			timer = 0;
 			jumping = false;
 		}*/
-		if (GameStart > 20.f)
-		{
-			Carsmove = false;
-		}
 	}
 
 	if (Carsmove == false)
@@ -267,7 +218,6 @@ void DodgeCar::Update(double dt)
 		Car1Timer = 0;
 		Car2Timer = 0;
 		Car3Timer = 0;
-		GameStart = 0;
 
 		Car1Z = -50.f;
 		Car2Z = -50.f;
@@ -277,25 +227,47 @@ void DodgeCar::Update(double dt)
 	if ((abs(Car1Z - camera.position.z) <= 5) && (camera.position.x>=-5.5f && camera.position.x<=-1.8f))
 	{
 		Carsmove = false;
+		Gamelose = true;
 	}
 	if ((abs(Car2Z - camera.position.z) <= 5) && (camera.position.x >= -1.8f && camera.position.x <= 1.8f))
 	{
 		Carsmove = false;
+		Gamelose = true;
 	}
 	if ((abs(Car3Z - camera.position.z) <= 5) && (camera.position.x >= 1.8f && camera.position.x <= 5.5f))
 	{
 		Carsmove = false;
+		Gamelose = true;
 	}
 
-	if (abs(camera.position.x >= 5.5))
+	if (Gamelose == true)
 	{
-		camera.position.x = 5.4;
-		camera.target.x = 5.4;
+		timer += dt;
+
+		if (timer > 0.2f && timer < 1.5f)
+		{
+			LosetextY = 9.f;
+		}
+		if (timer >= 1.5f)
+		{
+			Gamelose = false;
+			timer = 0.f;
+			LosetextY = -10.f;
+			Player::instance()->addMoney(Dodgepoints * 10);
+			Dodgepoints = 0;
+		}
 	}
-	if (abs(camera.position.x <= -5.5))
+
+	//collision with the walls
+	if (abs(camera.position.x >= 5.3))
 	{
-		camera.position.x = -5.4;
-		camera.target.x = -5.4;
+		camera.position.x = 5.2;
+		camera.target.x = 5.2;
+	}
+	if (abs(camera.position.x <= -5.3))
+	{
+		camera.position.x = -5.2;
+		camera.target.x = -5.2;
 	}
 	
 	else if (Paused)
@@ -316,33 +288,6 @@ void DodgeCar::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-
-
-	/*modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_MENU], 30.f, 25.f, 2.f, 2.f);
-
-	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_MENUCURSOR], 20, 2 * pos + 30, 0.2f, 0.2f);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_GAMENAME], 40.f, 50.f, 0.6f, 0.5f);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_PLAYBUTTON], 40.f, 34.f, 0.4f, 0.2f);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_SETTINGSBUTTON], 40.f, 22.f, 0.4f, 0.2f);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_EXITBUTTON], 40.f, 10.f, 0.4f, 0.2f);
-	modelStack.PopMatrix();
-
-	modelStack.PopMatrix();*/
-
 
 
 	modelStack.PushMatrix();
@@ -391,6 +336,20 @@ void DodgeCar::Render()
 	modelStack.Scale(1, 1, 9);
 	RenderMesh(meshList[GEO_WALL2], false);
 	modelStack.PopMatrix();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'X' to start.", Color(0, 0, 0), 2, 0.5, 26);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "'A' to move left.", Color(0, 0, 0), 2, 0.5, 25);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "'D' to move right.", Color(0, 0, 0), 2, 0.5, 24);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Enter' to return to motorshow.", Color(0, 0, 0), 2, 0.5, 2);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "You lost lmao.", Color(0, 0, 0), 3, 7, LosetextY);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Points:" + to_string(Dodgepoints), Color(0, 0, 0), 3, 0, 3);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(0, 0, 0), 2, 0.5, 28.5f);
 
 }
 
