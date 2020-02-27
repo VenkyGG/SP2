@@ -406,17 +406,11 @@ bool DrivingScene::CheckSquareCollision()
 			Vector3 C = currentmesh->ColisionVector3;//back right
 			Vector3 D = currentmesh->ColisionVector4;//back left
 
-
 			Vector3 A2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1;
 			Vector3 B2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2;
 			Vector3 C2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3;
 			Vector3 D2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4;
-			/*Mtx44 rotation;
-			rotation.SetToRotation((Player::instance()->cars.GetCurrentCar()->GetRotation()[0].y), 0, 1, 0);
-			Vector3 A2 = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] + rotation.Multiply(Vector3(2, 0, 0));
-			Vector3 B2 = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] + rotation.Multiply(Vector3(0, 0, 2));
-			Vector3 C2 = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - rotation.Multiply(Vector3(2, 0, 0));
-			Vector3 D2 = Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - rotation.Multiply(Vector3(0, 0, 2));*/
+
 			Vector3 MidAB = (A + B) * 0.5f;
 			Vector3 MidCD = (C + D) * 0.5f;
 			Vector3 Center = (MidAB + MidCD) * 0.5f;
@@ -492,10 +486,10 @@ void DrivingScene::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 		mesh->collison = true;
 		mesh->collisionboxcreated = true;
 		
-		mesh->Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->initColisionVector1, mesh->initColisionVector2, mesh->initColisionVector3, mesh->initColisionVector4, mesh->initColisionVector1, mesh->initColisionVector2, mesh->initColisionVector3, mesh->initColisionVector4);
+		/*mesh->Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->initColisionVector1, mesh->initColisionVector2, mesh->initColisionVector3, mesh->initColisionVector4, mesh->initColisionVector1, mesh->initColisionVector2, mesh->initColisionVector3, mesh->initColisionVector4);
 		modelStack.PushMatrix();
 		RenderMesh(mesh->Collider, false, false);
-		modelStack.PopMatrix();
+		modelStack.PopMatrix();*/
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
