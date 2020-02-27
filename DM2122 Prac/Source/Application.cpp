@@ -16,9 +16,9 @@
 #include "Preview.h"
 #include "LuckySpin.h"
 #include "SceneSlots.h"
+#include "DodgeCar.h"
 #include "Player.h"
 #include "SceneSettings.h"
-#include "DodgeCar.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
