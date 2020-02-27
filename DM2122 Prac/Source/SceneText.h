@@ -12,6 +12,7 @@
 
 class SceneText : public Scene
 {
+
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES = 0,
@@ -47,7 +48,7 @@ class SceneText : public Scene
 		U_TEXT_COLOR,
 		U_TOTAL,
 	};
-
+	
 private:
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
@@ -77,7 +78,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	
 
 
 
@@ -90,7 +91,7 @@ public:
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
-	
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 };
 
 #endif

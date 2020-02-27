@@ -19,7 +19,9 @@
 #include "DodgeCar.h"
 #include "Player.h"
 #include "SceneSettings.h"
-
+#include "intro.h"
+int Application::state = 0;
+int Application::state2 = 0;
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -115,6 +117,16 @@ void Application::Init()
 
 	glfwSetWindowSizeCallback(m_window, resize_callback);
 	glfwSetWindowPosCallback(m_window, window_pos_callback);
+	Ptr[intro] = new Intro();
+	Ptr[intro]->Init();
+	
+	Ptr[intro]->Update(m_timer.getElapsedTime());
+	Ptr[intro]->Render();
+	//Swap buffers
+	glfwSwapBuffers(m_window);
+	//Get and organize events, like keyboard and mouse input, window resizing, etc...
+	glfwPollEvents();
+	m_timer.waitUntil(frameTime);
 }
 Player* Player::instances = 0;
 double Application::getmouseXpos()//get mpouse x coord
@@ -145,9 +157,9 @@ void Application::mouseupdate()//reset mouse position
 
 void Application::Run()
 {
+
 	Player::instance();
 	//Main Loop
-	Scene* Ptr[TOTALSCENES];
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();

@@ -17,6 +17,7 @@ MainMenu::MainMenu()
 	{
 		meshList[i] = NULL;
 	}
+	
 }
 
 MainMenu::~MainMenu()
@@ -108,8 +109,7 @@ void MainMenu::Init()
 
 
 }
-int Application::state = 0;
-int Application::state2 = 0;
+
 void MainMenu::Update(double dt)
 {
 	clock += dt;

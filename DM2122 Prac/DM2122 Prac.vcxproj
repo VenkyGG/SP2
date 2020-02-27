@@ -133,6 +133,7 @@
     <ClInclude Include="Source\CCar.h" />
     <ClInclude Include="Source\DodgeCar.h" />
     <ClInclude Include="Source\Driving.h" />
+    <ClInclude Include="Source\intro.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="Source\CCar.cpp" />
     <ClCompile Include="Source\DodgeCar.cpp" />
     <ClCompile Include="Source\Driving.cpp" />
+    <ClCompile Include="Source\intro.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\LuckySpin.cpp" />

@@ -20,6 +20,7 @@ class MainMenu : public Scene
 		GEO_MENU,
 		GEO_MENUCURSOR,
 		GEO_PAUSED,
+		GEO_LOADING,
 		NUM_GEOMETRY,
 	};
 
@@ -73,13 +74,13 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 public:
 	MainMenu();
 	~MainMenu();
 
 
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 	float pos = 2;
 	int level = 1;
 	double clock;

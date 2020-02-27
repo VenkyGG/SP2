@@ -114,12 +114,12 @@ void NPC::move()
 
 bool NPC::chat(Vector3 CamPos)
 {
-	if (chattime < GetTickCount64() && (CamPos - Position).Length() <= 10)
+	if (chattime < GetTickCount64() && (CamPos - Position).Length() <= 20)
 	{
 		chattime = GetTickCount64() + 10000;
 		return true;
 	}
-	else if (chattime < GetTickCount64() && (CamPos - Position).Length() > 10)
+	else if (chattime < GetTickCount64() && (CamPos - Position).Length() > 20)
 	{
 		return false;
 	}

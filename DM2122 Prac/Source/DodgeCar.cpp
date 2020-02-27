@@ -82,13 +82,13 @@ void DodgeCar::Init()
 	meshList[GEO_LANES]->textureID = LoadTGA("image//dodgetrack.tga");
 
 	meshList[GEO_MCAR1] = MeshBuilder::GenerateOBJ("Car1", "Obj//Dcar.obj");
-	meshList[GEO_MCAR1]->textureID = LoadTGA("image//DcarRed.tga");
+	meshList[GEO_MCAR1]->textureID = LoadTGA("image//Dcar1.tga");
 
 	meshList[GEO_MCAR2] = MeshBuilder::GenerateOBJ("Car2", "Obj//Dcar.obj");
-	meshList[GEO_MCAR2]->textureID = LoadTGA("image//DcarYellow.tga");
+	meshList[GEO_MCAR2]->textureID = LoadTGA("image//Dcar2.tga");
 
 	meshList[GEO_MCAR3] = MeshBuilder::GenerateOBJ("Car3", "Obj//Dcar.obj");
-	meshList[GEO_MCAR3]->textureID = LoadTGA("image//DcarBlue.tga");
+	meshList[GEO_MCAR3]->textureID = LoadTGA("image//Dcar3.tga");
 
 	meshList[GEO_CURTAIN] = MeshBuilder::GenerateOBJ("Curtain", "Obj//Dodgecarsbackdrop.obj");
 	meshList[GEO_CURTAIN]->textureID = LoadTGA("image//Dodgecarsbackdrop.tga");
