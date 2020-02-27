@@ -157,7 +157,7 @@ void Application::Run()
 	Ptr[DodgeCars] = new DodgeCar();
 	Ptr[Settings] = new SceneSetting();
 
-	state = Mainmenu;
+	state = DodgeCars;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);

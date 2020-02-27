@@ -171,6 +171,8 @@ void DrivingScene::Init()
 	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
 	camera.position += Vector3(275, 0, 0);
 	camera.offset += Vector3(275, 0, 0);
+	innerradius = 150;
+	outerradius = 400;
 }
 
 
@@ -353,7 +355,7 @@ void DrivingScene::Render()
 	{
 		modelStack.PushMatrix();
 		modelStack.Rotate((j*(360/objectlist[0].GetNumberOfOccurences())),0, 1, 0);
-		modelStack.Translate(0, 0, 150);
+		modelStack.Translate(0, 0, innerradius);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(objectlist[0].GetMeshList()[j], false, true);
 		modelStack.PopMatrix();
@@ -363,7 +365,7 @@ void DrivingScene::Render()
 	{
 		modelStack.PushMatrix();
 		modelStack.Rotate((j * (360 / objectlist[1].GetNumberOfOccurences())), 0, 1, 0);
-		modelStack.Translate(0, 0, 400);
+		modelStack.Translate(0, 0, outerradius);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(objectlist[1].GetMeshList()[j], false, true);
 		modelStack.PopMatrix();

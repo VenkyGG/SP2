@@ -74,6 +74,8 @@ private:
 	ThirdPersonCamera camera;
 	float bordersize = 500.0f;
 
+	float innerradius;
+	float outerradius;
 
 	bool CheckSquareCollision();
 	void RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision);
