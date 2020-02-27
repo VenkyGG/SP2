@@ -19,7 +19,8 @@ public:
 	Vector3 offset;
 	Vector3 view;
 	Vector3 right;
-	bool mouseenabled;
+	bool mouseenabledHorizontal;
+	bool mouseenabledVertical;
 	float sensitivity;
 	bool RotationEnabled = true;
 	bool useWASD = false;

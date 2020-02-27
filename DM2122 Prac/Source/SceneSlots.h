@@ -23,6 +23,7 @@ class SceneSlots : public Scene
 		GEO_DICE,
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
+		GEO_SLOTTEXT,
 		GEO_SPINNER,
 		GEO_SLOTHANDLE,
 		GEO_SLOTMACHINE,
@@ -93,6 +94,7 @@ private:
 	bool handleback;
 	float rotatehandle;
 	float rotatehandle2;
+	bool tmp;
 	Camera2 camera;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);

@@ -25,7 +25,7 @@ SceneSlots::~SceneSlots()
 
 void SceneSlots::Init()
 {
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.41f, 0.41f, 0.41f, 0.0f);
 
 	// Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -136,6 +136,9 @@ void SceneSlots::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
+	meshList[GEO_SLOTTEXT] = MeshBuilder::GenerateText("slottext", 16, 16);
+	meshList[GEO_SLOTTEXT]->textureID = LoadTGA("Image//slotFont.tga");
+
 	meshList[GEO_SLOTMACHINE] = MeshBuilder::GenerateOBJ("slotmachine", "OBJ//slotmachine.obj");
 	meshList[GEO_SLOTMACHINE]->textureID = LoadTGA("Image//slotmachine.tga");
 
@@ -200,7 +203,7 @@ void SceneSlots::Update(double dt)
 
 	if (Application::IsKeyPressed('L') && rotate1 == false && rotate2 == false && rotate3 == false)
 	{
-		bool tmp = false;
+		tmp = false;
 		tmp = Player::instance()->removeMoney(100);
 		if (tmp == true)
 		{
@@ -431,6 +434,11 @@ void SceneSlots::Update(double dt)
 	{
 		gameEnd = true;
 	}
+
+	if (Application::IsKeyPressed('K'))
+	{
+		Application::state = Application::Motorshow;
+	}
 }
 
 
@@ -602,18 +610,34 @@ void SceneSlots::Render()
 	}
 	if (threesame2)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "three in a row", Color(0, 1, 0), 3, 0, 0);
+		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "three in a row", Color(1, 0.7, 0.4), 3, 0, 0);
 	}
 	if (twosame2)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "two in a row", Color(0, 1, 0), 3, 0, 0);
+		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "two in a row", Color(1, 0.7, 0.4), 3, 0, 0);
 	}
 	if (nonesame2)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "you lose", Color(0, 1, 0), 3, 0, 0);
+		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "you lose", Color(1, 0.7, 0.4), 3, 0, 0);
 	}
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(0, 1, 0), 2, 0.5, 28.5f);
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(1, 1, 0), 2, 0.5, 26.5f);
+
+	if (tmp == false && gameEnd == true)
+	{
+		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Not enough", Color(1, 1, 0), 2, 0.5, 24.5f);
+		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "money :(", Color(1, 1, 0), 2, 0.5, 23.5f);
+	}
+
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "$100 per run", Color(1, 0.7, 0.4), 2, 0.5f, 28.5f);
+
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Click L to start", Color(1, 0.7, 0.4), 2, 12.f, 14.f);
+
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Click 1, 2, 3", Color(1, 0.7, 0.4), 2, 13.5f, 13.f);
+
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "to stop respective slots", Color(1, 0.7, 0.4), 2, 8.5f, 12.f);
+
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Click K to leave", Color(1, 0.7, 0.4), 2, 12.f, 11.f);
 }
 
 void SceneSlots::Exit()
