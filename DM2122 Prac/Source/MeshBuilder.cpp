@@ -686,10 +686,6 @@ Mesh* MeshBuilder::InitializeCollisionPoints(Mesh* mesh, std::vector<Vertex> ver
 	mesh->initColisionVector2 = mesh->p2;
 	mesh->initColisionVector3 = mesh->p6;
 	mesh->initColisionVector4 = mesh->p5;
-	mesh->ColisionVector1 = mesh->initColisionVector1;
-	mesh->ColisionVector2 = mesh->initColisionVector2;
-	mesh->ColisionVector3 = mesh->initColisionVector3;
-	mesh->ColisionVector4 = mesh->initColisionVector4;
 	return mesh;
 }
 

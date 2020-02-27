@@ -29,6 +29,7 @@ public:
 	static double getmouseYpos();
 	static void mouseupdate();
 	static int state;
+	static int state2;
 private:
 	//Declare a window object
 	StopWatch m_timer;

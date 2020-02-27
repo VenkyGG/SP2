@@ -42,7 +42,8 @@ void Preview::Init()
 	camera.Init(Vector3(0, 24, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	camera.RotationEnabled = false;
 	camera.useWASD = false;
-	camera.mouseenabled = false;
+	camera.mouseenabledHorizontal = false;
+	camera.mouseenabledVertical = false;
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 50000.f);
 	projectionStack.LoadMatrix(projection);

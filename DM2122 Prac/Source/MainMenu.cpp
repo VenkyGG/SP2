@@ -109,6 +109,7 @@ void MainMenu::Init()
 
 }
 int Application::state = 0;
+int Application::state2 = 0;
 void MainMenu::Update(double dt)
 {
 	clock += dt;
@@ -146,7 +147,7 @@ void MainMenu::Update(double dt)
 
 	if (level==1 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-		Application::state = Application::Motorshow;
+		Application::state = Application::state2;
 	}
 	else if (level==2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
