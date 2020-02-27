@@ -18,6 +18,7 @@
 #include "SceneSlots.h"
 #include "Player.h"
 #include "SceneSettings.h"
+#include "DodgeCar.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -155,7 +156,8 @@ void Application::Run()
 	Ptr[Luckyspin] = new LuckySpin();
 	Ptr[Slotmachine] = new SceneSlots();
 	Ptr[Settings] = new SceneSetting();
-	state = Mainmenu;
+	Ptr[DodgeCars] = new DodgeCar();
+	state = DodgeCars;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);

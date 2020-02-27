@@ -232,10 +232,6 @@ int Player::getMoney()
 
 void Player::PrintOwnedCars()
 {
-	//for (size_t i = 0; i < cars.getnumberofcars; i++)
-	//{
-	//	std::cout << "Car " + i: << cars.getCar(i).owned << std::endl;
-	//}
 	initMoney();
 	initOwnedCars();
 	std::cout << "Car 1: " << carsOwned[0] << std::endl;

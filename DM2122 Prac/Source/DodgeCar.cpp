@@ -127,11 +127,6 @@ void DodgeCar::Init()
 
 
 }
-//VVVVVVVVVVVVVVVVV TAKE NOTE OF THIS BLOODY SHIT VVVVVVVVVVVVV
-
-int Application::state = 3;
-
-//^^^^^^^^^^^^^^^^^ TAKE NOTE OF THIS BLOODY SHIT ^^^^^^^^^^^^^
 void DodgeCar::Update(double dt)
 {
 	clock += dt;

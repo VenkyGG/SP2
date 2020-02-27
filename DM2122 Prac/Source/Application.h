@@ -15,6 +15,7 @@ public:
 		PreviewxD,
 		Luckyspin,
 		Slotmachine,
+		DodgeCars,
 		Settings,
 		TOTALSCENES
 	};

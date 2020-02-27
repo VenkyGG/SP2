@@ -247,7 +247,7 @@ void Preview::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-	for (size_t i = 0; i < numlights; i++)
+	for (int i = 0; i < numlights; i++)
 	{
 		if (light[i].type == Light::LIGHT_DIRECTIONAL)
 		{
