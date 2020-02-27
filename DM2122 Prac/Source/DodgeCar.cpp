@@ -127,6 +127,11 @@ void DodgeCar::Init()
 
 
 }
+//VVVVVVVVVVVVVVVVV TAKE NOTE OF THIS BLOODY SHIT VVVVVVVVVVVVV
+
+
+
+//^^^^^^^^^^^^^^^^^ TAKE NOTE OF THIS BLOODY SHIT ^^^^^^^^^^^^^
 void DodgeCar::Update(double dt)
 {
 	clock += dt;
@@ -148,21 +153,48 @@ void DodgeCar::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
+	float height = Application::getmouseYpos();
+	Application::mouseupdate();
 
-	
+	int offset = 6;
+	/*if ((Application::IsKeyPressed('S') || height > 0) && clock < GetTickCount64() && level < 3)
+	{
+		pos -= offset;
+		level++;
+		clock = GetTickCount64() + 500;
+	}
+	else if ((Application::IsKeyPressed('W') || height < 0) && clock < GetTickCount64() && level>1)
+	{
+		pos += offset;
+		level--;
+		clock = GetTickCount64() + 500;
+	}*/
+	/*if (Application::IsKeyPressed('A'))
+	{
+		camera.position.z += dt;
+	}
+	if (Application::IsKeyPressed('D'))
+	{
+		camera.position.z -= dt;
+	}*/
 	float speed = 0.3;
 	if (Application::IsKeyPressed('A'))
 	{
 		camera.position = camera.position - camera.right * speed;
 		camera.target = camera.position + camera.view;
-
+		/*camera.position.z = 3.5f;*/
 	}
-	
+	//if (Application::IsKeyPressed('S'))
+	//{
+	//	camera.position = camera.position - camera.right * speed;
+	//	camera.target = camera.position + camera.view;
+	//	/*camera.position.z = 0.f;*/
+	//}
 	if (Application::IsKeyPressed('D'))
 	{
 		camera.position = camera.position + camera.right * speed;
 		camera.target = camera.position + camera.view;
-
+		/*camera.position.z = -3.5f;*/
 	}
 	if (Application::IsKeyPressed('X'))
 	{
@@ -211,7 +243,19 @@ void DodgeCar::Update(double dt)
 			Car3Timer = 0.5f;
 			Car3Z = -50.f;
 		}
-		
+		/*if (timer > 0.5f && timer<= 2.f)
+		{
+			pos.y += (float)(LSPEED * dt);
+		}
+		if (timer > 2.f && timer <= 3.5f)
+		{
+			pos.y -= (float)(LSPEED * dt);
+		}
+		if (timer > 3.5f)
+		{
+			timer = 0;
+			jumping = false;
+		}*/
 		if (GameStart > 20.f)
 		{
 			Carsmove = false;
@@ -229,6 +273,7 @@ void DodgeCar::Update(double dt)
 		Car2Z = -50.f;
 		Car3Z = -50.f;
 	}
+	//cout << camera.position.x << endl;
 	if ((abs(Car1Z - camera.position.z) <= 5) && (camera.position.x>=-5.5f && camera.position.x<=-1.8f))
 	{
 		Carsmove = false;
@@ -253,6 +298,10 @@ void DodgeCar::Update(double dt)
 		camera.target.x = -5.4;
 	}
 	
+	else if (Paused)
+	{
+		//render paused texture
+	}
 }
 
 
@@ -265,6 +314,36 @@ void DodgeCar::Render()
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z, camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 	modelStack.LoadIdentity();
+
+	// passing the light direction if it is a direction light	
+
+
+	/*modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_MENU], 30.f, 25.f, 2.f, 2.f);
+
+	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_MENUCURSOR], 20, 2 * pos + 30, 0.2f, 0.2f);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_GAMENAME], 40.f, 50.f, 0.6f, 0.5f);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_PLAYBUTTON], 40.f, 34.f, 0.4f, 0.2f);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_SETTINGSBUTTON], 40.f, 22.f, 0.4f, 0.2f);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_EXITBUTTON], 40.f, 10.f, 0.4f, 0.2f);
+	modelStack.PopMatrix();
+
+	modelStack.PopMatrix();*/
+
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -2, -25);
