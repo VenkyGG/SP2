@@ -165,6 +165,9 @@ void DrivingScene::Init()
 	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
 	objectlist[1].GetMesh()->textureID = LoadTGA("Image//track_outeredge.tga");
 	objectlist[1].SetNumberOfOccurences(20);
+	/*objectlist[2].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
+	objectlist[2].GetMesh()->textureID = LoadTGA("Image//track_outeredge.tga");
+	objectlist[2].SetNumberOfOccurences(20);*/
 
 	srand(time(NULL));
 	Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3(275, 0, 0));
@@ -391,8 +394,9 @@ void DrivingScene::Exit()
 bool DrivingScene::CheckSquareCollision()
 {
 	bool collided = false;
-	for (int i = 0; i < size(objectlist); i++)
+	for (int i = 0; i < 2; i++)
 	{
+		
 		for (int j = 0; j < objectlist[i].GetNumberOfOccurences(); j++)
 		{
 			Mesh* currentmesh = objectlist[i].GetMeshList()[j];
@@ -402,7 +406,7 @@ bool DrivingScene::CheckSquareCollision()
 			Vector3 C = currentmesh->ColisionVector3;//back right
 			Vector3 D = currentmesh->ColisionVector4;//back left
 
-			
+
 			Vector3 A2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1;
 			Vector3 B2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2;
 			Vector3 C2 = Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3;
@@ -440,11 +444,11 @@ bool DrivingScene::CheckSquareCollision()
 						}
 						else
 						{
-							currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback*0.1f;
-							A2 += pushback*0.1f;
-							B2 += pushback*0.1f;
-							C2 += pushback*0.1f;
-							D2 += pushback*0.1f;
+							currentmesh->camfreezeposition = currentmesh->camfreezeposition + pushback * 0.1f;
+							A2 += pushback * 0.1f;
+							B2 += pushback * 0.1f;
+							C2 += pushback * 0.1f;
+							D2 += pushback * 0.1f;
 						}
 					}
 					currentmesh->camfreezeposition.y = 0;
@@ -465,6 +469,7 @@ bool DrivingScene::CheckSquareCollision()
 			}
 
 		}
+		
 	}
 
 	return collided;
