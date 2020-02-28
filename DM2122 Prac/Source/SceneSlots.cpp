@@ -414,11 +414,14 @@ void SceneSlots::Update(double dt)
 	{
 		gameEnd = true;
 	}
+	if (Application::IsKeyPressed(VK_RETURN)) {
+		if (rotate1 == false && rotate2 == false && rotate3 == false)
+		{
 
-	if ((gameStart == false || gameEnd == true) && Application::IsKeyPressed(VK_RETURN))
-	{
-		Application::state = Application::Motorshow;
+			Application::state = Application::Motorshow;
+		}
 	}
+	
 }
 
 
