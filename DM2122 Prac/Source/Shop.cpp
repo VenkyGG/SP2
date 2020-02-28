@@ -36,7 +36,7 @@ bool Shop::buyCar(CCar* whichCar)
 	{
 		//std::cout << "You already have the car!" << std::endl;
 
-		//Application::state = Application::Driving;
+		Application::state = Application::Driving;
 
 		return true;
 	}
