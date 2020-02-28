@@ -96,7 +96,7 @@ void DrivingScene::Init()
 	{
 		light[i].type = Light::LIGHT_SPOT;
 		light[i].position.Set(0, 15, 0);
-		light[i].color.Set(0.5f, 0.5f, 0.5f);
+		light[i].color.Set(1, 1, 1);
 		light[i].power = 1;
 		light[i].kC = 1.f;
 		light[i].kL = 0.01f;
@@ -177,7 +177,7 @@ void DrivingScene::Init()
 	Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3((innerradius+outerradius)/2, 0, 0));
 	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
 	camera.mouseenabledVertical = false;
-	
+	camera.RotationEnabled = false;
 
 }
 
