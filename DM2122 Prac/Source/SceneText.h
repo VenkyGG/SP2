@@ -10,6 +10,7 @@
 #include "CarsList.h"
 #include "Player.h"
 
+#include <irrKlang.h>
 class SceneText : public Scene
 {
 
