@@ -162,7 +162,7 @@ void MainMenu::Update(double dt)
 	}
 	else if (level==3 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-	//	Application::Exit();
+		Application::TimeToExit = true;
 	}
 	
 }

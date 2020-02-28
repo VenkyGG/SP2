@@ -345,7 +345,7 @@ void SceneText::Update(double dt)
 		camera.target = camera.position + camera.view;
 	}
 
-	if (Application::IsKeyPressed('V'))
+	if (Application::IsKeyPressed(VK_ESCAPE))
 	{
 		Application::state = Application::Mainmenu;
 
