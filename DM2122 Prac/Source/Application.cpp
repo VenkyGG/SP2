@@ -170,7 +170,7 @@ void Application::Run()
 	Ptr[DodgeCars] = new DodgeCar();
 	Ptr[Settings] = new SceneSetting();
 
-	state = Driving;
+	state = Motorshow;
 	state2 = Mainmenu;
 	Scene * scene = Ptr[state];
 	scene->Init();

@@ -159,13 +159,13 @@ void SceneText::Init()
 
 	//Motorshow
 	meshList[GEO_MOTORSHOW_WALL] = MeshBuilder::GenerateQuad("wall", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_MOTORSHOW_WALL]->textureID = LoadTGA("Image//wall_texture.tga");
+	meshList[GEO_MOTORSHOW_WALL]->textureID = LoadTGA("Image//SkyBox_Motorshow//wall_texture.tga");
 
 	meshList[GEO_MOTORSHOW_CEILING] = MeshBuilder::GenerateQuad("ceiling", Color(0, 0, 0), 1.f, 1.f);
-	meshList[GEO_MOTORSHOW_CEILING]->textureID = LoadTGA("Image//ceilingtexture.tga");
+	meshList[GEO_MOTORSHOW_CEILING]->textureID = LoadTGA("Image//SkyBox_Motorshow//ceilingtexture.tga");
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
-	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floortexture.tga");
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//SkyBox_Motorshow//floortexture.tga");
 	meshList[GEO_FLOOR]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_FLOOR]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
 	meshList[GEO_FLOOR]->material.kSpecular.Set(1.f, 1.f, 1.f);
@@ -355,6 +355,49 @@ void SceneText::Update(double dt)
 		Application::state = Application::PreviewxD;
 
 	}
+
+	for (int i = 0; i < numberofobjects; i++)
+	{
+		if (objectlist[i].GetMesh()->name == "slotmachine")
+		{
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 50)
+			{
+				if (Application::IsKeyPressed('E'))
+				{
+					Application::state = Application::Slotmachine;
+
+					// Need to add Scaling of the Image/Hologram
+				}
+			}
+		}
+
+		if (objectlist[i].GetMesh()->name == "Dcar")
+		{
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 50)
+			{
+				if (Application::IsKeyPressed('E'))
+				{
+					Application::state = Application::DodgeCars;
+
+					// Need to add Scaling of the Image/Hologram
+				}
+			}
+		}
+
+		if (objectlist[i].GetMesh()->name == "spinningWheel")
+		{
+			if ((camera.position - Vector3(300, camera.playerheight, 0)).Length() <= 30)
+			{
+				if (Application::IsKeyPressed('E'))
+				{
+					Application::state = Application::Luckyspin;
+
+					// Need to add Scaling of the Image/Hologram
+				}
+			}
+		}
+	}
+
 	CheckSquareCollision();
 	camera.Update(dt);
 	for (int i = 0; i < numberofNPCs; i++)
@@ -366,18 +409,6 @@ void SceneText::Update(double dt)
 	{
 		Player::instance()->cars.GetCar(i)->Spin();
 
-	}
-	if (Application::IsKeyPressed('T'))
-	{
-		Application::state = Application::Luckyspin;
-	}
-	if (Application::IsKeyPressed('Y'))
-	{
-		Application::state = Application::DodgeCars;
-	}
-	if (Application::IsKeyPressed('U'))
-	{
-		Application::state = Application::Slotmachine;
 	}
 }
 
