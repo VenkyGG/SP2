@@ -5,6 +5,7 @@
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
+#include "SceneSettings.h"
 
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
@@ -105,14 +106,10 @@ void MainMenu::Init()
 
 
 
-	clock = 0;
-
-
 }
-
+double SceneSetting::clock3 = 0;
 void MainMenu::Update(double dt)
 {
-	clock += dt;
 
 	if (Application::IsKeyPressed(0x31))
 	{
@@ -145,17 +142,27 @@ void MainMenu::Update(double dt)
 		clock = GetTickCount64() + 500;
 	}
 
-	if (level==1 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	if (level==1 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-		Application::state = Application::state2;
+		if (Paused)
+		{
+			Application::state = Application::state2;
+		}
+		else
+		{
+			Application::state = Application::Motorshow;
+		}
+	
+		
 	}
-	else if (level==2 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	else if (level==2 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
+		SceneSetting::clock3 = GetTickCount64() + 200;
 		Application::state = Application::Settings;
 	}
 	else if (level==3 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-
+	//	Application::Exit();
 	}
 	
 }

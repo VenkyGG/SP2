@@ -86,7 +86,12 @@ public:
 	SceneSetting();
 	~SceneSetting();
 
+	float pos = 1.5;
+	float pos2 = -8;
+	int level = 1;
 	double clock;
+	double clock2;
+	static double clock3;
 	bool button;
 
 	virtual void Init();
