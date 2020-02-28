@@ -649,37 +649,26 @@ void SceneText::CheckSquareCollision()
 				camera.target = camera.position + camera.view;
 				for (int t = 0; t < numberofNPCs; t++)
 				{
-					Mesh* currentmesh = NPCs[t]->GetMesh(0);
-					Vector3 A = currentmesh->ColisionVector1;//front left 
-					Vector3 B = currentmesh->ColisionVector2;//front right
-					Vector3 C = currentmesh->ColisionVector3;//back right
-					Vector3 D = currentmesh->ColisionVector4;//back left
-					Vector3 MidAB = (A + B) * 0.5f;
-					Vector3 MidCD = (C + D) * 0.5f;
-					Vector3 Center = (MidAB + MidCD) * 0.5f;
-					Vector3 E = NPCs[t]->GetPosition();
+					float xmin = A.x;
+					float xmax = B.x;
+					float zmin = D.z;
+					float zmax = A.z;
 
-					bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
-					if (x)
+					if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
 					{
-						objectlist[current].GetMeshList()[i]->camcollided = true;
-						bool foundposition = true;
-						Vector3 pushback = (NPCs[t]->GetPosition() - Center).Normalized();
-						Vector3 F = NPCs[t]->GetPosition() + pushback * 0.1f;
-						while (foundposition)
-						{
-							bool x = Physics::CheckCollision(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
-							if (!x)
-							{
-								break;
-							}
-							else
-							{
-								F = F + pushback * 0.1f;
-							}
-						}
-						F.y = 0;
-						NPCs[t]->SetPosition(F);
+						NPCs[i]->SetPosition(Vector3(xmax + 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+					}
+					if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(xmin - 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+					}
+					if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.1f));
+					}
+					if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.1f));
 					}
 				}
 				

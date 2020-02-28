@@ -96,7 +96,7 @@ void DrivingScene::Init()
 	{
 		light[i].type = Light::LIGHT_SPOT;
 		light[i].position.Set(0, 15, 0);
-		light[i].color.Set(1, 1, 1);
+		light[i].color.Set(1.f, 1.f, 1.f);
 		light[i].power = 1;
 		light[i].kC = 1.f;
 		light[i].kL = 0.01f;
