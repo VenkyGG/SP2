@@ -31,7 +31,7 @@ class DrivingScene : public Scene
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
-	const static int numlights = 40;
+	const static int numlights = 1;
 
 
 	enum Scene5_UNIFORM_TYPE
@@ -89,6 +89,9 @@ private:
 public:
 	StopWatch Drivetimer;
 	float timenow;
+	int moneyToAdd;
+	bool timeToAdd;
+	float moneyYpos;
 	DrivingScene();
 	~DrivingScene();
 

@@ -266,10 +266,7 @@ void Player::rewriteFile()
 	{
 		perror("Error deleting file");
 	}
-	else
-	{
-		puts("File successfully deleted");
-	}
+	
 
 	ofstream write(File);
 

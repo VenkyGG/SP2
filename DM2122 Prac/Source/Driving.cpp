@@ -179,20 +179,36 @@ void DrivingScene::Init()
 	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
 	camera.mouseenabledVertical = false;
 	camera.RotationEnabled = false;
+	moneyYpos = 18;
+	timeToAdd = false;
 
 }
 
 
 void DrivingScene::Update(double dt)
 {
-	timenow += Drivetimer.getElapsedTime();
+	
+	timenow += Drivetimer.getElapsedTime() * (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()*5/125.0f);
 	if (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() <= 0)
 	{
+		
 		if (timenow >= 5)
 		{
-			Player::instance()->addMoney(timenow * 200);
+			timeToAdd = true;
+			moneyToAdd = timenow * 200;
+			Player::instance()->addMoney(moneyToAdd);
 		}
 		timenow = 0;
+	}
+	if (timeToAdd)
+	{
+		moneyYpos += 0.05f;
+		if (moneyYpos > 21)
+		{
+			moneyYpos = 18;
+			moneyToAdd = 0;
+			timeToAdd = false;
+		}
 	}
 	if (Application::IsKeyPressed(0x31))
 	{
@@ -409,14 +425,27 @@ void DrivingScene::Render()
 	modelStack.PopMatrix();
 	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERFRONT], 10, 10, 20, 20, 0);//render speedometerfront
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0);//render crosshair
-	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
+	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 1);
 
 	string timerightnow = to_string(timenow);
 	for (size_t i = 0; i < 4; i++)
 	{
 		timerightnow.pop_back();
 	}
-	RenderTextOnScreen(meshList[GEO_TEXT], timerightnow, Color(0, 0, 0), 5, 6, 10.5f);
+	if (timenow > 5)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], timerightnow, Color(0, 1, 0), 5, 6, 10.5f);
+	}
+	else
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], timerightnow, Color(1, 0, 0), 5, 6, 10.5f);
+	}
+	
+	RenderTextOnScreen(meshList[GEO_TEXT], ("Money:$" + to_string(Player::instance()->getMoney())), Color(0, 0, 0), 2, 0.5, 28.5f); // This prints the Money the player has onto the top left of the Screen
+	if (timeToAdd)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], ("+$" + to_string(moneyToAdd)), Color(0, 0, 0), 3, 21, moneyYpos); // This prints the Money the player has onto the top left of the Screen
+	}
 }
 
 void DrivingScene::Exit()
@@ -465,7 +494,9 @@ bool DrivingScene::CheckSquareCollision()
 				{
 					if (timenow >= 5)
 					{
-						Player::instance()->addMoney(timenow * 200);
+						timeToAdd = true;
+						moneyToAdd = timenow * 200;
+						Player::instance()->addMoney(moneyToAdd);
 					}
 					timenow = 0;
 					currentmesh->camcollided = true;
