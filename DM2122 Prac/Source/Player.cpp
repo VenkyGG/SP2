@@ -207,11 +207,11 @@ bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 	else
 	{
 		money = getMoney() - amountToBeRemoved;
-
+		rewriteFile();
 		return true;
 	}
 
-	rewriteFile();
+	
 }
 
 void Player::addMoney(int amountToBeAdded) // Function to add money.

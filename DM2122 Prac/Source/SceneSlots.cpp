@@ -7,9 +7,23 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "Player.h"
+#include "irrKlang.h"
+
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
+
+irrklang::ISoundEngine* slotengine = irrklang::createIrrKlangDevice();
+
+irrklang::ISoundSource* errorsound = slotengine->addSoundSourceFromFile("Sound/error sound.mp3");
+irrklang::ISound* error = slotengine->play2D(errorsound, false, true, true, false);
+irrklang::ISoundSource* slotspinning = slotengine->addSoundSourceFromFile("Sound/slot spinning.mp3");
+irrklang::ISound* slotspin = slotengine->play2D(slotspinning, false, true, true, false);
+irrklang::ISoundSource* jackpot = slotengine->addSoundSourceFromFile("Sound/3inarow.mp3");
+irrklang::ISound* win3 = slotengine->play2D(jackpot, false, true, true, false);
+irrklang::ISoundSource* nonesame = slotengine->addSoundSourceFromFile("Sound/nonesame.mp3");
+irrklang::ISound* lose = slotengine->play2D(nonesame, false, true, true, false);
+
 
 SceneSlots::SceneSlots()
 {
@@ -200,6 +214,7 @@ void SceneSlots::Update(double dt)
 			gameEnd = false;
 			handleforward = true;
 			handleback = false;
+			slotspin->setIsPaused(false);
 		}
 	}
 	if (Application::IsKeyPressed('1'))
@@ -387,13 +402,16 @@ void SceneSlots::Update(double dt)
 			facenum[2] = 9;
 		}
 	}
-	std::cout << rotateslot1 << " " << rotateslot2 << " " << rotateslot3 << std::endl;
+	//std::cout << rotateslot1 << " " << rotateslot2 << " " << rotateslot3 << std::endl;
 	if (rotate1 == false && rotate2 == false && rotate3 == false && gameStart == true) {
+		slotspin->setIsPaused(true);
 		if (facenum[0] == facenum[1] && facenum[1] == facenum[2])
 		{
 			threesame = true;
 			twosame = false;
 			nonesame = false;
+			win3->setIsPaused(false);
+
 		}
 		else if (facenum[0] == facenum[1] || facenum[1] == facenum[2] || facenum[0] == facenum[2])
 		{
@@ -608,6 +626,8 @@ void SceneSlots::Render()
 
 	if (tmp == false && gameEnd == true)
 	{
+		error->setIsPaused(false);
+
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Not enough", Color(1, 1, 0), 2, 0.5, 24.5f);
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "money :(", Color(1, 1, 0), 2, 0.5, 23.5f);
 	}
