@@ -26,6 +26,7 @@ DrivingScene::DrivingScene()
 	{
 		meshList[i] = NULL;
 	}
+	
 }
 
 DrivingScene::~DrivingScene()
@@ -143,7 +144,7 @@ void DrivingScene::Init()
 
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//moneyFont.tga");
 
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
@@ -184,6 +185,15 @@ void DrivingScene::Init()
 
 void DrivingScene::Update(double dt)
 {
+	timenow += Drivetimer.getElapsedTime();
+	if (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() <= 0)
+	{
+		if (timenow >= 5)
+		{
+			Player::instance()->addMoney(timenow * 200);
+		}
+		timenow = 0;
+	}
 	if (Application::IsKeyPressed(0x31))
 	{
 		glDisable(GL_CULL_FACE);
@@ -203,8 +213,8 @@ void DrivingScene::Update(double dt)
 
 	
 
-	float speed = 2;
 	CCar* currentcar = Player::instance()->cars.GetCurrentCar();
+	float speed = 2;
 	Mtx44 rotation;
 	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
 	bool check = CheckSquareCollision();
@@ -400,7 +410,13 @@ void DrivingScene::Render()
 	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERFRONT], 10, 10, 20, 20, 0);//render speedometerfront
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0);//render crosshair
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
-	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
+
+	string timerightnow = to_string(timenow);
+	for (size_t i = 0; i < 4; i++)
+	{
+		timerightnow.pop_back();
+	}
+	RenderTextOnScreen(meshList[GEO_TEXT], timerightnow, Color(0, 0, 0), 5, 6, 10.5f);
 }
 
 void DrivingScene::Exit()
@@ -447,7 +463,11 @@ bool DrivingScene::CheckSquareCollision()
 			{
 				if (x && Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() != 0)
 				{
-					cout << x;
+					if (timenow >= 5)
+					{
+						Player::instance()->addMoney(timenow * 200);
+					}
+					timenow = 0;
 					currentmesh->camcollided = true;
 					bool foundposition = true;
 					Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - Center).Normalized();

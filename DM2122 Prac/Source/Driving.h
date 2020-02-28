@@ -87,6 +87,8 @@ private:
 
 	Vector3 starepoint;
 public:
+	StopWatch Drivetimer;
+	float timenow;
 	DrivingScene();
 	~DrivingScene();
 
