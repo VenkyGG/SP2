@@ -7,6 +7,8 @@
 #include "Mesh.h"
 #include "Application.h"
 #include "Player.h" 
+#include <irrKlang.h>
+#pragma comment(lib,"irrKlang.lib")
 
 class LuckySpin : public Scene
 {
@@ -53,11 +55,9 @@ class LuckySpin : public Scene
 	};
 
 private:
-	Player* player;
-	float pos = 2;
 	double timer;
 	bool Spinned;
-	float SpinnerRotation = 0;
+	float SpinnerRotation;
 	float finalspin;
 	float remainder;
 	float segment;
@@ -74,12 +74,11 @@ private:
 
 
 	Camera2 camera;
-	void CalculateSpin();
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
-
+	void resetRotation();
 public:
 	//bool SpinningWheel;
 	LuckySpin();

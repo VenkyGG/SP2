@@ -434,7 +434,6 @@ void SceneSlots::Update(double dt)
 	{
 		gameEnd = true;
 	}
-
 	if (Application::IsKeyPressed('K'))
 	{
 		Application::state = Application::Motorshow;
