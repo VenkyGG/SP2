@@ -129,13 +129,13 @@ void MainMenu::Update(double dt)
 	}
 
 	int offset = 6;
-	if (Application::IsKeyPressed('S') && clock < GetTickCount64() && level < 3)
+	if ((Application::IsKeyPressed('S')|| Application::IsKeyPressed(VK_DOWN)) && clock < GetTickCount64() && level < 3)
 	{
 		pos -= offset;
 		level++;
 		clock = GetTickCount64() + 500;
 	}
-	else if (Application::IsKeyPressed('W') && clock < GetTickCount64() && level>1)
+	else if ((Application::IsKeyPressed('W') || Application::IsKeyPressed(VK_UP)) && clock < GetTickCount64() && level>1)
 	{
 		pos += offset;
 		level--;
