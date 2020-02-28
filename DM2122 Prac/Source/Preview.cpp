@@ -10,6 +10,10 @@
 #include "Physics.h"
 #include "Player.h"
 
+//irrklang::ISoundEngine* PSound = irrklang::createIrrKlangDevice();
+//irrklang::ISoundSource* money = PSound->addSoundSourceFromFile("Sound/moneyFx.ogg"); // Init folder
+//irrklang::ISound* moneyx = PSound->play2D(money, false, true, true, false); // Run Sound
+
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
@@ -42,6 +46,8 @@ void Preview::Init()
 	rgbRed = 255.f;
 	rgbGreen = 0.f;
 	rgbBlue = 0.f;
+	
+	moneyBool = false;
 
 	done1 = false;
 	done2 = false;
@@ -166,6 +172,11 @@ void Preview::Init()
 
 	meshList[GEO_MONEYTEXT] = MeshBuilder::GenerateText("MoneyText", 16, 16);
 	meshList[GEO_MONEYTEXT]->textureID = LoadTGA("Image//moneyFont.tga");
+
+	// Currency
+
+	meshList[GEO_MONEYSYMBOL] = MeshBuilder::GenerateOBJ("Money Symbol", "OBJ//CurrencySymbol.obj");
+	meshList[GEO_MONEYSYMBOL]->textureID = LoadTGA("Image//currencysymbol.tga");
 
 	// Arrows
 	meshList[GEO_LEFTARROW] = MeshBuilder::GenerateQuad("LeftArrow", Color(0.f, 0.f, 0.f), 1, 1);
@@ -314,6 +325,8 @@ void Preview::Render()
 	RenderMesh(Player::instance()->cars.GetCurrentCar()->GetMeshList()[0], false, true);
 	modelStack.PopMatrix();
 
+	RenderMeshOnScreen(meshList[GEO_MONEYSYMBOL], 7, 56, 3, 3, 90);
+
 	if (printNotEnufMoney == true && printNotEnufMoneyDelay > GetTickCount64())
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT2], "Not enough money", Color(1, 0, 0), 3, 5.0f, 5.f);
@@ -333,11 +346,10 @@ void Preview::Render()
 
 	RenderFramerate(meshList[GEO_TEXT], Color(1, 1, 1), 3, 21, 19);
 
-	RenderTextOnScreen(meshList[GEO_MONEYTEXT], ("Money:$" + to_string(Player::instance()->getMoney())), Color(1, 1, 1), 2, 0.5, 28.5f); // This prints the Money the player has onto the top left of the Screen
+	RenderTextOnScreen(meshList[GEO_MONEYTEXT], ":"+ to_string(Player::instance()->getMoney()), Color(1, 1, 1), 2, 6.8, 27.5f); // This prints the Money the player has onto the top left of the Screen
 
 	renderPrice();
 
-	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
 }
 
 void Preview::RGBChroma(double dt)

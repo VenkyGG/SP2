@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "CarsList.h"
 #include "CCar.h"
+#include "irrKlang.h"
 
 class Shop
 {
