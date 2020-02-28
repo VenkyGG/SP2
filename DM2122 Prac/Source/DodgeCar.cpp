@@ -133,7 +133,7 @@ void DodgeCar::Update(double dt)
 	int offset = 6;
 	float speed = 0.3;
 
-	if (Application::IsKeyPressed(VK_RETURN))
+	if (Application::IsKeyPressed(VK_RETURN) && Carsmove == false)
 	{
 		Application::state = Application::Motorshow;
 	}
