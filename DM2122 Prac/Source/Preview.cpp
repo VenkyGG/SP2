@@ -55,8 +55,11 @@ void Preview::Init()
 	test = false;
 
 	camera.Init(Vector3(0, 24, 50), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	
 	camera.RotationEnabled = false;
 	camera.useWASD = false;
+	camera.disableReset = true;
+
 	camera.mouseenabledHorizontal = false;
 	camera.mouseenabledVertical = false;
 	Mtx44 projection;
