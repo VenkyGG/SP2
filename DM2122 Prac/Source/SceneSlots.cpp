@@ -106,26 +106,6 @@ void SceneSlots::Init()
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
 
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
-
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
-
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
-
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
-
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
-
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
-
-	meshList[GEO_CHAR] = MeshBuilder::GenerateQuad("char", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_CHAR]->textureID = LoadTGA("Image//char.tga");
 
 	meshList[GEO_SPINNER] = MeshBuilder::GenerateOBJ("roller", "OBJ//slotspinner.obj");
 	meshList[GEO_SPINNER]->textureID = LoadTGA("Image//slotspinner.tga");
@@ -435,7 +415,7 @@ void SceneSlots::Update(double dt)
 		gameEnd = true;
 	}
 
-	if (Application::IsKeyPressed('K'))
+	if ((gameStart == false || gameEnd == true) && Application::IsKeyPressed(VK_RETURN))
 	{
 		Application::state = Application::Motorshow;
 	}
@@ -637,7 +617,7 @@ void SceneSlots::Render()
 
 	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "to stop respective slots", Color(1, 0.7, 0.4), 2, 8.5f, 12.f);
 
-	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Click K to leave", Color(1, 0.7, 0.4), 2, 12.f, 11.f);
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Click Enter to leave", Color(1, 0.7, 0.4), 2, 12.f, 11.f);
 }
 
 void SceneSlots::Exit()
