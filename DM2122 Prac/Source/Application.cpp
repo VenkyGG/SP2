@@ -19,7 +19,9 @@
 #include "DodgeCar.h"
 #include "Player.h"
 #include "SceneSettings.h"
-
+#include "intro.h"
+int Application::state = 0;
+int Application::state2 = 0;
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -115,6 +117,16 @@ void Application::Init()
 
 	glfwSetWindowSizeCallback(m_window, resize_callback);
 	glfwSetWindowPosCallback(m_window, window_pos_callback);
+	Ptr[intro] = new Intro();
+	Ptr[intro]->Init();
+	
+	Ptr[intro]->Update(m_timer.getElapsedTime());
+	Ptr[intro]->Render();
+	//Swap buffers
+	glfwSwapBuffers(m_window);
+	//Get and organize events, like keyboard and mouse input, window resizing, etc...
+	glfwPollEvents();
+	m_timer.waitUntil(frameTime);
 }
 Player* Player::instances = 0;
 double Application::getmouseXpos()//get mpouse x coord
@@ -145,9 +157,9 @@ void Application::mouseupdate()//reset mouse position
 
 void Application::Run()
 {
+
 	Player::instance();
 	//Main Loop
-	Scene* Ptr[TOTALSCENES];
 	Ptr[Mainmenu] = new MainMenu();
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
@@ -158,7 +170,7 @@ void Application::Run()
 	Ptr[Settings] = new SceneSetting();
 
 	state = Driving;
-	state2 = Motorshow;
+	state2 = Mainmenu;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
@@ -174,9 +186,10 @@ void Application::Run()
 		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.
 		if (scene != Ptr[state])
 		{
+			MainMenu* currentscene = static_cast<MainMenu*>(Ptr[Mainmenu]);
 			for (int i = 0; i < TOTALSCENES; i++)
 			{
-				if (Ptr[i] == scene)
+				if (Ptr[i] == scene && i!=Settings && i!=Mainmenu)
 				{
 					state2 = i;
 				}
@@ -186,9 +199,9 @@ void Application::Run()
 			{
 				scene->Init();
 			}
-			if (scene == Ptr[0])
+			if (scene == Ptr[0] && state2!=Mainmenu)
 			{
-				MainMenu* currentscene = static_cast<MainMenu*>(scene);
+				
 				currentscene->Paused = true;
 			}
 		}

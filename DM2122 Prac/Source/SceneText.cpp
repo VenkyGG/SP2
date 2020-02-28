@@ -249,8 +249,26 @@ void SceneText::Init()
 				currentlightpos.z += differenceZ;
 			}
 		}
-
-
+		if (objectlist[i].GetMesh()->name == "slotmachine")
+		{
+			objectlist[i].SetNumberOfOccurences(3);
+			for (int j = 0; j < 3; j++)
+			{
+				objectlist[i].SetPosition(j, (Vector3(400, 10, -400)+j*Vector3(20,0,0)));
+				objectlist[i].SetRotation(j, Vector3(0,180+45,0));
+			}
+		}
+		if (objectlist[i].GetMesh()->name == "Dcar")
+		{
+			objectlist[i].SetNumberOfOccurences(3);
+			for (int j = 0; j < 3; j++)
+			{
+				string x = "Image//Dcar" + to_string(j+1) + ".tga";
+				objectlist[i].GetMeshList()[j]->textureID = LoadTGA(x.c_str());
+				objectlist[i].SetPosition(j, (Vector3(400, 10, 400) + j * Vector3(20, 0, 0)));
+				objectlist[i].SetRotation(j, Vector3(0, 45, 0));
+			}
+		}
 
 	}
 }
@@ -521,7 +539,30 @@ void SceneText::Render()
 			modelStack.PopMatrix();
 			modelStack.PopMatrix();
 		}
-
+		if (objectlist[i].GetMesh()->name == "slotmachine")
+		{
+			for (int j = 0; j < objectlist[i].GetNumberOfOccurences(); j++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(objectlist[i].GetPostition()[j].x, objectlist[i].GetPostition()[j].y, objectlist[i].GetPostition()[j].z);
+				modelStack.Rotate(objectlist[i].GetRotation()[j].y, 0, 1, 0);
+				
+				RenderMesh(objectlist[i].GetMeshList()[j], true, true);
+				modelStack.PopMatrix();
+			}
+		}
+		if (objectlist[i].GetMesh()->name == "Dcar")
+		{
+			for (int j = 0; j < objectlist[i].GetNumberOfOccurences(); j++)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(objectlist[i].GetPostition()[j].x, objectlist[i].GetPostition()[j].y, objectlist[i].GetPostition()[j].z);
+				modelStack.Rotate(objectlist[i].GetRotation()[j].y, 0, 1, 0);
+				modelStack.Scale(5, 5, 5);
+				RenderMesh(objectlist[i].GetMeshList()[j], true, true);
+				modelStack.PopMatrix();
+			}
+		}
 	}
 
 	for (int i = 0; i < numlights; i++)
@@ -557,96 +598,81 @@ void SceneText::CheckSquareCollision()
 	{
 		for (int i = 0; i < objectlist[current].GetNumberOfOccurences(); i++)
 		{
-			if (objectlist[current].GetMesh() != NULL)
+			if (objectlist[current].GetMeshList()[i] != NULL && objectlist[current].GetType() == "Object" && objectlist[current].GetMeshList()[i]->collison)
 			{
-				if (objectlist[current].GetType() == "Object")
+				Mesh* currentmesh = objectlist[current].GetMeshList()[i];
+				Vector3 A = currentmesh->ColisionVector1;//front left 
+				Vector3 B = currentmesh->ColisionVector2;//front right
+				Vector3 C = currentmesh->ColisionVector3;//back right
+				Vector3 D = currentmesh->ColisionVector4;//back left
+				Vector3 MidAB = (A + B) * 0.5f;
+				Vector3 MidCD = (C + D) * 0.5f;
+				Vector3 Center = (MidAB + MidCD) * 0.5f;
+				Vector3 E = camera.position;
+				if (objectlist[current].GetMeshList()[i]->camcollided == false)
 				{
-					if (objectlist[current].GetMeshList()[i]->collison)
+					bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+					if (x)
 					{
-						Mesh* currentmesh = objectlist[current].GetMeshList()[i];
-						Vector3 A = currentmesh->ColisionVector1;//front left 
-						Vector3 B = currentmesh->ColisionVector2;//front right
-						Vector3 C = currentmesh->ColisionVector3;//back right
-						Vector3 D = currentmesh->ColisionVector4;//back left
-						Vector3 MidAB = (A + B) * 0.5f;
-						Vector3 MidCD = (C + D) * 0.5f;
-						Vector3 Center = (MidAB + MidCD) * 0.5f;
-						Vector3 E = camera.position;
-						if (objectlist[current].GetMeshList()[i]->camcollided == false)
+						objectlist[current].GetMeshList()[i]->camcollided = true;
+						bool foundposition = true;
+						Vector3 pushback = (camera.position - Center).Normalized();
+						objectlist[current].GetMeshList()[i]->camfreezeposition = camera.position + pushback * 0.1f;
+						Vector3 F = objectlist[current].GetMeshList()[i]->camfreezeposition;
+						while (foundposition)
 						{
-							bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
-							if (x)
-							{
-								objectlist[current].GetMeshList()[i]->camcollided = true;
-								bool foundposition = true;
-								Vector3 pushback = (camera.position - Center).Normalized();
-								objectlist[current].GetMeshList()[i]->camfreezeposition = camera.position + pushback * 0.1f;
-								Vector3 F = objectlist[current].GetMeshList()[i]->camfreezeposition;
-								while (foundposition)
-								{
-									bool x = Physics::CheckCollision(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
-									if (!x)
-									{
-										break;
-									}
-									else
-									{
-										F = F + pushback * 0.1f;
-									}
-								}
-								objectlist[current].GetMeshList()[i]->camfreezeposition = F;
-								objectlist[current].GetMeshList()[i]->camfreezeposition.y = camera.playerheight;
-								camera.position = objectlist[current].GetMeshList()[i]->camfreezeposition;
-							}
-						}
-						else if (objectlist[current].GetMeshList()[i]->camcollided)
-						{
-							camera.position = objectlist[current].GetMeshList()[i]->camfreezeposition;
-							bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+							bool x = Physics::CheckCollision(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
 							if (!x)
 							{
-								objectlist[current].GetMeshList()[i]->camcollided = false;
-								objectlist[current].GetMeshList()[i]->camfreezeposition = Vector3(0, 0, 0);
+								break;
 							}
-						}
-						camera.target = camera.position + camera.view;
-						for (int t = 0; t < numberofNPCs; t++)
-						{
-							Mesh* currentmesh = NPCs[t]->GetMesh(0);
-							Vector3 A = currentmesh->ColisionVector1;//front left 
-							Vector3 B = currentmesh->ColisionVector2;//front right
-							Vector3 C = currentmesh->ColisionVector3;//back right
-							Vector3 D = currentmesh->ColisionVector4;//back left
-							Vector3 MidAB = (A + B) * 0.5f;
-							Vector3 MidCD = (C + D) * 0.5f;
-							Vector3 Center = (MidAB + MidCD) * 0.5f;
-							Vector3 E = NPCs[t]->GetPosition();
-
-							bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
-							if (x)
+							else
 							{
-								objectlist[current].GetMeshList()[i]->camcollided = true;
-								bool foundposition = true;
-								Vector3 pushback = (NPCs[t]->GetPosition() - Center).Normalized();
-								Vector3 F = NPCs[t]->GetPosition() + pushback * 0.1f;
-								while (foundposition)
-								{
-									bool x = Physics::CheckCollision(A, B, C, D, F + Vector3(1, 0, 0), F + Vector3(0, 0, 1), F - Vector3(1, 0, 0), F - Vector3(0, 0, 1));
-									if (!x)
-									{
-										break;
-									}
-									else
-									{
-										F = F + pushback * 0.1f;
-									}
-								}
-								F.y = 0;
-								NPCs[t]->SetPosition(F);
+								F = F + pushback * 0.1f;
 							}
 						}
+						objectlist[current].GetMeshList()[i]->camfreezeposition = F;
+						objectlist[current].GetMeshList()[i]->camfreezeposition.y = camera.playerheight;
+						camera.position = objectlist[current].GetMeshList()[i]->camfreezeposition;
 					}
 				}
+				else if (objectlist[current].GetMeshList()[i]->camcollided)
+				{
+					camera.position = objectlist[current].GetMeshList()[i]->camfreezeposition;
+					bool x = Physics::CheckCollision(A, B, C, D, E + Vector3(1, 0, 0), E + Vector3(0, 0, 1), E - Vector3(1, 0, 0), E - Vector3(0, 0, 1));
+					if (!x)
+					{
+						objectlist[current].GetMeshList()[i]->camcollided = false;
+						objectlist[current].GetMeshList()[i]->camfreezeposition = Vector3(0, 0, 0);
+					}
+				}
+				camera.target = camera.position + camera.view;
+				for (int t = 0; t < numberofNPCs; t++)
+				{
+					float xmin = A.x;
+					float xmax = B.x;
+					float zmin = D.z;
+					float zmax = A.z;
+
+					if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(xmax + 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+					}
+					if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(xmin - 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+					}
+					if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.1f));
+					}
+					if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
+					{
+						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.1f));
+					}
+				}
+				
+				
 			}
 		}
 	}

@@ -22,8 +22,10 @@ public:
 	bool mouseenabledHorizontal;
 	bool mouseenabledVertical;
 	float sensitivity;
-	bool RotationEnabled = true;
-	bool useWASD = false;
+
+	bool RotationEnabled;
+	bool useWASD;
+	bool disableReset;
 
 	ThirdPersonCamera();
 	~ThirdPersonCamera();

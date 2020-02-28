@@ -13,14 +13,7 @@ class SceneSlots : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES = 0,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
-		GEO_FRONT,
-		GEO_BACK,
-		GEO_CHAR,
-		GEO_DICE,
+		
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
 		GEO_SLOTTEXT,

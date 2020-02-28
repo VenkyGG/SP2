@@ -26,6 +26,7 @@ DrivingScene::DrivingScene()
 	{
 		meshList[i] = NULL;
 	}
+	
 }
 
 DrivingScene::~DrivingScene()
@@ -64,8 +65,7 @@ void DrivingScene::Init()
 	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
 	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
 	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
-	//For First Light
-	for (int i = 0; i < numlights; i++)
+	for (int i = 0; i < numlights2; i++)
 	{
 		m_parameters[8 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].position_cameraspace").c_str());
 		m_parameters[9 + i * 11] = glGetUniformLocation(m_programID, ("lights[" + to_string(i) + "].color").c_str());
@@ -93,16 +93,16 @@ void DrivingScene::Init()
 	glEnable(GL_DEPTH_TEST);
 
 	//Initialize First light
-	for (int i = 0; i < numlights; i++)
+	for (int i = 0; i < numlights2; i++)
 	{
 		light[i].type = Light::LIGHT_SPOT;
-		light[i].position.Set(0, 5, 0);
-		light[i].color.Set(0.5f, 0.5f, 0.5f);
-		light[i].power = 100;
+		light[i].position.Set(0, 15, 0);
+		light[i].color.Set(1.f, 1.f, 1.f);
+		light[i].power = 1;
 		light[i].kC = 1.f;
 		light[i].kL = 0.01f;
 		light[i].kQ = 0.001f;
-		light[i].cosCutoff = cos(Math::DegreeToRadian(45));
+		light[i].cosCutoff = cos(Math::DegreeToRadian(90));
 		light[i].cosInner = cos(Math::DegreeToRadian(30));
 		light[i].exponent = 3.f;
 		light[i].spotDirection.Set(0.f, 1.f, 0.f);
@@ -117,7 +117,7 @@ void DrivingScene::Init()
 		glUniform1f(m_parameters[17 + i * 11], light[i].cosInner);
 		glUniform1f(m_parameters[18 + i * 11], light[i].exponent);
 	}
-	glUniform1i(m_parameters[U_NUMLIGHTS], numlights);
+	glUniform1i(m_parameters[U_NUMLIGHTS], numlights2);
 
 	//skybox outdoor
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
@@ -144,7 +144,7 @@ void DrivingScene::Init()
 
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//moneyFont.tga");
 
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
@@ -165,21 +165,51 @@ void DrivingScene::Init()
 	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
 	objectlist[1].GetMesh()->textureID = LoadTGA("Image//track_outeredge.tga");
 	objectlist[1].SetNumberOfOccurences(20);
-	/*objectlist[2].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
-	objectlist[2].GetMesh()->textureID = LoadTGA("Image//track_outeredge.tga");
-	objectlist[2].SetNumberOfOccurences(20);*/
+	objectlist[2].SetMesh("lamppost", "OBJ//Tracks//lamppost.obj");
+	objectlist[2].GetMesh()->textureID = LoadTGA("Image//lamppost.tga");
+	objectlist[2].SetNumberOfOccurences(40);
+	objectlist[3].SetMesh("lamppost", "OBJ//Tracks//statue.obj");
+	objectlist[3].GetMesh()->textureID = LoadTGA("Image//statue.tga");
+	objectlist[3].SetNumberOfOccurences(1);
 
 	srand(time(NULL));
-	Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3(275, 0, 0));
-	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
-	camera.mouseenabledVertical = false;
 	innerradius = 200;
 	outerradius = 300;
+	Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3((innerradius+outerradius)/2, 0, 0));
+	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
+	camera.mouseenabledVertical = false;
+	camera.RotationEnabled = false;
+	moneyYpos = 18;
+	timeToAdd = false;
+
 }
 
 
 void DrivingScene::Update(double dt)
 {
+	
+	timenow += Drivetimer.getElapsedTime() * (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()*5/125.0f);
+	if (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() <= 0)
+	{
+		
+		if (timenow >= 5)
+		{
+			timeToAdd = true;
+			moneyToAdd = timenow * 200;
+			Player::instance()->addMoney(moneyToAdd);
+		}
+		timenow = 0;
+	}
+	if (timeToAdd)
+	{
+		moneyYpos += 0.05f;
+		if (moneyYpos > 21)
+		{
+			moneyYpos = 18;
+			moneyToAdd = 0;
+			timeToAdd = false;
+		}
+	}
 	if (Application::IsKeyPressed(0x31))
 	{
 		glDisable(GL_CULL_FACE);
@@ -199,8 +229,8 @@ void DrivingScene::Update(double dt)
 
 	
 
-	float speed = 2;
 	CCar* currentcar = Player::instance()->cars.GetCurrentCar();
+	float speed = 2;
 	Mtx44 rotation;
 	rotation.SetToRotation(-currentcar->GetRotation()[0].y, 0, 1, 0);
 	bool check = CheckSquareCollision();
@@ -308,7 +338,7 @@ void DrivingScene::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-	for (int i = 0; i < numlights; i++)
+	for (int i = 0; i < numlights2; i++)
 	{
 		if (light[i].type == Light::LIGHT_DIRECTIONAL)
 		{
@@ -336,11 +366,14 @@ void DrivingScene::Render()
 
 	RenderSkybox();
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
-	//RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
-	//modelStack.PopMatrix();
+	for (int i = 0; i < numlights2; i++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(light[i].position.x, light[i].position.y, light[i].position.z);
+		RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
+		modelStack.PopMatrix();
 
+	}
 
 
 	modelStack.PushMatrix();
@@ -355,7 +388,13 @@ void DrivingScene::Render()
 		modelStack.PushMatrix();
 		modelStack.Rotate((j*(360/objectlist[0].GetNumberOfOccurences())),0, 1, 0);
 		modelStack.Translate(0, 0, innerradius);
-		RenderMesh(objectlist[0].GetMeshList()[j], false, true);
+		RenderMesh(objectlist[0].GetMeshList()[j], true, true);
+
+		modelStack.PushMatrix();
+
+		RenderMesh(objectlist[2].GetMeshList()[j], true, false);
+		light[j].position.Set(modelStack.Top().GetTranspose().Multiply(Vector3(0,25,0)).x, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).y, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).z);
+		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
 	
@@ -364,9 +403,21 @@ void DrivingScene::Render()
 		modelStack.PushMatrix();
 		modelStack.Rotate((j * (360 / objectlist[1].GetNumberOfOccurences())), 0, 1, 0);
 		modelStack.Translate(0, 0, outerradius);
-		RenderMesh(objectlist[1].GetMeshList()[j], false, true);
+		RenderMesh(objectlist[1].GetMeshList()[j], true, true);
+
+		modelStack.PushMatrix();
+
+		modelStack.Rotate(180, 0, 1, 0);
+		RenderMesh(objectlist[2].GetMeshList()[j+ objectlist[0].GetNumberOfOccurences()], true, false);
+		light[j+ objectlist[0].GetNumberOfOccurences()].position.Set(modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).x, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).y, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).z);
+		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
+	modelStack.PushMatrix();
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(objectlist[3].GetMeshList()[0], true, false);
+	modelStack.PopMatrix();
+
 	
 	modelStack.PushMatrix();
 	float speedometerRotation = ((abs(Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()/5)*25) / 125.0f) * -270.0f;
@@ -374,8 +425,27 @@ void DrivingScene::Render()
 	modelStack.PopMatrix();
 	RenderMeshOnScreen(meshList[GEO_SPEEDOMETERFRONT], 10, 10, 20, 20, 0);//render speedometerfront
 	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0);//render crosshair
-	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 19);
-	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
+	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 1);
+
+	string timerightnow = to_string(timenow);
+	for (size_t i = 0; i < 4; i++)
+	{
+		timerightnow.pop_back();
+	}
+	if (timenow > 5)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], timerightnow, Color(0, 1, 0), 5, 6, 10.5f);
+	}
+	else
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], timerightnow, Color(1, 0, 0), 5, 6, 10.5f);
+	}
+	
+	RenderTextOnScreen(meshList[GEO_TEXT], ("Money:$" + to_string(Player::instance()->getMoney())), Color(0, 0, 0), 2, 0.5, 28.5f); // This prints the Money the player has onto the top left of the Screen
+	if (timeToAdd)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], ("+$" + to_string(moneyToAdd)), Color(0, 0, 0), 3, 21, moneyYpos); // This prints the Money the player has onto the top left of the Screen
+	}
 }
 
 void DrivingScene::Exit()
@@ -422,7 +492,13 @@ bool DrivingScene::CheckSquareCollision()
 			{
 				if (x && Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() != 0)
 				{
-					cout << x;
+					if (timenow >= 5)
+					{
+						timeToAdd = true;
+						moneyToAdd = timenow * 200;
+						Player::instance()->addMoney(moneyToAdd);
+					}
+					timenow = 0;
 					currentmesh->camcollided = true;
 					bool foundposition = true;
 					Vector3 pushback = (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] - Center).Normalized();
@@ -447,8 +523,6 @@ bool DrivingScene::CheckSquareCollision()
 					}
 					currentmesh->camfreezeposition.y = 0;
 					Player::instance()->cars.GetCurrentCar()->SetPosition(0, currentmesh->camfreezeposition);
-
-
 				}
 			}
 			else if (currentmesh->camcollided)

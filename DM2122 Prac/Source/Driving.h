@@ -31,7 +31,7 @@ class DrivingScene : public Scene
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
-	const static int numlights = 0;
+	const static int numlights2 = 40;
 
 
 	enum Scene5_UNIFORM_TYPE
@@ -46,7 +46,7 @@ class DrivingScene : public Scene
 		U_LIGHTENABLED,
 
 
-		U_NUMLIGHTS = 500,
+		U_NUMLIGHTS = 10000,
 		// add these enum for texture
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,
@@ -65,8 +65,8 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 
-	Light light[1];
-	Object objectlist[3];
+	Light light[numlights2];
+	Object objectlist[40];
 
 
 	int numberofobjects;
@@ -87,6 +87,11 @@ private:
 
 	Vector3 starepoint;
 public:
+	StopWatch Drivetimer;
+	float timenow;
+	int moneyToAdd;
+	bool timeToAdd;
+	float moneyYpos;
 	DrivingScene();
 	~DrivingScene();
 

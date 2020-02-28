@@ -207,11 +207,11 @@ bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 	else
 	{
 		money = getMoney() - amountToBeRemoved;
-
+		rewriteFile();
 		return true;
 	}
 
-	rewriteFile();
+	
 }
 
 void Player::addMoney(int amountToBeAdded) // Function to add money.
@@ -266,10 +266,7 @@ void Player::rewriteFile()
 	{
 		perror("Error deleting file");
 	}
-	else
-	{
-		puts("File successfully deleted");
-	}
+	
 
 	ofstream write(File);
 

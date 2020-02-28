@@ -24,6 +24,9 @@ void ThirdPersonCamera::Init(const Vector3& pos, const Vector3& target, const Ve
 	mouseenabledVertical = true;
 	sensitivity = 0.05f;
 
+	RotationEnabled = true;
+	useWASD = false;
+	disableReset = false;
 }
 
 void ThirdPersonCamera::Update(double dt)
@@ -181,9 +184,13 @@ void ThirdPersonCamera::Update(double dt)
 		Vector3 view = (target - position).Normalized();
 		position -= view * (float)(10.f * dt);
 	}
-	if (Application::IsKeyPressed('R'))
+
+	if (disableReset == false)
 	{
-		Reset();
+		if (Application::IsKeyPressed('R'))
+		{
+			Reset();
+		}
 	}
 }
 

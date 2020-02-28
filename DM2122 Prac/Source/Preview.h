@@ -9,6 +9,7 @@
 #include "NPC.h"
 #include "CarsList.h"
 #include "Shop.h"
+#include "irrKlang.h"
 
 
 class Preview : public Scene
@@ -32,6 +33,7 @@ class Preview : public Scene
 		GEO_TEXT,
 		GEO_TEXT2,
 		GEO_MONEYTEXT,
+		GEO_MONEYSYMBOL,
 		GEO_LEFTARROW,
 		GEO_RIGHTARROW,
 		GEO_CROSSHAIR,
@@ -88,6 +90,8 @@ private:
 	bool done4;
 	bool done5;
 	bool done6;
+
+	bool moneyBool;
 
 	double tickDelay;
 

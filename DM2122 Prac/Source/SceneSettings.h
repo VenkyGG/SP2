@@ -25,9 +25,7 @@ class SceneSetting : public Scene
 		GEO_SETTING,
 		GEO_SETTINGMENU,
 		GEO_AUDIOBUTTON,
-		GEO_BUTTON1,
-		GEO_BUTTON2,
-		GEO_BUTTON3,
+		GEO_BUTTON,
 		GEO_POINTER,
 		NUM_GEOMETRY,
 	};
@@ -88,13 +86,13 @@ public:
 	SceneSetting();
 	~SceneSetting();
 
-	float pos = 7;
+	float pos = 1.5;
+	float pos2 = -8;
 	int level = 1;
 	double clock;
 	double clock2;
-	bool button1;
-	bool button2;
-	bool button3;
+	static double clock3;
+	bool button;
 
 	virtual void Init();
 	virtual void Update(double dt);

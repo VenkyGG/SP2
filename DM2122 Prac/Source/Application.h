@@ -3,6 +3,7 @@
 #define APPLICATION_H
 
 #include "timer.h"
+#include "Scene.h"
 using namespace std;
 class Application
 {
@@ -17,6 +18,7 @@ public:
 		Slotmachine,
 		DodgeCars,
 		Settings,
+		intro,
 		TOTALSCENES
 	};
 	Application();
@@ -30,6 +32,7 @@ public:
 	static void mouseupdate();
 	static int state;
 	static int state2;
+	Scene* Ptr[TOTALSCENES];
 private:
 	//Declare a window object
 	StopWatch m_timer;
