@@ -368,7 +368,33 @@ void SceneText::Update(double dt)
 
 	}
 
+	for (int i = 0; i < numberofobjects; i++)
+	{
+		if (objectlist[i].GetMesh()->name == "slotmachine")
+		{
+			//std::cout << "Slot Machine " << j << ": " << objectlist[i].GetPostition()[j] << std::endl;
 
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 50)
+			{
+				// Add in Keys to allow user to Change Scene
+			}
+		}
+
+		//if (objectlist[i].GetMesh()->name == "Dcar")
+		//{
+		//	objectlist[i].SetNumberOfOccurences(3);
+		//	for (int j = 0; j < 3; j++)
+		//	{
+		//		string x = "Image//Dcar" + to_string(j + 1) + ".tga";
+		//		objectlist[i].GetMeshList()[j]->textureID = LoadTGA(x.c_str());
+		//		objectlist[i].SetPosition(j, (Vector3(400, 10, 400) + j * Vector3(20, 0, 0)));
+		//		objectlist[i].SetRotation(j, Vector3(0, 45, 0));
+		//	}
+		//}
+
+	}
+
+	//std::cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << std::endl;
 }
 
 void SceneText::Render()
@@ -405,8 +431,6 @@ void SceneText::Render()
 			glUniform3fv(m_parameters[8 + i * 11], 1, &lightPosition_cameraspace.x);
 		}
 	}
-
-
 
 	RenderSkybox();
 
