@@ -110,36 +110,29 @@ void SceneSetting::Init()
 	meshList[GEO_SETTINGMENU] = MeshBuilder::GenerateQuad("menu", Color(0.f, 0.63f, 0.48f), 50.f, 50.f);
 
 	meshList[GEO_POINTER] = MeshBuilder::GenerateQuad("pointer", Color(1.f, 1.f, 1.f), 10.f, 10.f);
+	meshList[GEO_POINTER]->textureID = LoadTGA("Image//MainMenu Textures//Arrow.tga");
 
 	meshList[GEO_SETTING] = MeshBuilder::GenerateQuad("setting", Color(1.f, 0.f, 0.f), 20.f, 20.f);
 
 	meshList[GEO_AUDIOBUTTON] = MeshBuilder::GenerateQuad("audiobutton", Color(1, 0, 0), 15.f, 15.f);
-	//meshList[GEO_AUDIOBUTTON]->textureID = LoadTGA("Image//switch.tga");
 
-	meshList[GEO_BUTTON1] = MeshBuilder::GenerateQuad("button1", Color(1, 1, 1), 10.f, 10.f);
-	meshList[GEO_BUTTON1]->textureID = LoadTGA("Image//switchon.tga");
+	meshList[GEO_BUTTON] = MeshBuilder::GenerateQuad("button", Color(1, 1, 1), 10.f, 10.f);
+	meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchon.tga");
 
-	meshList[GEO_BUTTON2] = MeshBuilder::GenerateQuad("button2", Color(1, 1, 1), 10.f, 10.f);
-	meshList[GEO_BUTTON2]->textureID = LoadTGA("Image//switchon.tga");
-
-	meshList[GEO_BUTTON3] = MeshBuilder::GenerateQuad("button3", Color(1, 1, 1), 10.f, 10.f);
-	meshList[GEO_BUTTON3]->textureID = LoadTGA("Image//switchon.tga");
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 	clock = 0;
-	clock2 = 0;
 
-	button1 = true;
-	button2 = true;
-	button3 = true;
+	button = true;
 }
 
 void SceneSetting::Update(double dt)
 {
 	clock += dt;
-	clock2 += dt;
 
 	if (Application::IsKeyPressed(0x31))
 	{
@@ -192,67 +185,18 @@ void SceneSetting::Update(double dt)
 
 	//camera.Update(dt);
 
-	//float height = Application::getmouseYpos();
-	//Application::mouseupdate();
-
-	int offset = 8;
-	if ((Application::IsKeyPressed('S')) && clock < GetTickCount64() && level < 3)
+	if (clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-		pos -= offset;
-		level++;
-		clock = GetTickCount64() + 500;
-	}
-	else if ((Application::IsKeyPressed('W')) && clock < GetTickCount64() && level > 1)
-	{
-		pos += offset;
-		level--;
-		clock = GetTickCount64() + 500;
-	}
-
-	if (level == 1 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
-	{
-		clock2 = GetTickCount64() + 200;
-		/*if (audioOn == true)
-			audioOn = false;
-		if (audioOn == false)
-			audioOn = true;*/
-		if (button1 == true)
+		clock = GetTickCount64() + 300;
+		if (button == true)
 		{
-			meshList[GEO_BUTTON1]->textureID = LoadTGA("Image//switchoff.tga");
-			button1 = false;
+			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchoff.tga");
+			button = false;
 		}
-		else if (button1 == false)
+		else if (button == false)
 		{
-			meshList[GEO_BUTTON1]->textureID = LoadTGA("Image//switchon.tga");
-			button1 = true;
-		}
-	}
-	else if (level == 2 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
-	{
-		clock2 = GetTickCount64() + 200;
-		if (button2 == true)
-		{
-			meshList[GEO_BUTTON2]->textureID = LoadTGA("Image//switchoff.tga");
-			button2 = false;
-		}
-		else if (button2 == false)
-		{
-			meshList[GEO_BUTTON2]->textureID = LoadTGA("Image//switchon.tga");
-			button2 = true;
-		}
-	}
-	else if (level == 3 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
-	{
-		clock2 = GetTickCount64() + 200;
-		if (button3 == true)
-		{
-			meshList[GEO_BUTTON3]->textureID = LoadTGA("Image//switchoff.tga");
-			button3 = false;
-		}
-		else if (button3 == false)
-		{
-			meshList[GEO_BUTTON3]->textureID = LoadTGA("Image//switchon.tga");
-			button3 = true;
+			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchon.tga");
+			button = true;
 		}
 	}
 }
@@ -371,58 +315,28 @@ void SceneSetting::Render()
 	RenderMesh(meshList[GEO_SETTINGMENU], false);
 
 		modelStack.PushMatrix();
-		modelStack.Translate(0.f, 15.f, 1.f);
-		modelStack.Scale(0.7f, 0.25f, 0.f);
-		RenderMesh(meshList[GEO_SETTING], false);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-10.f, pos, 1.f);
-		modelStack.Scale(0.2f, 0.2f, 0.f);
+		modelStack.Translate(-8.f, 0.f, 1.f);
+		modelStack.Scale(0.4f, 0.4f, 0.f);
 		RenderMesh(meshList[GEO_POINTER], false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(0.f, 7.f, 1.f);
-		modelStack.Scale(0.6f, 0.2f, 0.f);
-		RenderMesh(meshList[GEO_AUDIOBUTTON], false);
-
-			modelStack.PushMatrix();
-			modelStack.Translate(0.f, -18.f, 0.f);
-			modelStack.Scale(0.6f, 0.8f, 0.f);
-			RenderMesh(meshList[GEO_BUTTON1], false);
-			modelStack.PopMatrix();
-	
+		modelStack.Translate(0.f, -3.f, 1.f);
+		modelStack.Scale(0.5f, 0.2f, 0.f);
+		RenderMesh(meshList[GEO_BUTTON], false);
 		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(0.f, -1.f, 1.f);
-		modelStack.Scale(0.6f, 0.2f, 0.f);
-		RenderMesh(meshList[GEO_AUDIOBUTTON], false);
-
-			modelStack.PushMatrix();
-			modelStack.Translate(0.f, -18.f, 0.f);
-			modelStack.Scale(0.6f, 0.8f, 0.f);
-			RenderMesh(meshList[GEO_BUTTON2], false);
-			modelStack.PopMatrix();
-
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(0.f, -9.f, 1.f);
-		modelStack.Scale(0.6f, 0.2f, 0.f);
-		RenderMesh(meshList[GEO_AUDIOBUTTON], false);
-
-			modelStack.PushMatrix();
-			modelStack.Translate(0.f, -18.f, 0.f);
-			modelStack.Scale(0.6f, 0.8f, 0.f);
-			RenderMesh(meshList[GEO_BUTTON3], false);
-			modelStack.PopMatrix();
-
-		modelStack.PopMatrix();
-
 
 	modelStack.PopMatrix();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "SETTINGS", Color(0, 0, 0), 4, 6.f, 13.f);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "Audio:", Color(0, 0, 0), 3, 10.f, 9.f);
+
+	if(button == true)
+		RenderTextOnScreen(meshList[GEO_TEXT], "ON", Color(0, 0, 0), 3, 17.f, 9.f);
+	else if(button == false)
+		RenderTextOnScreen(meshList[GEO_TEXT], "OFF", Color(0, 0, 0), 3, 17.f, 9.f);
+
 }
 
 void SceneSetting::Exit()
