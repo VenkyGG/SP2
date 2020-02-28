@@ -142,7 +142,7 @@ void MainMenu::Update(double dt)
 		clock = GetTickCount64() + 500;
 	}
 
-	if (level==1 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	if (level==1 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))
 	{
 		if (Paused)
 		{
@@ -155,12 +155,12 @@ void MainMenu::Update(double dt)
 	
 		
 	}
-	else if (level==2 && clock2 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	else if (level==2 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))
 	{
 		SceneSetting::clock3 = GetTickCount64() + 200;
 		Application::state = Application::Settings;
 	}
-	else if (level==3 && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	else if (level==3 && Application::IsKeyPressed(VK_RETURN))
 	{
 		Application::TimeToExit = true;
 	}
