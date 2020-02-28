@@ -164,12 +164,12 @@ void SceneText::Init()
 	meshList[GEO_MOTORSHOW_CEILING] = MeshBuilder::GenerateQuad("ceiling", Color(0, 0, 0), 1.f, 1.f);
 	meshList[GEO_MOTORSHOW_CEILING]->textureID = LoadTGA("Image//ceilingtexture.tga");
 
-	meshList[GEO_FLATLAND] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
-	meshList[GEO_FLATLAND]->textureID = LoadTGA("Image//floortexture.tga");
-	meshList[GEO_FLATLAND]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_FLATLAND]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_FLATLAND]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[GEO_FLATLAND]->material.kShininess = 1.f;
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floortexture.tga");
+	meshList[GEO_FLOOR]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_FLOOR]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
+	meshList[GEO_FLOOR]->material.kSpecular.Set(1.f, 1.f, 1.f);
+	meshList[GEO_FLOOR]->material.kShininess = 1.f;
 
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -367,34 +367,18 @@ void SceneText::Update(double dt)
 		Player::instance()->cars.GetCar(i)->Spin();
 
 	}
-
-	for (int i = 0; i < numberofobjects; i++)
+	if (Application::IsKeyPressed('T'))
 	{
-		if (objectlist[i].GetMesh()->name == "slotmachine")
-		{
-			//std::cout << "Slot Machine " << j << ": " << objectlist[i].GetPostition()[j] << std::endl;
-
-			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 50)
-			{
-				// Add in Keys to allow user to Change Scene
-			}
-		}
-
-		//if (objectlist[i].GetMesh()->name == "Dcar")
-		//{
-		//	objectlist[i].SetNumberOfOccurences(3);
-		//	for (int j = 0; j < 3; j++)
-		//	{
-		//		string x = "Image//Dcar" + to_string(j + 1) + ".tga";
-		//		objectlist[i].GetMeshList()[j]->textureID = LoadTGA(x.c_str());
-		//		objectlist[i].SetPosition(j, (Vector3(400, 10, 400) + j * Vector3(20, 0, 0)));
-		//		objectlist[i].SetRotation(j, Vector3(0, 45, 0));
-		//	}
-		//}
-
+		Application::state = Application::Luckyspin;
 	}
-
-	//std::cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << std::endl;
+	if (Application::IsKeyPressed('Y'))
+	{
+		Application::state = Application::DodgeCars;
+	}
+	if (Application::IsKeyPressed('U'))
+	{
+		Application::state = Application::Slotmachine;
+	}
 }
 
 void SceneText::Render()
@@ -431,6 +415,8 @@ void SceneText::Render()
 			glUniform3fv(m_parameters[8 + i * 11], 1, &lightPosition_cameraspace.x);
 		}
 	}
+
+
 
 	RenderSkybox();
 
@@ -811,7 +797,7 @@ void SceneText::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 
-	RenderMesh(meshList[GEO_FLATLAND], true, true);
+	RenderMesh(meshList[GEO_FLOOR], true, true);
 	modelStack.PopMatrix();
 
 }

@@ -131,6 +131,7 @@ void SceneSetting::Init()
 	button = true;
 }
 double MainMenu::clock2 = 0;
+
 void SceneSetting::Update(double dt)
 {
 
