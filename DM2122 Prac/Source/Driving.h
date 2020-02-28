@@ -31,7 +31,7 @@ class DrivingScene : public Scene
 		GEO_CROSSHAIR,
 		NUM_GEOMETRY,
 	};
-	const static int numlights = 1;
+	const static int numlights2 = 40;
 
 
 	enum Scene5_UNIFORM_TYPE
@@ -65,8 +65,8 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 
-	Light light[numlights];
-	Object objectlist[4];
+	Light light[numlights2];
+	Object objectlist[40];
 
 
 	int numberofobjects;
