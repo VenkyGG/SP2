@@ -20,11 +20,7 @@ class DrivingScene : public Scene
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
-		GEO_MOTORSHOW_WALL,
-		GEO_MOTORSHOW_CEILING,
-		GEO_FLATLAND,
 		GEO_LIGHTSPHERE,
-		GEO_EXTRASHAPE1,
 		GEO_SPEEDOMETERBACK,
 		GEO_SPEEDOMETERFRONT,
 		GEO_TEXT,
@@ -73,7 +69,7 @@ private:
 
 	ThirdPersonCamera camera;
 	float bordersize = 500.0f;
-
+	float angledetector;
 	float innerradius;
 	float outerradius;
 

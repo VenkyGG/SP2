@@ -49,7 +49,7 @@ float getSpotlightEffect(Light light, vec3 lightDirection) {
 }
 
 // Constant values
-const int MAX_LIGHTS = 8;
+const int MAX_LIGHTS = 40;
 
 // Values that stay constant for the whole mesh.
 uniform bool lightEnabled;

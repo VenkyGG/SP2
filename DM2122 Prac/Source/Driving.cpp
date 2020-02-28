@@ -54,8 +54,6 @@ void DrivingScene::Init()
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 
-	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Texture.fragmentshader");
-
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
@@ -97,12 +95,12 @@ void DrivingScene::Init()
 	{
 		light[i].type = Light::LIGHT_SPOT;
 		light[i].position.Set(0, 15, 0);
-		light[i].color.Set(1.f, 1.f, 1.f);
+		light[i].color.Set(0.5f, 0.5f, 0.5f);
 		light[i].power = 1;
 		light[i].kC = 1.f;
 		light[i].kL = 0.01f;
 		light[i].kQ = 0.001f;
-		light[i].cosCutoff = cos(Math::DegreeToRadian(90));
+		light[i].cosCutoff = cos(Math::DegreeToRadian(45));
 		light[i].cosInner = cos(Math::DegreeToRadian(30));
 		light[i].exponent = 3.f;
 		light[i].spotDirection.Set(0.f, 1.f, 0.f);
@@ -121,13 +119,19 @@ void DrivingScene::Init()
 
 	//skybox outdoor
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//hills_lf.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//SkyBox_Night//hills_lf_night.tga");
 
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//hills_rt.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//SkyBox_Night//hills_rt_night.tga");
 
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//hills_up.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//SkyBox_Night//hills_up_night.tga");
+
+	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//SkyBox_Night//hills_ft_night.tga");
+
+	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//SkyBox_Night//hills_bk_night.tga");
 
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 104.f / 255.f, 0), 5000.f, 5000.f);
 	meshList[GEO_BOTTOM]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
@@ -136,20 +140,12 @@ void DrivingScene::Init()
 	meshList[GEO_BOTTOM]->material.kShininess = 1.f;
 
 
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//hills_ft.tga");
-
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//hills_bk.tga");
-
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//moneyFont.tga");
 
 	//renders crosshair in the middle of screen
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
-
-
 
 	meshList[GEO_SPEEDOMETERBACK] = MeshBuilder::GenerateQuad("speedometerback", Color(0, 0, 0), 1, 1);
 	meshList[GEO_SPEEDOMETERBACK]->textureID = LoadTGA("Image//Car Textures//speedometer_back.tga");
@@ -181,17 +177,15 @@ void DrivingScene::Init()
 	camera.RotationEnabled = false;
 	moneyYpos = 18;
 	timeToAdd = false;
-
+	angledetector = 0;
 }
 
 
 void DrivingScene::Update(double dt)
 {
-	
 	timenow += Drivetimer.getElapsedTime() * (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()*5/125.0f);
 	if (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() <= 0)
 	{
-		
 		if (timenow >= 5)
 		{
 			timeToAdd = true;
@@ -393,7 +387,7 @@ void DrivingScene::Render()
 		modelStack.PushMatrix();
 
 		RenderMesh(objectlist[2].GetMeshList()[j], true, false);
-		light[j].position.Set(modelStack.Top().GetTranspose().Multiply(Vector3(0,25,0)).x, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).y, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).z);
+		light[j].position.Set(modelStack.Top().GetTranspose().Multiply(Vector3(0,23,12)).x, modelStack.Top().GetTranspose().Multiply(Vector3(0, 23, 12)).y, modelStack.Top().GetTranspose().Multiply(Vector3(0, 23, 12)).z);
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
@@ -409,7 +403,7 @@ void DrivingScene::Render()
 
 		modelStack.Rotate(180, 0, 1, 0);
 		RenderMesh(objectlist[2].GetMeshList()[j+ objectlist[0].GetNumberOfOccurences()], true, false);
-		light[j+ objectlist[0].GetNumberOfOccurences()].position.Set(modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).x, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).y, modelStack.Top().GetTranspose().Multiply(Vector3(0, 25, 0)).z);
+		light[j+ objectlist[0].GetNumberOfOccurences()].position.Set(modelStack.Top().GetTranspose().Multiply(Vector3(0, 23, 12)).x, modelStack.Top().GetTranspose().Multiply(Vector3(0, 23, 12)).y, modelStack.Top().GetTranspose().Multiply(Vector3(0, 23, 12)).z);
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}

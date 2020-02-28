@@ -98,6 +98,14 @@ void LuckySpin::Init()
 	timer = 0;
 	Spinned = false;
 	SpinnerRotation = 0;
+
+
+	Spinned = true;
+	srand(time(NULL));
+	finalspin = rand() % 720 + 1440;
+	remainder = fmod(finalspin, 360);
+	segment = (int(remainder) / 45) + 1;
+	std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
 }
 
 void LuckySpin::Update(double dt)
@@ -285,16 +293,34 @@ void LuckySpin::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "BOO!", Color(0.5f, 0.5f, 0.5f), 7.f, 4.f, 5.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Try the", Color(1.f, 1.f, 1.f), 5.f, 4.f, 6.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "next time!", Color(1.f, 1.f, 1.f), 5.f, 2.5f, 5.f);
+		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
+		{
+			Application::state = Application::Motorshow;
+			SpinB->setIsPaused(true);
+			Wheel->setIsPaused(true);
+		}
 	}
 	else if (segment == 8 && Spinned == false)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press B", Color(1.f, 1.f, 1.f), 7.f, 4.f, 5.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "to Spin again!", Color(1.f, 1.f, 1.f), 5.f, 2.f, 4.f);
+		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
+		{
+			Application::state = Application::Motorshow;
+			SpinB->setIsPaused(true);
+			Wheel->setIsPaused(true);
+		}
 	}
 	else if (Spinned == false || SpinnerRotation == 0)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press B", Color(1.f, 1.f, 1.f), 7.f, 2.f, 5.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "to Spin", Color(1.f, 1.f, 1.f), 7.f, 2.f, 4.f);
+		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
+		{
+			Application::state = Application::Motorshow;
+			SpinB->setIsPaused(true);
+			Wheel->setIsPaused(true);
+		}
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Player::instance()->getMoney()), Color(1, 1, 1), 3, 1.f, 18.f);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Enter' to leave" , Color(1, 1, 1), 3, 3.f, 1.f);

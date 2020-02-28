@@ -164,12 +164,12 @@ void SceneText::Init()
 	meshList[GEO_MOTORSHOW_CEILING] = MeshBuilder::GenerateQuad("ceiling", Color(0, 0, 0), 1.f, 1.f);
 	meshList[GEO_MOTORSHOW_CEILING]->textureID = LoadTGA("Image//ceilingtexture.tga");
 
-	meshList[GEO_FLATLAND] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
-	meshList[GEO_FLATLAND]->textureID = LoadTGA("Image//floortexture.tga");
-	meshList[GEO_FLATLAND]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_FLATLAND]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_FLATLAND]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[GEO_FLATLAND]->material.kShininess = 1.f;
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("flatland", Color(1, 1, 1), 2000.f, 2000.f);
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floortexture.tga");
+	meshList[GEO_FLOOR]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_FLOOR]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
+	meshList[GEO_FLOOR]->material.kSpecular.Set(1.f, 1.f, 1.f);
+	meshList[GEO_FLOOR]->material.kShininess = 1.f;
 
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -367,8 +367,18 @@ void SceneText::Update(double dt)
 		Player::instance()->cars.GetCar(i)->Spin();
 
 	}
-
-
+	if (Application::IsKeyPressed('T'))
+	{
+		Application::state = Application::Luckyspin;
+	}
+	if (Application::IsKeyPressed('Y'))
+	{
+		Application::state = Application::DodgeCars;
+	}
+	if (Application::IsKeyPressed('U'))
+	{
+		Application::state = Application::Slotmachine;
+	}
 }
 
 void SceneText::Render()
@@ -787,7 +797,7 @@ void SceneText::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 
-	RenderMesh(meshList[GEO_FLATLAND], true, true);
+	RenderMesh(meshList[GEO_FLOOR], true, true);
 	modelStack.PopMatrix();
 
 }
