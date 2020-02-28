@@ -170,7 +170,7 @@ void Application::Run()
 	Ptr[Settings] = new SceneSetting();
 
 	state = Driving;
-	state2 = Motorshow;
+	state2 = Mainmenu;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
@@ -186,9 +186,10 @@ void Application::Run()
 		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.
 		if (scene != Ptr[state])
 		{
+			MainMenu* currentscene = static_cast<MainMenu*>(Ptr[Mainmenu]);
 			for (int i = 0; i < TOTALSCENES; i++)
 			{
-				if (Ptr[i] == scene)
+				if (Ptr[i] == scene && i!=Settings && i!=Mainmenu)
 				{
 					state2 = i;
 				}
@@ -198,9 +199,9 @@ void Application::Run()
 			{
 				scene->Init();
 			}
-			if (scene == Ptr[0])
+			if (scene == Ptr[0] && state2!=Mainmenu)
 			{
-				MainMenu* currentscene = static_cast<MainMenu*>(scene);
+				
 				currentscene->Paused = true;
 			}
 		}

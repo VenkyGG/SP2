@@ -350,7 +350,6 @@ void Preview::Render()
 
 	renderPrice();
 
-	//RenderTextOnScreen(meshList[GEO_TEXT], (":" + std::to_string(plantlist.sun)), Color(0, 0, 0), 5, 2, 10.5f);//render amount of sun in inventory
 }
 
 void Preview::RGBChroma(double dt)

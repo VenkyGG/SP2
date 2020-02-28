@@ -84,7 +84,9 @@ public:
 	float pos = 2;
 	int level = 1;
 	double clock;
+	static double clock2;
 	bool Paused = false;
+	bool inmenu = true;
 
 	virtual void Init();
 	virtual void Update(double dt);

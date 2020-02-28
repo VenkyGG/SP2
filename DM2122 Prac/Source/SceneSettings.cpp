@@ -6,6 +6,7 @@
 #include "MeshBuilder.h"
 #include "Utility.h"
 #include "LoadTGA.h"
+#include "MainMenu.h"
 
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
@@ -125,14 +126,13 @@ void SceneSetting::Init()
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
-	clock = 0;
+	
 
 	button = true;
 }
-
+double MainMenu::clock2 = 0;
 void SceneSetting::Update(double dt)
 {
-	clock += dt;
 
 	if (Application::IsKeyPressed(0x31))
 	{
@@ -181,13 +181,28 @@ void SceneSetting::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 
 	}
-
+	float offsety = 9.5;
+	float offsetx = 3.5;
+	if (Application::IsKeyPressed('S') && clock2 < GetTickCount64() && level < 2)
+	{
+		pos -= offsety;
+		pos2 += offsetx;
+		level++;
+		clock2 = GetTickCount64() + 400;
+	}
+	else if (Application::IsKeyPressed('W') && clock2 < GetTickCount64() && level > 1)
+	{
+		pos += offsety;
+		pos2 -= offsetx;
+		level--;
+		clock2 = GetTickCount64() + 400;
+	}
 
 	//camera.Update(dt);
 
-	if (clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	if (level == 1 && clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
 	{
-		clock = GetTickCount64() + 300;
+		clock = GetTickCount64() + 400;
 		if (button == true)
 		{
 			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchoff.tga");
@@ -199,6 +214,13 @@ void SceneSetting::Update(double dt)
 			button = true;
 		}
 	}
+	else if (level == 2 && clock3 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	{
+		MainMenu::clock2 = GetTickCount64() + 200;
+		Application::state = Application::Mainmenu;
+	}
+
+	
 }
 
 
@@ -315,13 +337,13 @@ void SceneSetting::Render()
 	RenderMesh(meshList[GEO_SETTINGMENU], false);
 
 		modelStack.PushMatrix();
-		modelStack.Translate(-8.f, 0.f, 1.f);
-		modelStack.Scale(0.4f, 0.4f, 0.f);
+		modelStack.Translate(pos2, pos, 1.f);
+		modelStack.Scale(0.3f, 0.3f, 0.f);
 		RenderMesh(meshList[GEO_POINTER], false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(0.f, -3.f, 1.f);
+		modelStack.Translate(0.f, -2.f, 1.f);
 		modelStack.Scale(0.5f, 0.2f, 0.f);
 		RenderMesh(meshList[GEO_BUTTON], false);
 		modelStack.PopMatrix();
@@ -330,12 +352,14 @@ void SceneSetting::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "SETTINGS", Color(0, 0, 0), 4, 6.f, 13.f);
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Audio:", Color(0, 0, 0), 3, 10.f, 9.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Audio:", Color(0, 0, 0), 3, 10.f, 10.f);
+
+	RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(0, 0, 0), 3, 12.f, 4.f);
 
 	if(button == true)
-		RenderTextOnScreen(meshList[GEO_TEXT], "ON", Color(0, 0, 0), 3, 17.f, 9.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "ON", Color(0, 0, 0), 3, 17.f, 10.f);
 	else if(button == false)
-		RenderTextOnScreen(meshList[GEO_TEXT], "OFF", Color(0, 0, 0), 3, 17.f, 9.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "OFF", Color(0, 0, 0), 3, 17.f, 10.f);
 
 }
 

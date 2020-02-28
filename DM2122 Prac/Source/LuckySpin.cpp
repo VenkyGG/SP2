@@ -11,6 +11,11 @@
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
 
+irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
+irrklang::ISoundSource* Spinbgm = engine->addSoundSourceFromFile("Sound/SpinBGM.mp3");
+irrklang::ISound* SpinB = engine->play2D(Spinbgm, true, true, true, false);
+irrklang::ISoundSource* SpinW = engine->addSoundSourceFromFile("Sound/Spinning.wav");
+irrklang::ISound* Wheel = engine->play2D(SpinW, true, true, true, false);
 
 LuckySpin::LuckySpin()
 {
@@ -92,7 +97,9 @@ void LuckySpin::Init()
 
 	timer = 0;
 	Spinned = false;
+	SpinnerRotation = 0;
 }
+
 void LuckySpin::Update(double dt)
 {
 	timer += dt;
@@ -113,17 +120,27 @@ void LuckySpin::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-
 	//float height = Application::getmouseYpos();
 	//Application::mouseupdate();
 
+
 	int offset = 6;
 	speed = 3.f;
+	if (Spinned == true)
+	{
+		SpinB->setIsPaused(true);
+		Wheel->setIsPaused(false);
+	}
+	else if (Spinned == false)
+	{
+		SpinB->setIsPaused(false);
+		Wheel->setIsPaused(true);
+	}
+
 	if ((Application::IsKeyPressed('B')) && timer < GetTickCount64()) //&&only inthis scene then can press spinner)
 	{
 		Spinned = true;
 		srand(time(NULL));
-		//finalspin = rand() % 360 + 1080;
 		finalspin = rand() % 720 + 1440;
 		remainder = fmod(finalspin, 360);
 		segment = (int(remainder) / 45) + 1;
@@ -142,64 +159,75 @@ void LuckySpin::Update(double dt)
 	if (Spinned && SpinnerRotation == finalspin)
 	{
 		Spinned = false;
-		//SpinnerRotation = 0;
 		if (segment == 1)
 		{
-			//+50
+			//+50K
+			Player::instance()->addMoney(50000);
 			//player->addMoney(50);
 			//std::cout << "add 50" << std::endl;
 		}
 		if (segment == 2)
 		{
 			//exit
-			//std::cout << " exit" << std::endl;
+			std::cout << " exit" << std::endl;
 		}
 		if (segment == 3)
 		{
-			//+5000
+			//+30K
+			Player::instance()->addMoney(30000);
 			//player->addMoney(5000);
 			//std::cout << "add 5000" << std::endl;
 		}
 		if (segment == 4)
 		{
-			//+5
+			//+20K
+			Player::instance()->addMoney(20000);
 			//player->addMoney(5);
 			//std::cout << "add 5" << std::endl;
 		}
 		if (segment == 5)
 		{
-			//+100
+			//+10K
+			Player::instance()->addMoney(10000);
 			//player->addMoney(100);
 			//std::cout << "add 100" << std::endl;
 		}
 		if (segment == 6)
 		{
-			//+500
+			//+40K
+			Player::instance()->addMoney(40000);
 			//player->addMoney(500);
 			//std::cout << "add 500" << std::endl;
 		}
 		if (segment == 7)
 		{
 			//exit
-			//std::cout << "exit" << std::endl;
+			std::cout << "exit" << std::endl;
 		}
 		if (segment == 8)
 		{
 			//spin again
-			if ((Application::IsKeyPressed('V')) && timer < GetTickCount64())
-			{
-				finalspin = rand() % 720 + 1440;
-				remainder = fmod(finalspin, 360);
-				segment = (int(remainder) / 45) + 1;
-				SpinnerRotation = 0;
-			}
-			//std::cout << "spin again" << std::endl; std::cout << "add 50" << std::endl;
+			resetRotation();
 		}
 		if ((Application::IsKeyPressed('N')) && timer < GetTickCount64() && Spinned == false)
 		{
 			//EXIT
 		}
+		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
+		{
+			Application::state = Application::Motorshow;
+		}
 	}
+	//reset
+	if ((Application::IsKeyPressed('X')) && timer < GetTickCount64())
+	{
+		SpinnerRotation = 0;
+
+	}
+}
+void LuckySpin::resetRotation()
+{
+	SpinnerRotation = 0;
 }
 
 void LuckySpin::Render()
@@ -213,6 +241,8 @@ void LuckySpin::Render()
 
 	// passing the light direction if it is a direction light	
 
+
+
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderMesh(meshList[GEO_SPINNINGBASE], false);
@@ -223,6 +253,52 @@ void LuckySpin::Render()
 	RenderMesh(meshList[GEO_SPINNINGWHEEL], false);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
+	if ((segment == 1 || segment == 3 || segment == 4 || segment == 5 || segment == 6 || segment == 3) && (Spinned == false))
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Congrats!", Color(0.5, 0.5, 0.5), 7.f, 2.f, 5.f);
+
+		if (segment == 1)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $5000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+		}
+		if (segment == 3)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $3000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+		}
+		if (segment == 4)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $2000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+		}
+		if (segment == 5)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $1000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+		}
+		if (segment == 6)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $4000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+		}
+
+
+	}
+	else if ((segment == 2 || segment == 7) && Spinned == false)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "BOO!", Color(0.5f, 0.5f, 0.5f), 7.f, 4.f, 5.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Try the", Color(1.f, 1.f, 1.f), 5.f, 4.f, 6.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "next time!", Color(1.f, 1.f, 1.f), 5.f, 2.5f, 5.f);
+	}
+	else if (segment == 8 && Spinned == false)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press B", Color(1.f, 1.f, 1.f), 7.f, 4.f, 5.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to Spin again!", Color(1.f, 1.f, 1.f), 5.f, 2.f, 4.f);
+	}
+	else if (Spinned == false || SpinnerRotation == 0)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press B", Color(1.f, 1.f, 1.f), 7.f, 2.f, 5.f);
+		RenderTextOnScreen(meshList[GEO_TEXT], "to Spin", Color(1.f, 1.f, 1.f), 7.f, 2.f, 4.f);
+	}
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Player::instance()->getMoney()), Color(1, 1, 1), 3, 1.f, 18.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Enter' to leave" , Color(1, 1, 1), 3, 3.f, 1.f);
+
 }
 
 void LuckySpin::Exit()
@@ -237,102 +313,6 @@ void LuckySpin::Exit()
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 
-}
-
-
-void LuckySpin::CalculateSpin()
-{
-
-	//if (random == 0)
-	//{
-	//	if (SpinnerRotation <= Twospin + 45)//spin again
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		Spinned = false;
-	//	}
-	//}
-	//if (random == 1)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 2))//try again(need to exit)
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//exit
-	//	}
-	//}
-	//if (random == 2)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 3))//+500
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//+500
-	//	}
-	//}
-	//if (random == 3)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 4))//+100
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//+100
-	//	}
-	//}
-	//if (random == 4)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 5))//+5
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//+5
-	//	}
-	//}
-	//if (random == 5)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 6))//+5000
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//+5000
-	//	}
-	//}
-	//if (random == 6)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 7))//try again (exit)
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//exit
-	//	}
-	//}
-	//if (random == 7)
-	//{
-	//	if (SpinnerRotation <= Twospin + (45 * 8))//+500
-	//	{
-	//		++SpinnerRotation;
-	//	}
-	//	else
-	//	{
-	//		//+500
-	//	}
-	//}
-	//
-	//std::cout << random;
 }
 
 void LuckySpin::RenderMesh(Mesh* mesh, bool enableLight)
