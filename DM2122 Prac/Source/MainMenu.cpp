@@ -133,13 +133,13 @@ void MainMenu::Update(double dt)
 	{
 		pos -= offset;
 		level++;
-		clock = GetTickCount64() + 500;
+		clock = GetTickCount64() + 200;
 	}
 	else if ((Application::IsKeyPressed('W') || Application::IsKeyPressed(VK_UP)) && clock < GetTickCount64() && level>1)
 	{
 		pos += offset;
 		level--;
-		clock = GetTickCount64() + 500;
+		clock = GetTickCount64() + 200;
 	}
 
 	if (level==1 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))
