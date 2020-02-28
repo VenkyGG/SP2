@@ -32,6 +32,7 @@ public:
 	static void mouseupdate();
 	static int state;
 	static int state2;
+	static bool TimeToExit;
 	Scene* Ptr[TOTALSCENES];
 private:
 	//Declare a window object

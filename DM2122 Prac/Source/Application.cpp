@@ -22,6 +22,7 @@
 #include "intro.h"
 int Application::state = 0;
 int Application::state2 = 0;
+bool Application::TimeToExit = false;
 Player* Player::instances = 0;
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -170,13 +171,13 @@ void Application::Run()
 	Ptr[DodgeCars] = new DodgeCar();
 	Ptr[Settings] = new SceneSetting();
 
-	state = Motorshow;
+	state = Mainmenu;
 	state2 = Mainmenu;
 	Scene * scene = Ptr[state];
 	scene->Init();
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+	while (!glfwWindowShouldClose(m_window) && !TimeToExit)
 	{
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();

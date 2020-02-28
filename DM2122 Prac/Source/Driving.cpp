@@ -309,7 +309,7 @@ void DrivingScene::Update(double dt)
 		offsetPerFrame = currentcar->GetPostition()[0] - initialpos;
 		
 	}
-	if (Application::IsKeyPressed('V'))
+	if (Application::IsKeyPressed(VK_RETURN))
 	{
 		Application::state = Application::Mainmenu;
 	}

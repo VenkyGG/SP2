@@ -267,7 +267,7 @@ void Preview::Update(double dt)
 
 	RGBChroma(dt);
 
-	if (Application::IsKeyPressed('V')) // Change to the Main Menu
+	if (Application::IsKeyPressed(VK_RETURN)) // Change to the Main Menu
 	{
 		Application::state = Application::Mainmenu;
 	}
