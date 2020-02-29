@@ -93,7 +93,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(800, 600, "Alphax MotorShow", NULL, NULL);
 	screenoffsetx = 146;
 	screenoffsety = 213;
 	glfwSetWindowPos(m_window, screenoffsetx, screenoffsety);
