@@ -22,15 +22,15 @@ private:
 	float chattime;
 
 public:
-	NPC(int seed);
+	NPC();
 	~NPC();
-
+	void create(int seed);
 	void setNPCRotation(float degreesNPC);
 
 	float getNPCRotation();
 	Vector3 GetPosition();
 	void SetPosition(Vector3 pos);
-
+	//fuck this shit
 	int Gettype();
 	void Settype(int x);
 

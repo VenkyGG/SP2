@@ -267,10 +267,7 @@ void Preview::Update(double dt)
 
 	RGBChroma(dt);
 
-	if (Application::IsKeyPressed(VK_RETURN)) // Change to the Main Menu
-	{
-		Application::state = Application::Mainmenu;
-	}
+
 
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
 	camera.Update(dt);

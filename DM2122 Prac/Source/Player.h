@@ -56,4 +56,6 @@ public:
 	CarsList cars;
 
 	bool carsOwned[5];
+
+	static void shutdown();
 };

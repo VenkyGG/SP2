@@ -23,19 +23,6 @@ SceneText::SceneText()
 	{
 		meshList[i] = NULL;
 	}
-
-}
-
-SceneText::~SceneText()
-{
-}
-
-void SceneText::Init()
-{
-
-
-	initialized = true;
-
 	int currentindex = 0;
 	for (auto& p : std::experimental::filesystem::directory_iterator("OBJ"))
 	{
@@ -73,6 +60,19 @@ void SceneText::Init()
 
 		}
 	}
+}
+
+SceneText::~SceneText()
+{
+}
+
+void SceneText::Init()
+{
+
+
+	initialized = true;
+
+	
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	// Generate a default VAO for now
@@ -179,7 +179,12 @@ void SceneText::Init()
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateOBJ("crosshair", "OBJ//crosshair.obj");
 	//meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//peashooter.tga");
 
-
+	meshList[GEO_HOLOGRAM1] = MeshBuilder::GenerateQuad("Hologram1", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HOLOGRAM1]->textureID = LoadTGA("Image//hologram1.tga");	
+	meshList[GEO_HOLOGRAM2] = MeshBuilder::GenerateQuad("Hologram2", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HOLOGRAM2]->textureID = LoadTGA("Image//hologram2.tga");
+	meshList[GEO_HOLOGRAM3] = MeshBuilder::GenerateQuad("Hologram3", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HOLOGRAM3]->textureID = LoadTGA("Image//hologram3.tga");
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
 	vector<Mesh*> MeshStorage;
@@ -205,10 +210,10 @@ void SceneText::Init()
 		int x = rand() % 10000;
 		int y = rand() % 10000;
 
-		NPCs[i] = new NPC(x * y);
+		NPCs[i].create(x* y);
 		for (int k = 0; k < 6; k++)
 		{
-			NPCs[i]->SetMesh(MeshStorage[NPCs[i]->Gettype() * 6 + k], k);
+			NPCs[i].SetMesh(MeshStorage[NPCs[i].Gettype() * 6 + k], k);
 		}
 
 
@@ -222,7 +227,6 @@ void SceneText::Init()
 		if (objectlist[i].GetMesh()->name == "Platformbottom")
 		{
 			objectlist[i].SetNumberOfOccurences(Player::instance()->cars.GetnumberofCars());
-			//cout << objectlist[i].GetMeshList()[0]->collisionboxcreated;
 		}
 		if (objectlist[i].GetMesh()->name == "Platformtop")
 		{
@@ -360,39 +364,36 @@ void SceneText::Update(double dt)
 	{
 		if (objectlist[i].GetMesh()->name == "slotmachine")
 		{
-			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 50)
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
 			{
+				hologramsize3 = (100 - (camera.position - objectlist[i].GetPostition()[1]).Length()) / 1;
 				if (Application::IsKeyPressed('E'))
 				{
 					Application::state = Application::Slotmachine;
-
-					// Need to add Scaling of the Image/Hologram
 				}
 			}
 		}
 
 		if (objectlist[i].GetMesh()->name == "Dcar")
 		{
-			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 50)
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
 			{
+				hologramsize2  = (100-(camera.position - objectlist[i].GetPostition()[1]).Length())/10;
 				if (Application::IsKeyPressed('E'))
 				{
 					Application::state = Application::DodgeCars;
-
-					// Need to add Scaling of the Image/Hologram
 				}
 			}
 		}
 
 		if (objectlist[i].GetMesh()->name == "spinningWheel")
 		{
-			if ((camera.position - Vector3(300, camera.playerheight, 0)).Length() <= 30)
+			if ((camera.position - Vector3(300, camera.playerheight, 0)).Length() <= 100)
 			{
+				hologramsize1 = (100 - (camera.position - Vector3(300, camera.playerheight, 0)).Length()) / 10;
 				if (Application::IsKeyPressed('E'))
 				{
 					Application::state = Application::Luckyspin;
-
-					// Need to add Scaling of the Image/Hologram
 				}
 			}
 		}
@@ -402,7 +403,7 @@ void SceneText::Update(double dt)
 	camera.Update(dt);
 	for (int i = 0; i < numberofNPCs; i++)
 	{
-		NPCs[i]->move();
+		NPCs[i].move();
 	}
 	CCar* current = Player::instance()->cars.GetStart();
 	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
@@ -457,22 +458,23 @@ void SceneText::Render()
 	modelStack.PopMatrix();
 
 
+
 	for (int i = 0; i < numberofNPCs; i++)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(NPCs[i]->GetPosition().x, 10, NPCs[i]->GetPosition().z);
-		modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
-		RenderMesh(NPCs[i]->GetMesh(0), true, false);
+		modelStack.Translate(NPCs[i].GetPosition().x, 10, NPCs[i].GetPosition().z);
+		modelStack.Rotate(NPCs[i].getNPCRotation(), 0.f, 1.f, 0.f);
+		RenderMesh(NPCs[i].GetMesh(0), true, false);
 
 		for (int k = 1; k < 6; k++)
 		{
 			modelStack.PushMatrix();
-			if (k == 1 && NPCs[i]->chat(camera.position))
+			if (k == 1 && NPCs[i].chat(camera.position))
 			{
 				modelStack.PushMatrix();
-				Vector3 target = Vector3(camera.position.x - NPCs[i]->GetPosition().x, 0, camera.position.z - NPCs[i]->GetPosition().z).Normalized();
+				Vector3 target = Vector3(camera.position.x - NPCs[i].GetPosition().x, 0, camera.position.z - NPCs[i].GetPosition().z).Normalized();
 				float chatbubblerotation = atan2(target.x, target.z) * 180 / Math::PI;
-				modelStack.Rotate(-NPCs[i]->getNPCRotation() + chatbubblerotation, 0, 1, 0);
+				modelStack.Rotate(-NPCs[i].getNPCRotation() + chatbubblerotation, 0, 1, 0);
 				modelStack.Translate(2, 0, 0);
 
 				for (int i = 0; i < numberofobjects; i++)
@@ -496,7 +498,7 @@ void SceneText::Render()
 					modelStack.Translate(0, -4.5f, 0);
 				}
 
-				if (NPCs[i]->GetIsMoving())
+				if (NPCs[i].GetIsMoving())
 				{
 					modelStack.Rotate(sin(GetTickCount64() / 100) * 50, 1, 0, 0);
 				}
@@ -508,12 +510,12 @@ void SceneText::Render()
 					modelStack.Translate(0, -4.5f, 0);
 				}
 
-				if (NPCs[i]->GetIsMoving())
+				if (NPCs[i].GetIsMoving())
 				{
 					modelStack.Rotate(-sin(GetTickCount64() / 100) * 50, 1, 0, 0);
 				}
 			}
-			RenderMesh(NPCs[i]->GetMesh(k), true, false);
+			RenderMesh(NPCs[i].GetMesh(k), true, false);
 			modelStack.PopMatrix();
 		}
 		modelStack.PopMatrix();
@@ -571,6 +573,13 @@ void SceneText::Render()
 			modelStack.Translate(300, 25, 0);
 			modelStack.Scale(5, 5, 5);
 			RenderMesh(objectlist[i].GetMeshList()[0], true, true);
+
+			modelStack.PushMatrix();
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Translate(0, 0, 1);
+			modelStack.Scale(hologramsize1, hologramsize1, hologramsize1);
+			RenderMesh(meshList[GEO_HOLOGRAM1], false, false);
+			modelStack.PopMatrix();
 		}
 		if (objectlist[i].GetMesh()->name == "spinningWheelBase")
 		{
@@ -589,6 +598,17 @@ void SceneText::Render()
 				modelStack.Rotate(objectlist[i].GetRotation()[j].y, 0, 1, 0);
 				
 				RenderMesh(objectlist[i].GetMeshList()[j], true, true);
+
+				
+				if (j == 1)
+				{
+					modelStack.PushMatrix();
+					modelStack.Rotate(-270, 0, 1, 0);
+					modelStack.Translate(0, 0, 25);
+					modelStack.Scale(hologramsize3, hologramsize3, hologramsize3);
+					RenderMesh(meshList[GEO_HOLOGRAM3], false, false);
+					modelStack.PopMatrix();
+				}
 				modelStack.PopMatrix();
 			}
 		}
@@ -601,6 +621,17 @@ void SceneText::Render()
 				modelStack.Rotate(objectlist[i].GetRotation()[j].y, 0, 1, 0);
 				modelStack.Scale(5, 5, 5);
 				RenderMesh(objectlist[i].GetMeshList()[j], true, true);
+				
+
+				if (j == 1)
+				{
+					modelStack.PushMatrix();
+					modelStack.Rotate(-180, 0, 1, 0); 
+					modelStack.Translate(0, 0, 5);
+					modelStack.Scale(hologramsize2, hologramsize2, hologramsize2);
+					RenderMesh(meshList[GEO_HOLOGRAM2], false, false);
+					modelStack.PopMatrix();
+				}
 				modelStack.PopMatrix();
 			}
 		}
@@ -627,6 +658,15 @@ void SceneText::Exit()
 	{
 		if (meshList[i] != NULL)
 			delete meshList[i];
+	}
+	
+	for (int i = 0; i < size(objectlist); i++)
+	{
+		delete objectlist[i].GetMesh();
+		for (int j = 0; j < objectlist->GetNumberOfOccurences(); j++)
+		{
+			delete objectlist[i].GetMeshList()[j];
+		}
 	}
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
@@ -695,21 +735,21 @@ void SceneText::CheckSquareCollision()
 					float zmin = D.z;
 					float zmax = A.z;
 
-					if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
+					if (NPCs[i].GetPosition().x <= xmax && NPCs[i].GetPosition().z <= zmax && NPCs[i].GetPosition().z >= zmin && abs(NPCs[i].GetPosition().x - xmax) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(xmax + 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+						NPCs[i].SetPosition(Vector3(xmax + 0.1f, NPCs[i].GetPosition().y, NPCs[i].GetPosition().z));
 					}
-					if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
+					if (NPCs[i].GetPosition().x >= xmin && NPCs[i].GetPosition().z <= zmax && NPCs[i].GetPosition().z >= zmin && abs(NPCs[i].GetPosition().x - xmin) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(xmin - 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+						NPCs[i].SetPosition(Vector3(xmin - 0.1f, NPCs[i].GetPosition().y, NPCs[i].GetPosition().z));
 					}
-					if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
+					if (NPCs[i].GetPosition().z <= zmax && NPCs[i].GetPosition().x <= xmax && NPCs[i].GetPosition().x >= xmin && abs(NPCs[i].GetPosition().z - zmax) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.1f));
+						NPCs[i].SetPosition(Vector3(NPCs[i].GetPosition().x, NPCs[i].GetPosition().y, zmax + 0.1f));
 					}
-					if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
+					if (NPCs[i].GetPosition().z >= zmin && NPCs[i].GetPosition().x <= xmax && NPCs[i].GetPosition().x >= xmin && abs(NPCs[i].GetPosition().z - zmin) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.1f));
+						NPCs[i].SetPosition(Vector3(NPCs[i].GetPosition().x, NPCs[i].GetPosition().y, zmin - 0.1f));
 					}
 				}
 				
@@ -736,11 +776,6 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector4);
 		mesh->collison = true;
 		mesh->collisionboxcreated = true;
-
-		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
-		modelStack.PushMatrix();
-		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();*/
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
@@ -974,3 +1009,4 @@ void SceneText::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 }
+

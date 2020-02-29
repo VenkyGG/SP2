@@ -197,19 +197,17 @@ void Application::Run()
 				}
 			}
 			scene = Ptr[state];
-			if (!scene->initialized)
+			if (!scene->initialized || scene == Ptr[Motorshow])
 			{
 				scene->Init();
 			}
 			if (scene == Ptr[0] && state2!=Mainmenu)
 			{
-				
 				currentscene->Paused = true;
 			}
 		}
-	} //Check if the ESC key had been pressed or if the window had been closed
-	scene->Exit();
-	delete scene;
+	} 
+	
 }
 
 void Application::Exit()
@@ -218,4 +216,11 @@ void Application::Exit()
 	glfwDestroyWindow(m_window);
 	//Finalize and clean up GLFW
 	glfwTerminate();
+	for (int i = 0; i < TOTALSCENES; i++)
+	{
+		Ptr[i]->Exit();
+		delete Ptr[i];
+	}
+	Player::shutdown();
+	system("Pause");
 }

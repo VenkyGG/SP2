@@ -450,6 +450,14 @@ void DrivingScene::Exit()
 		if (meshList[i] != NULL)
 			delete meshList[i];
 	}
+	for (int i = 0; i < size(objectlist); i++)
+	{
+		delete objectlist[i].GetMesh();
+		for (int j = 0; j < objectlist->GetNumberOfOccurences(); j++)
+		{
+			delete objectlist[i].GetMeshList()[j];
+		}
+	}
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
