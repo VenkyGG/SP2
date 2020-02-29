@@ -325,14 +325,14 @@ void DrivingScene::Update(double dt)
 	//cout << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4 << endl;
 	camera.Update(dt);
 
-	/*if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S')) || (Application::IsKeyPressed('W') && Application::IsKeyPressed('S')))
+	if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S')) || (Application::IsKeyPressed('W') && Application::IsKeyPressed('S')))
 	{
 		driving->setIsPaused(false);
 	}
 	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
 	{
 		driving->setIsPaused(true);
-	}*/
+	}
 
 }
 

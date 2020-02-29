@@ -208,11 +208,11 @@ void Application::Run()
 			}
 			if (scene == Ptr[Motorshow])
 			{
-				//Mbgm->setIsPaused(false);
+				Mbgm->setIsPaused(false);
 			}
 			if (scene != Ptr[Motorshow])
 			{
-				//Mbgm->setIsPaused(true);
+				Mbgm->setIsPaused(true);
 			}
 			if (scene == Ptr[0] && state2!=Mainmenu)
 			{

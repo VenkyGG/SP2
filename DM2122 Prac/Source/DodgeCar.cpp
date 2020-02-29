@@ -275,19 +275,19 @@ void DodgeCar::Update(double dt)
 	}
 	if (Gamelose == true)
 	{
-		//lost->setIsPaused(false);
-		//Dbgm->setIsPaused(true);
+		lost->setIsPaused(false);
+		Dbgm->setIsPaused(true);
 	}
 	if (Gamelose == false)
 	{
-		//Dbgm->setIsPaused(false);
-		//lost->setIsPaused(true);
-		//Dbgm->setVolume(30);
+		Dbgm->setIsPaused(false);
+		lost->setIsPaused(true);
+		Dbgm->setVolume(30);
 	}
 	if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
 	{
-		//Dbgm->setIsPaused(true);
-		//lost->setIsPaused(true);
+		Dbgm->setIsPaused(true);
+		lost->setIsPaused(true);
 	}
 	//collision with the walls
 	if (abs(camera.position.x >= 5.3))
