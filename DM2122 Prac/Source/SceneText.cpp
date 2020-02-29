@@ -303,19 +303,10 @@ void SceneText::Update(double dt)
 
 
 
-	Vector3 Target2 = camera.position;
-	int maxdistance = 1000;
-	for (int i = 0; i < maxdistance; i++)
-	{
-		Target2 += camera.view;//raycast to 20 times player direction
-		if (Target2.y <= 0)
-		{
-			break;
-		}
-	}
 
 
-	starepoint = Target2;
+
+
 	float speed = 2;
 
 	if (Application::IsKeyPressed('W'))
@@ -372,6 +363,10 @@ void SceneText::Update(double dt)
 					Application::state = Application::Slotmachine;
 				}
 			}
+			else
+			{
+				hologramsize3 = 0.01f;
+			}
 		}
 
 		if (objectlist[i].GetMesh()->name == "Dcar")
@@ -384,6 +379,10 @@ void SceneText::Update(double dt)
 					Application::state = Application::DodgeCars;
 				}
 			}
+			else
+			{
+				hologramsize2 = 0.01f;
+			}
 		}
 
 		if (objectlist[i].GetMesh()->name == "spinningWheel")
@@ -395,6 +394,10 @@ void SceneText::Update(double dt)
 				{
 					Application::state = Application::Luckyspin;
 				}
+			}
+			else
+			{
+				hologramsize1 = 0.01f;
 			}
 		}
 	}
@@ -452,10 +455,7 @@ void SceneText::Render()
 
 	RenderSkybox();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
-	RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
-	modelStack.PopMatrix();
+
 
 
 
@@ -627,7 +627,7 @@ void SceneText::Render()
 				{
 					modelStack.PushMatrix();
 					modelStack.Rotate(-180, 0, 1, 0); 
-					modelStack.Translate(0, 0, 5);
+					modelStack.Translate(-1, 0, 5);
 					modelStack.Scale(hologramsize2, hologramsize2, hologramsize2);
 					RenderMesh(meshList[GEO_HOLOGRAM2], false, false);
 					modelStack.PopMatrix();
