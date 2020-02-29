@@ -273,6 +273,11 @@ void SceneText::Init()
 				objectlist[i].SetRotation(j, Vector3(0, 45, 0));
 			}
 		}
+		if (objectlist[i].GetMesh()->name == "TeleportationPad")
+		{
+			objectlist[i].SetNumberOfOccurences(1);
+			objectlist[i].SetPosition(0, Vector3(-400, 0, 0));
+		}
 
 	}
 }
@@ -297,14 +302,6 @@ void SceneText::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-
-
-
-
-
-
-
-
 
 
 	float speed = 2;
@@ -343,12 +340,6 @@ void SceneText::Update(double dt)
 	if (Application::IsKeyPressed(VK_ESCAPE))
 	{
 		Application::state = Application::Mainmenu;
-
-	}
-	if (Application::IsKeyPressed('G'))
-	{
-		Application::state = Application::PreviewxD;
-
 	}
 
 	for (int i = 0; i < numberofobjects; i++)
@@ -400,6 +391,16 @@ void SceneText::Update(double dt)
 				hologramsize1 = 0.01f;
 			}
 		}
+		if (objectlist[i].GetMesh()->name == "TeleportationPad")
+		{
+			if ((camera.position - objectlist[i].GetPostition()[0]).Length() <= 15)
+			{
+				if (Application::IsKeyPressed('E'))
+				{
+					Application::state = Application::PreviewxD;
+				}
+			}
+		}
 	}
 
 	CheckSquareCollision();
@@ -412,7 +413,6 @@ void SceneText::Update(double dt)
 	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
 	{
 		Player::instance()->cars.GetCar(i)->Spin();
-
 	}
 }
 
@@ -526,6 +526,7 @@ void SceneText::Render()
 		{
 			for (int k = 0; k < numberofobjects; k++)
 			{
+				
 				if (objectlist[k].GetMesh()->name == "Platformbottom")
 				{
 					modelStack.PushMatrix();
@@ -566,7 +567,14 @@ void SceneText::Render()
 				modelStack.PopMatrix();
 			}
 		}
-
+		if (objectlist[i].GetMesh()->name == "TeleportationPad")
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(objectlist[i].GetPostition()[0].x, objectlist[i].GetPostition()[0].y, objectlist[i].GetPostition()[0].z);
+			modelStack.Scale(10, 10, 10);
+			RenderMesh(objectlist[i].GetMeshList()[0], false, false);
+			modelStack.PopMatrix();
+		}
 		if (objectlist[i].GetMesh()->name == "spinningWheel")
 		{
 			modelStack.PushMatrix();
@@ -752,8 +760,6 @@ void SceneText::CheckSquareCollision()
 						NPCs[i].SetPosition(Vector3(NPCs[i].GetPosition().x, NPCs[i].GetPosition().y, zmin - 0.1f));
 					}
 				}
-				
-				
 			}
 		}
 	}

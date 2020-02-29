@@ -228,16 +228,16 @@ void SceneSlots::Update(double dt)
 			slotengine->stopAllSoundsOfSoundSource(clapping);
 		}
 	}
-	if (Application::IsKeyPressed('1'))      //press 1 to stop the first spinner
+	if (Application::IsKeyPressed('1'))//press 1 to stop the first spinner
 	{
 		rotate1 = false;
 
 	}
-	else if (Application::IsKeyPressed('2')) //press 2 to stop second spinner
+	else if (Application::IsKeyPressed('2'))//press 2 to stop second spinner
 	{
 		rotate2 = false;
 	}
-	else if (Application::IsKeyPressed('3')) // press 3 to stop third spinner
+	else if (Application::IsKeyPressed('3'))//press 3 to stop third spinner
 	{
 		rotate3 = false;
 	}

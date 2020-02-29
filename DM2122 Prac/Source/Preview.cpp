@@ -135,29 +135,6 @@ void Preview::Init()
 	}
 	glUniform1i(m_parameters[U_NUMLIGHTS], numlights);
 
-	//skybox outdoor
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//hills_lf.tga");
-
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//hills_rt.tga");
-
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//hills_up.tga");
-
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("grass", Color(0, 0, 0), 5000.f, 5000.f); // THIS CHANGES COLOR OF FLOOR
-	meshList[GEO_BOTTOM]->material.kAmbient.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_BOTTOM]->material.kDiffuse.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_BOTTOM]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[GEO_BOTTOM]->material.kShininess = 1.f;
-
-
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//hills_ft.tga");
-
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//hills_bk.tga");
-
 	//texts
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");

@@ -118,7 +118,7 @@ void Object::SetNumberOfOccurences(int number)
 	meshlist[0]->ColisionVector4 = mesh->ColisionVector4;
 	for (int i = 0; i < number-1; i++)
 	{
-		Mesh* x = new Mesh("COPY");
+		Mesh* x = new Mesh(mesh->name);
 		x->mode = mesh->mode;
 		x->colorBuffer = mesh->colorBuffer;
 		x->vertexBuffer = mesh->vertexBuffer;

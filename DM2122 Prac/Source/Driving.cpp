@@ -18,7 +18,7 @@ using namespace std;
 
 
 irrklang::ISoundEngine* engine5 = irrklang::createIrrKlangDevice();
-irrklang::ISoundSource* drive = engine5->addSoundSourceFromFile("Sound/street.wav");//sound when car move
+irrklang::ISoundSource* drive = engine5->addSoundSourceFromFile("Sound/street.mp3");//sound when car move
 irrklang::ISound* driving = engine5->play2D(drive, true, true, true, false);
 irrklang::ISoundSource* Crash = engine5->addSoundSourceFromFile("Sound/collide.mp3");//when car collide
 irrklang::ISound* Crashing = engine5->play2D(Crash, true, true, true, false);
@@ -189,6 +189,28 @@ void DrivingScene::Init()
 
 void DrivingScene::Update(double dt)
 {
+	if (Application::IsKeyPressed(VK_ESCAPE))
+	{
+		Application::state = Application::Mainmenu;
+	}
+	if (timenow == 0)
+	{
+		if (Application::IsKeyPressed(VK_RETURN))
+		{
+			float angleposition = 360.0f / Player::instance()->cars.GetnumberofCars();
+			float currentangle = 0;
+			float radius = 100.0f;
+			for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
+			{
+				Player::instance()->cars.GetCar(i)->SetPosition(0, Vector3(radius * sin(Math::DegreeToRadian(currentangle)), 0, radius * cos(Math::DegreeToRadian(currentangle))));
+				currentangle += angleposition;
+			}
+			Crashing->setPlayPosition(0);
+			Crashing->setIsPaused(true);
+			Application::state = Application::Motorshow;
+
+		}
+	}
 	if (Crashing->getPlayPosition() > 3000)
 	{
 		Crashing->setPlayPosition(0);
@@ -320,10 +342,7 @@ void DrivingScene::Update(double dt)
 		offsetPerFrame = currentcar->GetPostition()[0] - initialpos;
 		
 	}
-	if (Application::IsKeyPressed(VK_RETURN))
-	{
-		Application::state = Application::Mainmenu;
-	}
+
 	camera.offset = currentcar->GetPostition()[0];
 	camera.position = Vector3(currentcar->GetPostition()[0].x + 40*sin(Math::DegreeToRadian(camera.Rotationfloat)),10, currentcar->GetPostition()[0].z + 40*cos(Math::DegreeToRadian(camera.Rotationfloat)));
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
@@ -460,6 +479,10 @@ void DrivingScene::Render()
 	if (timeToAdd)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], ("+$" + to_string(moneyToAdd)), Color(0, 0, 0), 3, 21, moneyYpos); // This prints the Money the player has onto the top left of the Screen
+	}
+	if (timenow == 0)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Click Enter to leave", Color(1, 0.7, 0.4), 2, 12.f, 11.f);
 	}
 }
 
