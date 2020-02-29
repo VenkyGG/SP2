@@ -23,6 +23,10 @@ NPC::NPC(int seed)
 
 NPC::~NPC()
 {
+	for (int i = 0; i < 6; i++)
+	{
+		delete CharacterPartsOBJ[i];
+	}
 }
 
 void NPC::setNPCRotation(float degreesNPC)

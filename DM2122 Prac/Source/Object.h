@@ -17,6 +17,7 @@ private:
 	
 public:
 	Object();
+	void Delete();
 	vector<Vector3> GetPostition();
 	void SetPosition(int index, Vector3 pos);
 	vector<Vector3> GetRotation();

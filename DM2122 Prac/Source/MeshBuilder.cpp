@@ -674,18 +674,11 @@ Mesh* MeshBuilder::InitializeCollisionPoints(Mesh* mesh, std::vector<Vertex> ver
 	}
 	zmin = max;
 	zmax = min;
-	mesh->p1 = Vector3(xmin, ymin, zmax);
-	mesh->p2 = Vector3(xmax, ymin, zmax);
-	mesh->p3 = Vector3(xmax, ymax, zmax);
-	mesh->p4 = Vector3(xmin, ymax, zmax);
-	mesh->p5 = Vector3(xmin, ymin, zmin);
-	mesh->p6 = Vector3(xmax, ymin, zmin);
-	mesh->p7 = Vector3(xmax, ymax, zmin);
-	mesh->p8 = Vector3(xmin, ymax, zmin);
-	mesh->initColisionVector1 = mesh->p1;
-	mesh->initColisionVector2 = mesh->p2;
-	mesh->initColisionVector3 = mesh->p6;
-	mesh->initColisionVector4 = mesh->p5;
+
+	mesh->initColisionVector1 = Vector3(xmin, ymin, zmax);
+	mesh->initColisionVector2 = Vector3(xmax, ymin, zmax);
+	mesh->initColisionVector3 = Vector3(xmax, ymin, zmin);
+	mesh->initColisionVector4 = Vector3(xmin, ymin, zmin);
 	return mesh;
 }
 

@@ -227,7 +227,6 @@ void SceneText::Init()
 		if (objectlist[i].GetMesh()->name == "Platformbottom")
 		{
 			objectlist[i].SetNumberOfOccurences(Player::instance()->cars.GetnumberofCars());
-			//cout << objectlist[i].GetMeshList()[0]->collisionboxcreated;
 		}
 		if (objectlist[i].GetMesh()->name == "Platformtop")
 		{
@@ -666,6 +665,18 @@ void SceneText::Exit()
 		if (meshList[i] != NULL)
 			delete meshList[i];
 	}
+	for (int i = 0; i < numberofNPCs; ++i)
+	{
+		delete NPCs[i];
+	}
+	for (int i = 0; i < size(objectlist); i++)
+	{
+		delete objectlist[i].GetMesh();
+		for (int j = 0; j < objectlist->GetNumberOfOccurences(); j++)
+		{
+			delete objectlist[i].GetMeshList()[j];
+		}
+	}
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
@@ -774,11 +785,6 @@ void SceneText::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector4);
 		mesh->collison = true;
 		mesh->collisionboxcreated = true;
-
-		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
-		modelStack.PushMatrix();
-		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();*/
 
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;

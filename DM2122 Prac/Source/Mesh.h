@@ -34,14 +34,7 @@ public:
 	unsigned colorBuffer;
 	unsigned indexBuffer;
 	unsigned indexSize;
-	Vector3 p1;
-	Vector3 p2;
-	Vector3 p3;
-	Vector3 p4;
-	Vector3 p5;
-	Vector3 p6;
-	Vector3 p7;
-	Vector3 p8;
+	
 	Vector3 ColisionVector1;
 	Vector3 ColisionVector2;
 	Vector3 ColisionVector3;
@@ -50,7 +43,6 @@ public:
 	Vector3 initColisionVector2;
 	Vector3 initColisionVector3;
 	Vector3 initColisionVector4;
-	Mesh* Collider;
 	bool camcollided = false;
 	Vector3 camfreezeposition;
 	

@@ -1,11 +1,15 @@
-
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 #include "Application.h"
-
+#include <vld.h>
 int main( void )
 {
+
 	Application app;
 	app.Init();
 	app.Run();
 	app.Exit();
+	
 }
