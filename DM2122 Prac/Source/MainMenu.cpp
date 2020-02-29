@@ -128,39 +128,39 @@ void MainMenu::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	int offset = 6;
-	if ((Application::IsKeyPressed('S')|| Application::IsKeyPressed(VK_DOWN)) && clock < GetTickCount64() && level < 3)
+	int offset = 6;   //used to move pointer up and down by changing y axies
+	if ((Application::IsKeyPressed('S')|| Application::IsKeyPressed(VK_DOWN)) && clock < GetTickCount64() && level < 3)    // when press down or S. clock used to prevent spam
 	{
-		pos -= offset;
-		level++;
+		pos -= offset;    //moving pointer down
+		level++;          //level used to check where the pointer is at
 		clock = GetTickCount64() + 200;
 	}
-	else if ((Application::IsKeyPressed('W') || Application::IsKeyPressed(VK_UP)) && clock < GetTickCount64() && level>1)
+	else if ((Application::IsKeyPressed('W') || Application::IsKeyPressed(VK_UP)) && clock < GetTickCount64() && level>1)  // when press up or W. clock used to prevent spam
 	{
-		pos += offset;
-		level--;
+		pos += offset;   //move pointer up
+		level--;         //level used to check where the pointer is at
 		clock = GetTickCount64() + 200;
 	}
 
-	if (level==1 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))
+	if (level==1 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))  //if pointer is at option 1 and enter is pressed
 	{
-		if (Paused)
+		if (Paused)                   //if the game is paused, go to the previous state
 		{
 			Application::state = Application::state2;
 		}
-		else
+		else                          //if game is not paused, go to motorshow
 		{
 			Application::state = Application::Motorshow;
 		}
 	
 		
 	}
-	else if (level==2 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))
+	else if (level==2 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))  //if pointer is at option 2 and enter is pressed, go to settings
 	{
 		SceneSetting::clock3 = GetTickCount64() + 200;
 		Application::state = Application::Settings;
 	}
-	else if (level==3 && Application::IsKeyPressed(VK_RETURN))
+	else if (level==3 && Application::IsKeyPressed(VK_RETURN))  //if pointer is at option 3 and enter is pressed, exit the game
 	{
 		Application::TimeToExit = true;
 	}
@@ -188,7 +188,7 @@ void MainMenu::Render()
 	RenderMeshOnScreen(meshList[GEO_MENUCURSOR], 20, 2*pos+30, 0.2f, 0.2f);
 	modelStack.PopMatrix();
 	modelStack.PushMatrix();
-	if (!Paused)
+	if (!Paused)                          //changing the mesh when the game is paused
 	{
 		RenderMeshOnScreen(meshList[GEO_GAMENAME], 40.f, 50.f, 0.6f, 0.5f);
 	}
@@ -199,15 +199,15 @@ void MainMenu::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_PLAYBUTTON], 40.f, 34.f, 0.4f, 0.2f);
+	RenderMeshOnScreen(meshList[GEO_PLAYBUTTON], 40.f, 34.f, 0.4f, 0.2f);     //rendering play button
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_SETTINGSBUTTON], 40.f, 22.f, 0.4f, 0.2f);
+	RenderMeshOnScreen(meshList[GEO_SETTINGSBUTTON], 40.f, 22.f, 0.4f, 0.2f); //rendering settings button
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_EXITBUTTON], 40.f, 10.f, 0.4f, 0.2f);
+	RenderMeshOnScreen(meshList[GEO_EXITBUTTON], 40.f, 10.f, 0.4f, 0.2f);     //rendering exit button
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();

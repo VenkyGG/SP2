@@ -131,7 +131,6 @@ void SceneSetting::Init()
 	button = true;
 }
 double MainMenu::clock2 = 0;
-
 void SceneSetting::Update(double dt)
 {
 
@@ -182,18 +181,18 @@ void SceneSetting::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 
 	}
-	float offsety = 9.5;
-	float offsetx = 3.5;
-	if (Application::IsKeyPressed('S') && clock2 < GetTickCount64() && level < 2)
+	float offsety = 9.5;     //used to change the y axis of the pointer
+	float offsetx = 3.5;     //used to change the x axis of the pointer
+	if (Application::IsKeyPressed('S') && clock2 < GetTickCount64() && level < 2)       //if S is pressed, pointer move down. clock2 to delay moving up and down time so that it cannot be spammed
 	{
-		pos -= offsety;
+		pos -= offsety;    //change the axis of the pointer
 		pos2 += offsetx;
 		level++;
 		clock2 = GetTickCount64() + 400;
 	}
-	else if (Application::IsKeyPressed('W') && clock2 < GetTickCount64() && level > 1)
+	else if (Application::IsKeyPressed('W') && clock2 < GetTickCount64() && level > 1) //if W is pressed, move pointer up. clock2 to delay moving up and down time so that it cannot be spammed
 	{
-		pos += offsety;
+		pos += offsety;   //change the axis of the pointer
 		pos2 -= offsetx;
 		level--;
 		clock2 = GetTickCount64() + 400;
@@ -201,24 +200,24 @@ void SceneSetting::Update(double dt)
 
 	//camera.Update(dt);
 
-	if (level == 1 && clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	if (level == 1 && clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN))) //if pointer is at the first option and enter is pressed
 	{
 		clock = GetTickCount64() + 400;
-		if (button == true)
+		if (button == true)             //if button is on, turn it off
 		{
-			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchoff.tga");
+			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchoff.tga");   //switching the texture of the button from on to off
 			button = false;
 		}
-		else if (button == false)
+		else if (button == false)      //if button is on, turn it off
 		{
-			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchon.tga");
+			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchon.tga");    //switching the texture of the button from off to on
 			button = true;
 		}
 	}
-	else if (level == 2 && clock3 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))
+	else if (level == 2 && clock3 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))//if pointer is at the second option and enter is pressed
 	{
 		MainMenu::clock2 = GetTickCount64() + 200;
-		Application::state = Application::Mainmenu;
+		Application::state = Application::Mainmenu;   //change scene to main menu
 	}
 
 	
@@ -335,32 +334,32 @@ void SceneSetting::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[GEO_SETTINGMENU], false);
+	RenderMesh(meshList[GEO_SETTINGMENU], false);       //rendering background
 
 		modelStack.PushMatrix();
 		modelStack.Translate(pos2, pos, 1.f);
 		modelStack.Scale(0.3f, 0.3f, 0.f);
-		RenderMesh(meshList[GEO_POINTER], false);
+		RenderMesh(meshList[GEO_POINTER], false);       //rendering pointer
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(0.f, -2.f, 1.f);
 		modelStack.Scale(0.5f, 0.2f, 0.f);
-		RenderMesh(meshList[GEO_BUTTON], false);
+		RenderMesh(meshList[GEO_BUTTON], false);        //rendering switch button
 		modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "SETTINGS", Color(0, 0, 0), 4, 6.f, 13.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "SETTINGS", Color(0, 0, 0), 4, 6.f, 13.f);   //render text settings
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "Audio:", Color(0, 0, 0), 3, 10.f, 10.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Audio:", Color(0, 0, 0), 3, 10.f, 10.f);    //render text audio
 
-	RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(0, 0, 0), 3, 12.f, 4.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(0, 0, 0), 3, 12.f, 4.f);       //render text exit
 
-	if(button == true)
-		RenderTextOnScreen(meshList[GEO_TEXT], "ON", Color(0, 0, 0), 3, 17.f, 10.f);
-	else if(button == false)
-		RenderTextOnScreen(meshList[GEO_TEXT], "OFF", Color(0, 0, 0), 3, 17.f, 10.f);
+	if(button == true)                                                                  //if the button is on
+		RenderTextOnScreen(meshList[GEO_TEXT], "ON", Color(0, 0, 0), 3, 17.f, 10.f);    //render text on
+	else if(button == false)                                                            //if the button if off
+		RenderTextOnScreen(meshList[GEO_TEXT], "OFF", Color(0, 0, 0), 3, 17.f, 10.f);   //render text off
 
 }
 

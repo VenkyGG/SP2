@@ -84,15 +84,14 @@ private:
 	bool gameStart;
 	bool gameEnd = false;
 	bool handleforward;
-	bool handleback;
 	float rotatehandle;
-	float rotatehandle2;
 	bool tmp;
 	Camera2 camera;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
+	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
 
 public:
 	SceneSlots();

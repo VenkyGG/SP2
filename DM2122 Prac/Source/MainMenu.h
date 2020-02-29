@@ -73,7 +73,6 @@ private:
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
 
 public:
 	MainMenu();
@@ -86,7 +85,6 @@ public:
 	double clock;
 	static double clock2;
 	bool Paused = false;
-	bool inmenu = true;
 
 	virtual void Init();
 	virtual void Update(double dt);
