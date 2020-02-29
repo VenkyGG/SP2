@@ -4,6 +4,9 @@
 
 #include "timer.h"
 #include "Scene.h"
+#include <irrKlang.h>
+#pragma comment(lib,"irrKlang.lib")
+
 using namespace std;
 class Application
 {

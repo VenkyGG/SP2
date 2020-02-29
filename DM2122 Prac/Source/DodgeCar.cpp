@@ -7,6 +7,14 @@
 #include "LoadTGA.h"
 #include "Player.h"
 
+irrklang::ISoundEngine* engine2 = irrklang::createIrrKlangDevice();
+irrklang::ISoundSource* step = engine2->addSoundSourceFromFile("Sound/Singlefootstep.mp3");//when moving
+irrklang::ISound* footstep = engine2->play2D(step, true, true, true, false);
+irrklang::ISoundSource* fail = engine2->addSoundSourceFromFile("Sound/Booing.mp3");//when lose
+irrklang::ISound* lost = engine2->play2D(fail, true, true, true, false);
+irrklang::ISoundSource* bgm = engine2->addSoundSourceFromFile("Sound/ShakeItUp.mp3");//Dodge scene bgm
+irrklang::ISound* Dbgm = engine2->play2D(bgm, true, true, true, false);
+
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
@@ -103,9 +111,9 @@ void DodgeCar::Init()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
 	clock = 0;
-
-
+	returnMotor = false;
 }
+
 void DodgeCar::Update(double dt)
 {
 	clock += dt;
@@ -135,6 +143,7 @@ void DodgeCar::Update(double dt)
 
 	if (Application::IsKeyPressed(VK_RETURN) && Carsmove == false)
 	{
+		returnMotor = true;
 		Application::state = Application::Motorshow;
 	}
 
@@ -150,10 +159,17 @@ void DodgeCar::Update(double dt)
 		camera.target = camera.position + camera.view;
 		/*camera.position.z = -3.5f;*/
 	}
-	if (Application::IsKeyPressed('X'))
+	if (Application::IsKeyPressed('A') || Application::IsKeyPressed('D'))
+	{
+		footstep->setIsPaused(false);
+	}
+	else if (!Application::IsKeyPressed('A') || !Application::IsKeyPressed('D'))
+	{
+		footstep->setIsPaused(true);
+	}
+	if (Application::IsKeyPressed('X') && Gamelose == false)
 	{
 		Carsmove = true;
-
 	}
 	if (Application::IsKeyPressed('C'))
 	{
@@ -224,7 +240,7 @@ void DodgeCar::Update(double dt)
 		Car3Z = -50.f;
 	}
 	//cout << camera.position.x << endl;
-	if ((abs(Car1Z - camera.position.z) <= 5) && (camera.position.x>=-5.5f && camera.position.x<=-1.8f))
+	if ((abs(Car1Z - camera.position.z) <= 5) && (camera.position.x >= -5.5f && camera.position.x <= -1.8f))
 	{
 		Carsmove = false;
 		Gamelose = true;
@@ -244,11 +260,11 @@ void DodgeCar::Update(double dt)
 	{
 		timer += dt;
 
-		if (timer > 0.2f && timer < 1.5f)
+		if (timer > 0.2f && timer < 2.6f)
 		{
 			LosetextY = 9.f;
 		}
-		if (timer >= 1.5f)
+		if (timer >= 2.6f)
 		{
 			Gamelose = false;
 			timer = 0.f;
@@ -257,7 +273,22 @@ void DodgeCar::Update(double dt)
 			Dodgepoints = 0;
 		}
 	}
-
+	if (Gamelose == true)
+	{
+		//lost->setIsPaused(false);
+		//Dbgm->setIsPaused(true);
+	}
+	if (Gamelose == false)
+	{
+		//Dbgm->setIsPaused(false);
+		//lost->setIsPaused(true);
+		//Dbgm->setVolume(30);
+	}
+	if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
+	{
+		//Dbgm->setIsPaused(true);
+		//lost->setIsPaused(true);
+	}
 	//collision with the walls
 	if (abs(camera.position.x >= 5.3))
 	{
@@ -269,7 +300,7 @@ void DodgeCar::Update(double dt)
 		camera.position.x = -5.2;
 		camera.target.x = -5.2;
 	}
-	
+
 	else if (Paused)
 	{
 		//render paused texture

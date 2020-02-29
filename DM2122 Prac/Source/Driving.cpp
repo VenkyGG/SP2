@@ -17,7 +17,13 @@ using namespace std;
 #define LSPEED 10.f
 
 
-
+irrklang::ISoundEngine* engine5 = irrklang::createIrrKlangDevice();
+irrklang::ISoundSource* drive = engine5->addSoundSourceFromFile("Sound/street.wav");//sound when car move
+irrklang::ISound* driving = engine5->play2D(drive, true, true, true, false);
+irrklang::ISoundSource* Crash = engine5->addSoundSourceFromFile("Sound/collide.mp3");//when car collide
+irrklang::ISound* Crashing = engine5->play2D(Crash, true, true, true, false);
+irrklang::ISoundSource* Money = engine5->addSoundSourceFromFile("Sound/ChaChing.wav");//when money added
+irrklang::ISound* Msound = engine5->play2D(Money, true, true, true, false);
 
 DrivingScene::DrivingScene()
 {
@@ -318,6 +324,15 @@ void DrivingScene::Update(double dt)
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
 	//cout << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4 << endl;
 	camera.Update(dt);
+
+	/*if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S')) || (Application::IsKeyPressed('W') && Application::IsKeyPressed('S')))
+	{
+		driving->setIsPaused(false);
+	}
+	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
+	{
+		driving->setIsPaused(true);
+	}*/
 
 }
 
