@@ -20,6 +20,9 @@ class SceneText : public Scene
 		GEO_MOTORSHOW_WALL,
 		GEO_MOTORSHOW_CEILING,
 		GEO_FLOOR,
+		GEO_HOLOGRAM1,
+		GEO_HOLOGRAM2,
+		GEO_HOLOGRAM3,
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
 		GEO_CROSSHAIR,
@@ -63,14 +66,14 @@ private:
 	NPC* NPCs[numberofNPCs];
 	Object objectlist[50];
 
-	CarsList cars;
-
 	int numberofobjects;
 
 	Camera2 camera;
 	float bordersize = 500.0f;
 
-	
+	float hologramsize1;
+	float hologramsize2;
+	float hologramsize3;
 
 	void CheckSquareCollision();
 	void RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision);
@@ -78,7 +81,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderFramerate(Mesh* mesh, Color color, float size, float x, float y);
-	
+
 
 
 

@@ -197,7 +197,7 @@ void Application::Run()
 				}
 			}
 			scene = Ptr[state];
-			if (!scene->initialized)
+			if (!scene->initialized || scene == Ptr[Motorshow])
 			{
 				scene->Init();
 			}
