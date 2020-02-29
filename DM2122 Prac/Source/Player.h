@@ -12,13 +12,13 @@ using namespace std;
 class Player
 {
 private:
-	int startingBalance; // Change this to alter the starting balance.
+	int startingBalance;
 
 	int money;
 
 	static Player* instances;
 
-	std::string File; // Change this if you want to have a different txt file for player.
+	std::string File;
 
 	std::string storeLines[5];
 
@@ -36,9 +36,6 @@ public:
 
 	bool removeMoney(int amountToBeRemoved);
 	void addMoney(int amountToBeAdded);
-
-	void removeCar(int whichCar);
-	void addCar(int whichCar);
 
 	int getMoney();
 
