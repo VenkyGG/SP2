@@ -79,10 +79,6 @@ void SceneSetting::Init()
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
-	
-
-
-	
 
 	meshList[GEO_SETTINGMENU] = MeshBuilder::GenerateQuad("menu", Color(0.f, 0.63f, 0.48f), 50.f, 50.f);
 
@@ -102,7 +98,7 @@ void SceneSetting::Init()
 
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
-	
+
 
 	button = true;
 }
@@ -126,28 +122,11 @@ void SceneSetting::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	
 
-	if (Application::IsKeyPressed('Q'))
-	{
-		//to do: switch light type to POINT and pass the information to
-		light[0].type = Light::LIGHT_POINT;
-
-	}
-	else if (Application::IsKeyPressed('W'))
-	{
-		//to do: switch light type to DIRECTIONAL and pass the
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-
-	}
-	else if (Application::IsKeyPressed('E'))
-	{
-		//to do: switch light type to SPOT and pass the information to
-		light[0].type = Light::LIGHT_SPOT;
-
-	}
-	float offsety = 9.5;
-	float offsetx = 3.5;
-	if (Application::IsKeyPressed('S') && clock2 < GetTickCount64() && level < 2)
+	float offsety = 9.5;     //used to change the y axis of the pointer
+	float offsetx = 3.5;     //used to change the x axis of the pointer
+	if (Application::IsKeyPressed('S') && clock2 < GetTickCount64() && level < 2)       //if S is pressed, pointer move down. clock2 to delay moving up and down time so that it cannot be spammed
 	{
 		pos -= offsety;    //change the axis of the pointer
 		pos2 += offsetx;
@@ -184,11 +163,11 @@ void SceneSetting::Update(double dt)
 		Application::state = Application::Mainmenu;   //change scene to main menu
 	}
 
-	
+
 }
 
 
-void SceneSetting::RenderText(Mesh * mesh, std::string text, Color color)
+void SceneSetting::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0)
 		return;
@@ -201,7 +180,7 @@ void SceneSetting::RenderText(Mesh * mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
 
 	glActiveTexture(GL_TEXTURE0);
-	
+
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
 
@@ -220,7 +199,7 @@ void SceneSetting::RenderText(Mesh * mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneSetting::RenderTextOnScreen(Mesh * mesh, std::string text, Color color, float size, float x, float y)
+void SceneSetting::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0)
 		return;
@@ -274,24 +253,21 @@ void SceneSetting::Render()
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z, camera.target.x, camera.target.y, camera.target.z, camera.up.x, camera.up.y, camera.up.z);
 	modelStack.LoadIdentity();
 
-	// passing the light direction if it is a direction light	
-	
-
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[GEO_SETTINGMENU], false);       //rendering background
 
-		modelStack.PushMatrix();
-		modelStack.Translate(pos2, pos, 1.f);
-		modelStack.Scale(0.3f, 0.3f, 0.f);
-		RenderMesh(meshList[GEO_POINTER], false);       //rendering pointer
-		modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(pos2, pos, 1.f);
+	modelStack.Scale(0.3f, 0.3f, 0.f);
+	RenderMesh(meshList[GEO_POINTER], false);       //rendering pointer
+	modelStack.PopMatrix();
 
-		modelStack.PushMatrix();
-		modelStack.Translate(0.f, -2.f, 1.f);
-		modelStack.Scale(0.5f, 0.2f, 0.f);
-		RenderMesh(meshList[GEO_BUTTON], false);        //rendering switch button
-		modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(0.f, -2.f, 1.f);
+	modelStack.Scale(0.5f, 0.2f, 0.f);
+	RenderMesh(meshList[GEO_BUTTON], false);        //rendering switch button
+	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
 
@@ -301,9 +277,9 @@ void SceneSetting::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], "EXIT", Color(0, 0, 0), 3, 12.f, 4.f);       //render text exit
 
-	if(button == true)                                                                  //if the button is on
+	if (button == true)                                                                  //if the button is on
 		RenderTextOnScreen(meshList[GEO_TEXT], "ON", Color(0, 0, 0), 3, 17.f, 10.f);    //render text on
-	else if(button == false)                                                            //if the button if off
+	else if (button == false)                                                            //if the button if off
 		RenderTextOnScreen(meshList[GEO_TEXT], "OFF", Color(0, 0, 0), 3, 17.f, 10.f);   //render text off
 
 }

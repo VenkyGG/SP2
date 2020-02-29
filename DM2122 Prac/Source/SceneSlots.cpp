@@ -639,7 +639,7 @@ void SceneSlots::Render()
 
 	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(1, 1, 0), 2, 0.5, 26.5f);  //render text of amount of money
 
-	if (tmp == false)       //when player has no money
+	if (tmp == false || (tmp == false && gameEnd == true)       //when player has no money
 	{
 		error->setIsPaused(false);
 

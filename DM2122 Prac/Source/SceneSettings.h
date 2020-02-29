@@ -12,14 +12,6 @@ class SceneSetting : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES = 0,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
-		GEO_FRONT,
-		GEO_BACK,
-		GEO_CHAR,
-		GEO_DICE,
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
 		GEO_SETTING,
@@ -73,11 +65,9 @@ private:
 
 	MS modelStack, viewStack, projectionStack;
 
-
 	Camera2 camera;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
-	void RenderSkybox();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 
