@@ -627,7 +627,7 @@ void SceneText::Render()
 				{
 					modelStack.PushMatrix();
 					modelStack.Rotate(-180, 0, 1, 0); 
-					modelStack.Translate(-1, 0, 5);
+					modelStack.Translate(-5, 0, 5);
 					modelStack.Scale(hologramsize2, hologramsize2, hologramsize2);
 					RenderMesh(meshList[GEO_HOLOGRAM2], false, false);
 					modelStack.PopMatrix();
