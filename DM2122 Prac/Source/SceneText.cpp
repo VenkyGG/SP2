@@ -210,10 +210,10 @@ void SceneText::Init()
 		int x = rand() % 10000;
 		int y = rand() % 10000;
 
-		NPCs[i] = new NPC(x * y);
+		NPCs[i].create(x* y);
 		for (int k = 0; k < 6; k++)
 		{
-			NPCs[i]->SetMesh(MeshStorage[NPCs[i]->Gettype() * 6 + k], k);
+			NPCs[i].SetMesh(MeshStorage[NPCs[i].Gettype() * 6 + k], k);
 		}
 
 
@@ -370,8 +370,6 @@ void SceneText::Update(double dt)
 				if (Application::IsKeyPressed('E'))
 				{
 					Application::state = Application::Slotmachine;
-
-					// Need to add Scaling of the Image/Hologram
 				}
 			}
 		}
@@ -384,8 +382,6 @@ void SceneText::Update(double dt)
 				if (Application::IsKeyPressed('E'))
 				{
 					Application::state = Application::DodgeCars;
-
-					// Need to add Scaling of the Image/Hologram
 				}
 			}
 		}
@@ -398,8 +394,6 @@ void SceneText::Update(double dt)
 				if (Application::IsKeyPressed('E'))
 				{
 					Application::state = Application::Luckyspin;
-
-					// Need to add Scaling of the Image/Hologram
 				}
 			}
 		}
@@ -409,7 +403,7 @@ void SceneText::Update(double dt)
 	camera.Update(dt);
 	for (int i = 0; i < numberofNPCs; i++)
 	{
-		NPCs[i]->move();
+		NPCs[i].move();
 	}
 	CCar* current = Player::instance()->cars.GetStart();
 	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
@@ -468,19 +462,19 @@ void SceneText::Render()
 	for (int i = 0; i < numberofNPCs; i++)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(NPCs[i]->GetPosition().x, 10, NPCs[i]->GetPosition().z);
-		modelStack.Rotate(NPCs[i]->getNPCRotation(), 0.f, 1.f, 0.f);
-		RenderMesh(NPCs[i]->GetMesh(0), true, false);
+		modelStack.Translate(NPCs[i].GetPosition().x, 10, NPCs[i].GetPosition().z);
+		modelStack.Rotate(NPCs[i].getNPCRotation(), 0.f, 1.f, 0.f);
+		RenderMesh(NPCs[i].GetMesh(0), true, false);
 
 		for (int k = 1; k < 6; k++)
 		{
 			modelStack.PushMatrix();
-			if (k == 1 && NPCs[i]->chat(camera.position))
+			if (k == 1 && NPCs[i].chat(camera.position))
 			{
 				modelStack.PushMatrix();
-				Vector3 target = Vector3(camera.position.x - NPCs[i]->GetPosition().x, 0, camera.position.z - NPCs[i]->GetPosition().z).Normalized();
+				Vector3 target = Vector3(camera.position.x - NPCs[i].GetPosition().x, 0, camera.position.z - NPCs[i].GetPosition().z).Normalized();
 				float chatbubblerotation = atan2(target.x, target.z) * 180 / Math::PI;
-				modelStack.Rotate(-NPCs[i]->getNPCRotation() + chatbubblerotation, 0, 1, 0);
+				modelStack.Rotate(-NPCs[i].getNPCRotation() + chatbubblerotation, 0, 1, 0);
 				modelStack.Translate(2, 0, 0);
 
 				for (int i = 0; i < numberofobjects; i++)
@@ -504,7 +498,7 @@ void SceneText::Render()
 					modelStack.Translate(0, -4.5f, 0);
 				}
 
-				if (NPCs[i]->GetIsMoving())
+				if (NPCs[i].GetIsMoving())
 				{
 					modelStack.Rotate(sin(GetTickCount64() / 100) * 50, 1, 0, 0);
 				}
@@ -516,12 +510,12 @@ void SceneText::Render()
 					modelStack.Translate(0, -4.5f, 0);
 				}
 
-				if (NPCs[i]->GetIsMoving())
+				if (NPCs[i].GetIsMoving())
 				{
 					modelStack.Rotate(-sin(GetTickCount64() / 100) * 50, 1, 0, 0);
 				}
 			}
-			RenderMesh(NPCs[i]->GetMesh(k), true, false);
+			RenderMesh(NPCs[i].GetMesh(k), true, false);
 			modelStack.PopMatrix();
 		}
 		modelStack.PopMatrix();
@@ -665,10 +659,7 @@ void SceneText::Exit()
 		if (meshList[i] != NULL)
 			delete meshList[i];
 	}
-	for (int i = 0; i < numberofNPCs; ++i)
-	{
-		delete NPCs[i];
-	}
+	
 	for (int i = 0; i < size(objectlist); i++)
 	{
 		delete objectlist[i].GetMesh();
@@ -744,21 +735,21 @@ void SceneText::CheckSquareCollision()
 					float zmin = D.z;
 					float zmax = A.z;
 
-					if (NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmax) <= 2)
+					if (NPCs[i].GetPosition().x <= xmax && NPCs[i].GetPosition().z <= zmax && NPCs[i].GetPosition().z >= zmin && abs(NPCs[i].GetPosition().x - xmax) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(xmax + 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+						NPCs[i].SetPosition(Vector3(xmax + 0.1f, NPCs[i].GetPosition().y, NPCs[i].GetPosition().z));
 					}
-					if (NPCs[i]->GetPosition().x >= xmin && NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().z >= zmin && abs(NPCs[i]->GetPosition().x - xmin) <= 2)
+					if (NPCs[i].GetPosition().x >= xmin && NPCs[i].GetPosition().z <= zmax && NPCs[i].GetPosition().z >= zmin && abs(NPCs[i].GetPosition().x - xmin) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(xmin - 0.1f, NPCs[i]->GetPosition().y, NPCs[i]->GetPosition().z));
+						NPCs[i].SetPosition(Vector3(xmin - 0.1f, NPCs[i].GetPosition().y, NPCs[i].GetPosition().z));
 					}
-					if (NPCs[i]->GetPosition().z <= zmax && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmax) <= 2)
+					if (NPCs[i].GetPosition().z <= zmax && NPCs[i].GetPosition().x <= xmax && NPCs[i].GetPosition().x >= xmin && abs(NPCs[i].GetPosition().z - zmax) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmax + 0.1f));
+						NPCs[i].SetPosition(Vector3(NPCs[i].GetPosition().x, NPCs[i].GetPosition().y, zmax + 0.1f));
 					}
-					if (NPCs[i]->GetPosition().z >= zmin && NPCs[i]->GetPosition().x <= xmax && NPCs[i]->GetPosition().x >= xmin && abs(NPCs[i]->GetPosition().z - zmin) <= 2)
+					if (NPCs[i].GetPosition().z >= zmin && NPCs[i].GetPosition().x <= xmax && NPCs[i].GetPosition().x >= xmin && abs(NPCs[i].GetPosition().z - zmin) <= 2)
 					{
-						NPCs[i]->SetPosition(Vector3(NPCs[i]->GetPosition().x, NPCs[i]->GetPosition().y, zmin - 0.1f));
+						NPCs[i].SetPosition(Vector3(NPCs[i].GetPosition().x, NPCs[i].GetPosition().y, zmin - 0.1f));
 					}
 				}
 				

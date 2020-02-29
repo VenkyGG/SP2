@@ -11,6 +11,7 @@ public:
 	enum States
 	{
 		Mainmenu,
+		intro,
 		Motorshow,
 		Driving,
 		PreviewxD,
@@ -18,7 +19,6 @@ public:
 		Slotmachine,
 		DodgeCars,
 		Settings,
-		intro,
 		TOTALSCENES
 	};
 	Application();

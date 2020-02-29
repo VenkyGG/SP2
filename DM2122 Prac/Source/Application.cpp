@@ -203,7 +203,6 @@ void Application::Run()
 			}
 			if (scene == Ptr[0] && state2!=Mainmenu)
 			{
-				
 				currentscene->Paused = true;
 			}
 		}
@@ -222,5 +221,6 @@ void Application::Exit()
 		Ptr[i]->Exit();
 		delete Ptr[i];
 	}
+	Player::shutdown();
 	system("Pause");
 }

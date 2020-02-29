@@ -114,11 +114,11 @@ CarsList::~CarsList()
 		{
 			if (i == 0)
 			{
-				current = Start->GetNext();
+				/*current = Start->GetNext();
 				Start->Delete();
-				delete Start;
+				delete Start;*/
 			}
-			else if (i != numcars - 1)
+			 if (i != numcars - 1)
 			{
 				CCar* temp = current->GetNext();
 				current->Delete();

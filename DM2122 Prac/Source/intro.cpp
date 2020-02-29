@@ -80,11 +80,6 @@ void Intro::Init()
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
-
-	
-
-
-
 	meshList[GEO_LOADING] = MeshBuilder::GenerateQuad("menu", Color(0.f, 0.63f, 0.48f), 55, 55);
 	meshList[GEO_LOADING]->textureID = LoadTGA("Image//Loading.tga");
 }

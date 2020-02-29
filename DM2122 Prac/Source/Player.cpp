@@ -30,17 +30,7 @@ Player::Player()
 
 Player::~Player()
 {
-	rewriteFile();
-	if (instances!=NULL)
-	{
-		for (int i = cars.GetnumberofCars()-1; i > -1; i--)
-		{
-			delete cars.GetCar(i);
-			cout << "HI" << endl;
-		}
-		delete instances;
-		instances = NULL;
-	}
+
 }
 
 bool Player::hasFile()
@@ -347,4 +337,11 @@ void Player::rewriteFile()
 		}
 		
 	}
+}
+
+void Player::shutdown()
+{
+	instances->rewriteFile();
+	delete instances;
+	instances = NULL;
 }

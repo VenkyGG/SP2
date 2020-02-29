@@ -63,7 +63,7 @@ private:
 	MS modelStack, viewStack, projectionStack;
 
 	Light light[numlights];
-	NPC* NPCs[numberofNPCs];
+	NPC NPCs[numberofNPCs];
 	Object objectlist[50];
 
 	int numberofobjects;
