@@ -2,9 +2,9 @@
 
 Player::Player()
 {
-	startingBalance = 100000;
+	startingBalance = 100000; // Change this value to alter the starting balance of the player
 
-	File = "player.txt";
+	File = "player.txt"; // Change this value to alter the file name to be saved
 
 	bool check = false;
 
@@ -33,14 +33,12 @@ Player::~Player()
 
 }
 
-bool Player::hasFile()
+bool Player::hasFile() // This function checks if the file is present in the player's computer.
 {
 	ifstream runTime(File);
 
 	if (runTime.fail())
 	{
-		std::cout << "Unable to open file! "/* << std::endl*/;
-
 		return false;
 	}
 	else
@@ -49,7 +47,7 @@ bool Player::hasFile()
 	}
 }
 
-void Player::createFile()
+void Player::createFile() // This function creates the file if the player does not have player.txt
 {
 	ofstream runTime(File);
 
@@ -65,7 +63,7 @@ void Player::createFile()
 	runTime << "UNOWNED\n";
 }
 
-void Player::initMoney()
+void Player::initMoney() // This function initiliazes the player's balance
 {
 	ifstream runTime(File);
 
@@ -92,7 +90,7 @@ void Player::initMoney()
 	}
 }
 
-void Player::initOwnedCars()
+void Player::initOwnedCars() // This function initializes the player's cars that he/she owns
 {
 	ifstream runTime(File);
 
@@ -185,7 +183,7 @@ void Player::initOwnedCars()
 	}
 }
 
-bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
+bool Player::removeMoney(int amountToBeRemoved) // Function to remove money. Returns a true if money is actually removed so that other functions can check for it. More flexibility
 {
 	int tempBalance = getMoney() - amountToBeRemoved;
 
@@ -198,18 +196,16 @@ bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
 
 	if (isItNegativeBalance == true) // If Player's Balance is negative, then money wont be removed.
 	{
-		//std::cout << "Not enough money!" << std::endl;
-
 		return false;
 	}
 	else
 	{
-		money = getMoney() - amountToBeRemoved;
+		money = getMoney() - amountToBeRemoved; // This removed player's Money
+
 		rewriteFile();
+
 		return true;
 	}
-
-	
 }
 
 void Player::addMoney(int amountToBeAdded) // Function to add money.
@@ -225,7 +221,7 @@ int Player::getMoney()
 	return money;
 }
 
-void Player::rewriteFile()
+void Player::rewriteFile() // This function will basically deletes the Player's file and Rewrite it again. Storing information onto player.txt
 {
 	ifstream readTest(File);
 	string line;

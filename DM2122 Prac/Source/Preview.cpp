@@ -1,5 +1,4 @@
-﻿
-#include "Preview.h"
+﻿#include "Preview.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include <Mtx44.h>
@@ -9,10 +8,6 @@
 #include "LoadTGA.h"
 #include "Physics.h"
 #include "Player.h"
-
-//irrklang::ISoundEngine* PSound = irrklang::createIrrKlangDevice();
-//irrklang::ISoundSource* money = PSound->addSoundSourceFromFile("Sound/moneyFx.ogg"); // Init folder
-//irrklang::ISound* moneyx = PSound->play2D(money, false, true, true, false); // Run Sound
 
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
@@ -195,6 +190,7 @@ void Preview::Init()
 	vector<Mesh*> MeshStorage;
 
 	srand(time(NULL));
+
 	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
 	{
 		Player::instance()->cars.GetCar(i)->SetPosition(0, Vector3(0, 0, 0));
@@ -249,7 +245,7 @@ void Preview::Update(double dt)
 		}
 	}
 	
-	if (Application::IsKeyPressed(VK_RETURN) && bouncetime < GetTickCount64()) // This is the shop function.
+	if (Application::IsKeyPressed(VK_RETURN) && bouncetime < GetTickCount64()) // This function is to buy the car
 	{
 		bool tmp;
 
@@ -265,7 +261,7 @@ void Preview::Update(double dt)
 		bouncetime = GetTickCount64() + 200;
 	}
 
-	RGBChroma(dt);
+	RGBChroma(dt); // RGB Function
 
 
 
@@ -309,13 +305,6 @@ void Preview::Render()
 		}
 	}
 
-	//RenderSkybox();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(starepoint.x, starepoint.y, starepoint.z);
-	//RenderMesh(meshList[GEO_LIGHTSPHERE], false, false);
-	//modelStack.PopMatrix();
-
 	modelStack.PushMatrix();
 	modelStack.Translate(Player::instance()->cars.GetCurrentCar()->GetPostition()[0].x, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].y, Player::instance()->cars.GetCurrentCar()->GetPostition()[0].z);
 	modelStack.Rotate(Player::instance()->cars.GetCurrentCar()->GetRotation()[0].y, 0, 1, 0);
@@ -324,24 +313,22 @@ void Preview::Render()
 
 	RenderMeshOnScreen(meshList[GEO_MONEYSYMBOL], 7, 56, 3, 3, 90);
 
-	if (printNotEnufMoney == true && printNotEnufMoneyDelay > GetTickCount64())
+	if (printNotEnufMoney == true && printNotEnufMoneyDelay > GetTickCount64()) // Checks if player has enough money. If player doesnt have sufficient money, then will render this for a certain amount of time before disappearing
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT2], "Not enough money", Color(1, 0, 0), 3, 5.0f, 5.f);
 	}
 
-	if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr)
+	if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr) // Checks if the the next car is not a nullptr then will render the Right Arrow on the Screen
 	{
 		RenderMeshOnScreen(meshList[GEO_RIGHTARROW], 55, 7, 20, 20, 0);
 	}
 
-	if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart())
+	if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart()) // Check if the previous car is the start of the linked list. If it is then it would not render the Left Arrow
 	{
 		RenderMeshOnScreen(meshList[GEO_LEFTARROW], 23, 7, 20, 20, 0);
 	}
 
-	//RenderMeshOnScreen(meshList[GEO_CROSSHAIR], 40, 30, 2, 2,0); // This renders the crosshair. REMOVE WHEN FINALISING
-
-	RenderFramerate(meshList[GEO_TEXT], Color(1, 1, 1), 3, 21, 19);
+	RenderFramerate(meshList[GEO_TEXT], Color(1, 1, 1), 3, 21, 19); // This renders the framerate on the Top Right of the Screen
 
 	RenderTextOnScreen(meshList[GEO_MONEYTEXT], ":"+ to_string(Player::instance()->getMoney()), Color(1, 1, 1), 2, 6.8, 27.5f); // This prints the Money the player has onto the top left of the Screen
 
@@ -349,7 +336,7 @@ void Preview::Render()
 
 }
 
-void Preview::RGBChroma(double dt)
+void Preview::RGBChroma(double dt) // This function is for the "OWNED" text for the RGB Colours
 {
 	// Red must be at 255
 	// Increase Blue to 255
@@ -444,7 +431,7 @@ void Preview::RGBChroma(double dt)
 	}
 }
 
-void Preview::renderPrice()
+void Preview::renderPrice() // This function render's the price of the car
 {
 	if (!Player::instance()->cars.GetCurrentCar()->GetOwned())
 	{
@@ -483,18 +470,10 @@ void Preview::RenderMesh(Mesh* mesh, bool enableLight, bool hasCollision)
 
 	if (hasCollision)
 	{
-		
 		mesh->ColisionVector3 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector1);
 		mesh->ColisionVector4 = modelStack.Top().GetTranspose().Multiply(mesh->ColisionVector2);
 		mesh->collison = true;
 		mesh->collisionboxcreated = true;
-		
-
-		/*Mesh* Collider = MeshBuilder::GenerateCollisonBox("COLLISIONBOX", mesh->p1, mesh->p2, mesh->p3, mesh->p4, mesh->p5, mesh->p6, mesh->p7, mesh->p8);
-		modelStack.PushMatrix();
-		RenderMesh(Collider, false, false);
-		modelStack.PopMatrix();*/
-
 	}
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
