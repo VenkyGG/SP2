@@ -8,6 +8,8 @@
 #include "Light.h"
 #include "NPC.h"
 #include "CarsList.h"
+#include <irrKlang.h>
+#pragma comment(lib,"irrKlang.lib")
 
 class DrivingScene : public Scene
 {

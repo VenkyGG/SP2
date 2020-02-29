@@ -62,7 +62,7 @@ private:
 	float remainder;
 	float segment;
 	float speed;
-
+	bool returnMotor;
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	/*unsigned m_indexBuffer;*/
@@ -80,7 +80,6 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 	void resetRotation();
 public:
-	//bool SpinningWheel;
 	LuckySpin();
 	~LuckySpin();
 

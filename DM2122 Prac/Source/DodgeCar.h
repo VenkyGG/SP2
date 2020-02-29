@@ -6,6 +6,8 @@
 #include "Camera2.h"
 #include "Mesh.h"
 #include "Application.h"
+#include <irrKlang.h>
+#pragma comment(lib,"irrKlang.lib")
 
 class DodgeCar : public Scene
 {
@@ -13,15 +15,6 @@ class DodgeCar : public Scene
 	{
 		GEO_AXES = 0,
 		GEO_TEXT,
-		//delete later
-		/*GEO_PLAYBUTTON,
-		GEO_SETTINGSBUTTON,
-		GEO_EXITBUTTON,
-		GEO_GAMENAME,
-		GEO_MENU,
-		GEO_MENUCURSOR,*/
-
-		//new shit
 		GEO_LANES,
 		GEO_MCAR1,
 		GEO_MCAR2,
@@ -67,6 +60,7 @@ class DodgeCar : public Scene
 	};
 
 private:
+	bool returnMotor;
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	/*unsigned m_indexBuffer;*/
@@ -88,8 +82,6 @@ private:
 	float Car1Timer;
 	float Car2Timer;
 	float Car3Timer;
-	//pos.z += (float)(LSPEED * dt);
-	//pos.z -= (float)(LSPEED * dt);
 
 	bool Carsmove = false;
 	bool Gamelose = false;

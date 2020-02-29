@@ -12,9 +12,9 @@
 #define LSPEED 10.f
 
 irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
-irrklang::ISoundSource* Spinbgm = engine->addSoundSourceFromFile("Sound/SpinBGM.mp3");
+irrklang::ISoundSource* Spinbgm = engine->addSoundSourceFromFile("Sound//SpinBGM.mp3");//spinning scene bgm
 irrklang::ISound* SpinB = engine->play2D(Spinbgm, true, true, true, false);
-irrklang::ISoundSource* SpinW = engine->addSoundSourceFromFile("Sound/Spinning.wav");
+irrklang::ISoundSource* SpinW = engine->addSoundSourceFromFile("Sound//Spinning.wav");//spinning sound
 irrklang::ISound* Wheel = engine->play2D(SpinW, true, true, true, false);
 
 LuckySpin::LuckySpin()
@@ -76,8 +76,6 @@ void LuckySpin::Init()
 	m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
 	m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
 
-
-
 	//Get a handle for our "colorTexture" uniform
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
@@ -97,15 +95,8 @@ void LuckySpin::Init()
 
 	timer = 0;
 	Spinned = false;
+	returnMotor = false;
 	SpinnerRotation = 0;
-
-
-	Spinned = true;
-	srand(time(NULL));
-	finalspin = rand() % 720 + 1440;
-	remainder = fmod(finalspin, 360);
-	segment = (int(remainder) / 45) + 1;
-	std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
 }
 
 void LuckySpin::Update(double dt)
@@ -128,12 +119,10 @@ void LuckySpin::Update(double dt)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-	//float height = Application::getmouseYpos();
-	//Application::mouseupdate();
-
 
 	int offset = 6;
-	speed = 3.f;
+	speed = 8.f;
+	//Audio
 	if (Spinned == true)
 	{
 		SpinB->setIsPaused(true);
@@ -152,7 +141,7 @@ void LuckySpin::Update(double dt)
 		finalspin = rand() % 720 + 1440;
 		remainder = fmod(finalspin, 360);
 		segment = (int(remainder) / 45) + 1;
-		std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
+		//std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
 
 	}
 	if (Spinned == true && SpinnerRotation < finalspin)
@@ -171,47 +160,40 @@ void LuckySpin::Update(double dt)
 		{
 			//+50K
 			Player::instance()->addMoney(50000);
-			//player->addMoney(50);
-			//std::cout << "add 50" << std::endl;
+			//std::cout << "add 50000" << std::endl;
 		}
-		if (segment == 2)
-		{
-			//exit
-			std::cout << " exit" << std::endl;
-		}
+		//if (segment == 2)
+		//{
+		//	//exit
+		//}
 		if (segment == 3)
 		{
 			//+30K
 			Player::instance()->addMoney(30000);
-			//player->addMoney(5000);
-			//std::cout << "add 5000" << std::endl;
+			//std::cout << "add 30000" << std::endl;
 		}
 		if (segment == 4)
 		{
 			//+20K
 			Player::instance()->addMoney(20000);
-			//player->addMoney(5);
-			//std::cout << "add 5" << std::endl;
+			//std::cout << "add 20000" << std::endl;
 		}
 		if (segment == 5)
 		{
 			//+10K
 			Player::instance()->addMoney(10000);
-			//player->addMoney(100);
-			//std::cout << "add 100" << std::endl;
+			//std::cout << "add 10000" << std::endl;
 		}
 		if (segment == 6)
 		{
 			//+40K
 			Player::instance()->addMoney(40000);
-			//player->addMoney(500);
-			//std::cout << "add 500" << std::endl;
+			//std::cout << "add 40000" << std::endl;
 		}
-		if (segment == 7)
-		{
-			//exit
-			std::cout << "exit" << std::endl;
-		}
+		//if (segment == 7)
+		//{
+		//	//exit
+		//}
 		if (segment == 8)
 		{
 			//spin again
@@ -223,8 +205,15 @@ void LuckySpin::Update(double dt)
 		}
 		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
 		{
+			returnMotor = true;
 			Application::state = Application::Motorshow;
 		}
+		if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
+		{
+			SpinB->setIsPaused(true);
+			Wheel->setIsPaused(true);
+		}
+
 	}
 	//reset
 	if ((Application::IsKeyPressed('X')) && timer < GetTickCount64())
@@ -236,6 +225,7 @@ void LuckySpin::Update(double dt)
 void LuckySpin::resetRotation()
 {
 	SpinnerRotation = 0;
+	returnMotor = false;
 }
 
 void LuckySpin::Render()
@@ -248,7 +238,6 @@ void LuckySpin::Render()
 	modelStack.LoadIdentity();
 
 	// passing the light direction if it is a direction light	
-
 
 
 	modelStack.PushMatrix();
@@ -293,37 +282,19 @@ void LuckySpin::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "BOO!", Color(0.5f, 0.5f, 0.5f), 7.f, 4.f, 5.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Try the", Color(1.f, 1.f, 1.f), 5.f, 4.f, 6.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "next time!", Color(1.f, 1.f, 1.f), 5.f, 2.5f, 5.f);
-		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
-		{
-			Application::state = Application::Motorshow;
-			SpinB->setIsPaused(true);
-			Wheel->setIsPaused(true);
-		}
 	}
 	else if (segment == 8 && Spinned == false)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press B", Color(1.f, 1.f, 1.f), 7.f, 4.f, 5.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "to Spin again!", Color(1.f, 1.f, 1.f), 5.f, 2.f, 4.f);
-		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
-		{
-			Application::state = Application::Motorshow;
-			SpinB->setIsPaused(true);
-			Wheel->setIsPaused(true);
-		}
 	}
 	else if (Spinned == false || SpinnerRotation == 0)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press B", Color(1.f, 1.f, 1.f), 7.f, 2.f, 5.f);
 		RenderTextOnScreen(meshList[GEO_TEXT], "to Spin", Color(1.f, 1.f, 1.f), 7.f, 2.f, 4.f);
-		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
-		{
-			Application::state = Application::Motorshow;
-			SpinB->setIsPaused(true);
-			Wheel->setIsPaused(true);
-		}
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Player::instance()->getMoney()), Color(1, 1, 1), 3, 1.f, 18.f);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Enter' to leave" , Color(1, 1, 1), 3, 3.f, 1.f);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press 'Enter' to leave", Color(1, 1, 1), 3, 3.f, 1.f);
 
 }
 

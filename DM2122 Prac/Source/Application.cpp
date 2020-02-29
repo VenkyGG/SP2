@@ -20,6 +20,11 @@
 #include "Player.h"
 #include "SceneSettings.h"
 #include "intro.h"
+
+irrklang::ISoundEngine* engine4 = irrklang::createIrrKlangDevice();
+irrklang::ISoundSource* Mptorbgm = engine4->addSoundSourceFromFile("Sound//TrustedAdvertising.mp3");//motorshow bgm
+irrklang::ISound* Mbgm = engine4->play2D(Mptorbgm, true, true, true, false);
+
 int Application::state = 0;
 int Application::state2 = 0;
 bool Application::TimeToExit = false;
@@ -200,6 +205,14 @@ void Application::Run()
 			if (!scene->initialized || scene == Ptr[Motorshow])
 			{
 				scene->Init();
+			}
+			if (scene == Ptr[Motorshow])
+			{
+				Mbgm->setIsPaused(false);
+			}
+			if (scene != Ptr[Motorshow])
+			{
+				Mbgm->setIsPaused(true);
 			}
 			if (scene == Ptr[0] && state2!=Mainmenu)
 			{
