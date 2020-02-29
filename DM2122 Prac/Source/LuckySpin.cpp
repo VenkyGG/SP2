@@ -203,10 +203,10 @@ void LuckySpin::Update(double dt)
 		{
 			//EXIT
 		}
-		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
+		if (Application::IsKeyPressed(VK_RETURN) || Spinned == false)
 		{
-			returnMotor = true;
 			Application::state = Application::Motorshow;
+			returnMotor = true;
 		}
 		if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
 		{
@@ -250,29 +250,30 @@ void LuckySpin::Render()
 	RenderMesh(meshList[GEO_SPINNINGWHEEL], false);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
+
 	if ((segment == 1 || segment == 3 || segment == 4 || segment == 5 || segment == 6 || segment == 3) && (Spinned == false))
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Congrats!", Color(0.5, 0.5, 0.5), 7.f, 2.f, 5.f);
 
 		if (segment == 1)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "You won $5000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $50000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
 		}
 		if (segment == 3)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "You won $3000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $30000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
 		}
 		if (segment == 4)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "You won $2000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $20000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
 		}
 		if (segment == 5)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "You won $1000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $10000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
 		}
 		if (segment == 6)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "You won $4000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
+			RenderTextOnScreen(meshList[GEO_TEXT], "You won $40000", Color(1.f, 1.f, 1.f), 5.f, 1.5f, 5.f);
 		}
 
 
