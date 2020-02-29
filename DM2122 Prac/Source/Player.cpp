@@ -77,7 +77,7 @@ void Player::initMoney() // This function initiliazes the player's balance
 		{
 			if (lineNumber == 4)
 			{
-				money = stoi(line);
+ 				money = stoi(line);
 			}
 
 			lineNumber++;
