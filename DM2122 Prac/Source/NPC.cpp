@@ -2,13 +2,27 @@
 
 // max -1000 x and z
 
-NPC::NPC(int seed)
+NPC::NPC()
+{
+	
+	
+}
+
+NPC::~NPC()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		delete CharacterPartsOBJ[i];
+	}
+}
+
+void NPC::create(int seed)
 {
 	srand(seed);
 
 
 	type = rand() % 4;
-	
+
 	ismoving = false;
 	Position = Vector3(rand() % 1000 - 500, 12, rand() % 1000 - 500);
 	Target = Position;
@@ -18,11 +32,6 @@ NPC::NPC(int seed)
 	chattime = 0;
 
 	NPCRotationalValue = rand() % 360;
-	
-}
-
-NPC::~NPC()
-{
 }
 
 void NPC::setNPCRotation(float degreesNPC)

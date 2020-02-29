@@ -2,14 +2,29 @@
 
 Object::Object()
 {
-	Mesh* x = new Mesh("INITIAL");
-	meshlist.push_back(x);
+	meshlist.push_back(new Mesh("INITIAL"));
 	Vector3 position = Vector3(0, 0, 0);
 	PositionList.push_back(position);
 	Vector3 rotation = Vector3(0, 0, 0);
 	RotationList.push_back(rotation);
 	NumberOfOccurances = 1;
 	type = "Object";
+}
+
+void Object::Delete()
+{
+	delete mesh;
+	mesh = NULL;
+	for (auto& q : meshlist)
+	{
+		delete q;
+		q = NULL;
+	}
+	for (auto& q : meshlist)
+	{
+		if (q!=NULL)
+		cout << q->name << endl;
+	}
 }
 
 vector<Vector3> Object::GetPostition()

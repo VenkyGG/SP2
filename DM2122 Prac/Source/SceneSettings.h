@@ -66,13 +66,12 @@ class SceneSetting : public Scene
 private:
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
-	/*unsigned m_indexBuffer;*/
+
 	Mesh* meshList[NUM_GEOMETRY];
 
 	unsigned m_parameters[U_TOTAL];
 
 	MS modelStack, viewStack, projectionStack;
-	Light light[1];
 
 
 	Camera2 camera;

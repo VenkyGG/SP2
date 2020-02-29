@@ -30,7 +30,7 @@ Player::Player()
 
 Player::~Player()
 {
-	rewriteFile();
+
 }
 
 bool Player::hasFile()
@@ -183,8 +183,6 @@ void Player::initOwnedCars()
 			}
 		}
 	}
-	
-
 }
 
 bool Player::removeMoney(int amountToBeRemoved) // Function to remove money.
@@ -221,17 +219,6 @@ void Player::addMoney(int amountToBeAdded) // Function to add money.
 	rewriteFile();
 }
 
-void Player::removeCar(int whichCar)
-{
-	carsOwned[whichCar] = "UNOWNED";
-	rewriteFile();
-}
-
-void Player::addCar(int whichCar)
-{
-	carsOwned[whichCar] = "OWNED";
-	rewriteFile();
-}
 
 int Player::getMoney()
 {
@@ -337,4 +324,11 @@ void Player::rewriteFile()
 		}
 		
 	}
+}
+
+void Player::shutdown()
+{
+	instances->rewriteFile();
+	delete instances;
+	instances = NULL;
 }
