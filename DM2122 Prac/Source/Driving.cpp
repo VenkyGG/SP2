@@ -189,6 +189,11 @@ void DrivingScene::Init()
 
 void DrivingScene::Update(double dt)
 {
+	if (Crashing->getPlayPosition() > 3000)
+	{
+		Crashing->setPlayPosition(0);
+		Crashing->setIsPaused(true);
+	}
 	timenow += Drivetimer.getElapsedTime() * (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()*5/125.0f);
 	if (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() <= 0)
 	{
@@ -328,6 +333,7 @@ void DrivingScene::Update(double dt)
 	if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S')) || (Application::IsKeyPressed('W') && Application::IsKeyPressed('S')))
 	{
 		driving->setIsPaused(false);
+		
 	}
 	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
 	{
@@ -437,7 +443,7 @@ void DrivingScene::Render()
 	RenderFramerate(meshList[GEO_TEXT], Color(0, 0, 0), 3, 21, 1);
 
 	string timerightnow = to_string(timenow);
-	for (size_t i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		timerightnow.pop_back();
 	}
@@ -465,14 +471,7 @@ void DrivingScene::Exit()
 		if (meshList[i] != NULL)
 			delete meshList[i];
 	}
-	for (int i = 0; i < size(objectlist); i++)
-	{
-		delete objectlist[i].GetMesh();
-		for (int j = 0; j < objectlist->GetNumberOfOccurences(); j++)
-		{
-			delete objectlist[i].GetMeshList()[j];
-		}
-	}
+
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
@@ -509,6 +508,8 @@ bool DrivingScene::CheckSquareCollision()
 			{
 				if (x && Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() != 0)
 				{
+					Crashing->setPlayPosition(0);
+					Crashing->setIsPaused(false);
 					if (timenow >= 5)
 					{
 						timeToAdd = true;

@@ -235,5 +235,4 @@ void Application::Exit()
 		delete Ptr[i];
 	}
 	Player::shutdown();
-	system("Pause");
 }
