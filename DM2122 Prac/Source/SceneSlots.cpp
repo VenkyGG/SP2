@@ -13,16 +13,23 @@
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
 
-irrklang::ISoundEngine* slotengine = irrklang::createIrrKlangDevice();
+irrklang::ISoundEngine* slotengine = irrklang::createIrrKlangDevice();    //start up engine for irrklang
 
-irrklang::ISoundSource* errorsound = slotengine->addSoundSourceFromFile("Sound/error sound.mp3");
-irrklang::ISound* error = slotengine->play2D(errorsound, false, true, true, false);
-irrklang::ISoundSource* slotspinning = slotengine->addSoundSourceFromFile("Sound/slot spinning.mp3");
+irrklang::ISoundSource* errorsound = slotengine->addSoundSourceFromFile("Sound/error sound.mp3");  // initialising audios
+irrklang::ISoundSource* slotspinning = slotengine->addSoundSourceFromFile("Sound/slot spinning.ogg");
+irrklang::ISoundSource* twoinarow = slotengine->addSoundSourceFromFile("Sound/2inarow.mp3");
+irrklang::ISoundSource* noneSame = slotengine->addSoundSourceFromFile("Sound/nonesame.mp3");
+irrklang::ISoundSource* jackpot = slotengine->addSoundSourceFromFile("Sound/3inarow.ogg");
+irrklang::ISoundSource* clapping = slotengine->addSoundSourceFromFile("Sound/Clapping sound.ogg");
+irrklang::ISoundSource* background = slotengine->addSoundSourceFromFile("Sound/Slotsbg.mp3");
+irrklang::ISound* error = slotengine->play2D(errorsound, false, true, true, false);         //giving audios parameters to add conditions to
 irrklang::ISound* slotspin = slotengine->play2D(slotspinning, false, true, true, false);
-irrklang::ISoundSource* jackpot = slotengine->addSoundSourceFromFile("Sound/3inarow.mp3");
+irrklang::ISound* win2 = slotengine->play2D(twoinarow, false, true, true, false);
+irrklang::ISound* lose = slotengine->play2D(noneSame, false, true, true, false);
 irrklang::ISound* win3 = slotengine->play2D(jackpot, false, true, true, false);
-irrklang::ISoundSource* nonesame = slotengine->addSoundSourceFromFile("Sound/nonesame.mp3");
-irrklang::ISound* lose = slotengine->play2D(nonesame, false, true, true, false);
+irrklang::ISound* clap = slotengine->play2D(clapping, false, true, true, false);
+irrklang::ISound* bg = slotengine->play2D(background, true, true, true, false);
+
 
 
 SceneSlots::SceneSlots()
@@ -191,20 +198,21 @@ void SceneSlots::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 
 	}
-
-
 	//camera.Update(dt);
+	
+		bg->setIsPaused(false);  //background music
+	
 
-	if (Application::IsKeyPressed('L') && rotate1 == false && rotate2 == false && rotate3 == false)
+	if (Application::IsKeyPressed('L') && rotate1 == false && rotate2 == false && rotate3 == false)  //pressing 'L' to start the spinners when spinners are not spinning
 	{
 		tmp = false;
-		tmp = Player::instance()->removeMoney(100);
-		if (tmp == true)
+		tmp = Player::instance()->removeMoney(100);  //remove money as cost to spin
+		if (tmp == true)         //if player has money and has been deducted
 		{
-			rotate1 = true;
+			rotate1 = true;      //rotate1,2, and 3 to check if spinners are rotating
 			rotate2 = true;
 			rotate3 = true;
-			threesame = false;
+			threesame = false;   //threesame. twosame, nonesame for checking end combinations
 			twosame = false;
 			nonesame = false;
 			threesame2 = false;
@@ -213,45 +221,48 @@ void SceneSlots::Update(double dt)
 			gameStart = true;
 			gameEnd = false;
 			handleforward = true;
-			handleback = false;
-			slotspin->setIsPaused(false);
+			slotengine->play2D(slotspinning);                   //playing the spinning audio
+			slotengine->stopAllSoundsOfSoundSource(twoinarow);  //stopping other sounds when spinning
+			slotengine->stopAllSoundsOfSoundSource(noneSame);
+			slotengine->stopAllSoundsOfSoundSource(jackpot);
+			slotengine->stopAllSoundsOfSoundSource(clapping);
 		}
 	}
-	if (Application::IsKeyPressed('1'))
+	if (Application::IsKeyPressed('1'))      //press 1 to stop the first spinner
 	{
 		rotate1 = false;
 
 	}
-	else if (Application::IsKeyPressed('2'))
+	else if (Application::IsKeyPressed('2')) //press 2 to stop second spinner
 	{
 		rotate2 = false;
 	}
-	else if (Application::IsKeyPressed('3'))
+	else if (Application::IsKeyPressed('3')) // press 3 to stop third spinner
 	{
 		rotate3 = false;
 	}
 
-	if (handleforward)
+	if (handleforward)                      //rotating the handle when slot spins
 	{
-		rotatehandle2 += 1;
-		if (rotatehandle2 > 45)
+		rotatehandle += 1;
+		if (rotatehandle > 45)
 		{
-			rotatehandle2 = 0;
+			rotatehandle = 0;
 			handleforward = false;
 		}
 	}
-	if (rotate1 == true)
+	if (rotate1 == true)   //rotating spinner 1
 	{
 		rotateslot1 += (float)(1500 * dt);
-		if (rotateslot1 >= 360)
+		if (rotateslot1 >= 360)    //change degree to 0 when it is at 360. used to check the angle where it stops
 			rotateslot1 = 0;
 	}
-	else if (rotate1 == false)
+	else if (rotate1 == false)            //checking which face the spinners stop at for 1st spinner
 	{
 		if (rotateslot1 <= 20 || rotateslot1 >= 340)
 		{
-			rotateslot1 = 0;
-			facenum[0] = 1;
+			rotateslot1 = 0;              //bring the face to a fixed degree when it is in range of two degrees so that there is a face facing forward
+			facenum[0] = 1;               //storing the face it stops at
 		}
 		else if (rotateslot1 <= 60 && rotateslot1 >= 20)
 		{
@@ -294,13 +305,13 @@ void SceneSlots::Update(double dt)
 			facenum[0] = 9;
 		}
 	}
-	if (rotate2 == true)
+	if (rotate2 == true)            //rotating spinner 2
 	{
 		rotateslot2 += (float)(1500 * dt);
 		if (rotateslot2 >= 360)
 			rotateslot2 = 0;
 	}
-	else if (rotate2 == false)
+	else if (rotate2 == false)      //checking which face the spinners stop at for 1st spinner
 	{
 		if (rotateslot2 <= 20 || rotateslot2 >= 340)
 		{
@@ -348,13 +359,13 @@ void SceneSlots::Update(double dt)
 			facenum[1] = 9;
 		}
 	}
-	if (rotate3 == true)
+	if (rotate3 == true)         //rotating spinner 3
 	{
 		rotateslot3 += (float)(1500 * dt);
 		if (rotateslot3 >= 360)
 			rotateslot3 = 0;
 	}
-	else if (rotate3 == false)
+	else if (rotate3 == false)   //checking which face the spinners stop at for 1st spinner
 	{
 		if (rotateslot3 <= 20 || rotateslot3 >= 340)
 		{
@@ -402,44 +413,46 @@ void SceneSlots::Update(double dt)
 			facenum[2] = 9;
 		}
 	}
-	//std::cout << rotateslot1 << " " << rotateslot2 << " " << rotateslot3 << std::endl;
-	if (rotate1 == false && rotate2 == false && rotate3 == false && gameStart == true) {
-		slotspin->setIsPaused(true);
-		if (facenum[0] == facenum[1] && facenum[1] == facenum[2])
+
+	if (rotate1 == false && rotate2 == false && rotate3 == false && gameStart == true) {  //if all spinners are stopped
+		slotengine->stopAllSoundsOfSoundSource(slotspinning);
+		if (facenum[0] == facenum[1] && facenum[1] == facenum[2])                         //if the 3 faces are the same
 		{
-			threesame = true;
+			threesame = true;                                                             //prize of three in a row
 			twosame = false;
 			nonesame = false;
-			win3->setIsPaused(false);
+			slotengine->play2D(jackpot);
+			slotengine->play2D(clapping);
 
 		}
-		else if (facenum[0] == facenum[1] || facenum[1] == facenum[2] || facenum[0] == facenum[2])
+		else if (facenum[0] == facenum[1] || facenum[1] == facenum[2] || facenum[0] == facenum[2])  //if two faces are the same
 		{
-			twosame = true;
+			twosame = true;                                                                         //prize of two in a row
 			threesame = false;
 			nonesame = false;
+			slotengine->play2D(twoinarow);
 		}
-		else
+		else                                                                           //if none are the same
 		{
-			nonesame = true;
+			nonesame = true;                                                           //no prize
 			twosame = false;
 			threesame = false;
+			slotengine->play2D(noneSame);
 		}
 	}
 
 
-	if (threesame == true || twosame == true || nonesame == true)
+	if (threesame == true || twosame == true || nonesame == true)         //if a prize is given, that round ends
 	{
 		gameEnd = true;
 	}
-	if (Application::IsKeyPressed(VK_RETURN)) {
+	if (Application::IsKeyPressed(VK_RETURN)) {                            //if pressed enter while none of the spinners are spinning, return to motorshow
 		if (rotate1 == false && rotate2 == false && rotate3 == false)
 		{
-
+			bg->setIsPaused(true);
 			Application::state = Application::Motorshow;
 		}
 	}
-	
 }
 
 
@@ -553,54 +566,54 @@ void SceneSlots::Render()
 	
 	modelStack.PushMatrix();
 	modelStack.Translate(-37.f, 0.f, 0.f);
-	RenderMesh(meshList[GEO_SLOTMACHINE], false);
+	RenderMesh(meshList[GEO_SLOTMACHINE], false);                                  //render slot machine
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 0.f, -6.f);
-	modelStack.Rotate(-90*sin(Math::DegreeToRadian(rotatehandle2)*4), 0, 0, 1);
-	RenderMesh(meshList[GEO_SLOTHANDLE], false);
-	modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(0.f, 0.f, -6.f);
+		modelStack.Rotate(-90*sin(Math::DegreeToRadian(rotatehandle)*4), 0, 0, 1);
+		RenderMesh(meshList[GEO_SLOTHANDLE], false);                                   //render slot handle
+		modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 7.5, 2.2);
-	modelStack.Rotate(rotateslot1, 0, 0, 1);
-	RenderMesh(meshList[GEO_SPINNER], false);
-	modelStack.PopMatrix();
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 7.5, 0);
-	modelStack.Rotate(rotateslot2, 0, 0, 1);
-	RenderMesh(meshList[GEO_SPINNER], false);
-	modelStack.PopMatrix();
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 7.5, -2.2);
-	modelStack.Rotate(rotateslot3, 0, 0, 1);
-	RenderMesh(meshList[GEO_SPINNER], false);
-	modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 7.5, 2.2);
+		modelStack.Rotate(rotateslot1, 0, 0, 1);
+		RenderMesh(meshList[GEO_SPINNER], false);                                      //render spinner 1
+		modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 7.5, 0);
+		modelStack.Rotate(rotateslot2, 0, 0, 1);
+		RenderMesh(meshList[GEO_SPINNER], false);                                      //render spinner 2
+		modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 7.5, -2.2);
+		modelStack.Rotate(rotateslot3, 0, 0, 1);
+		RenderMesh(meshList[GEO_SPINNER], false);                                      //render spinner 3   
+		modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
 	
 
-	if (threesame == true)
+	if (threesame == true)                 //if 3 faces are the same
 	{
 		threesame2 = true;
-		Player::instance()->addMoney(500);
+		Player::instance()->addMoney(500); //add money $500
 		facenum[0] = 1;
 		facenum[1] = 1;
 		facenum[2] = 1;
 		gameStart = false;
 		threesame = false;
 	}
-	else if (twosame == true)
+	else if (twosame == true)             //if 2 faces are the same
 	{
 		twosame2 = true;
-		Player::instance()->addMoney(250);
+		Player::instance()->addMoney(250);//add money 250
 		facenum[0] = 1;
 		facenum[1] = 1;
 		facenum[2] = 1;
 		gameStart = false;
 		twosame = false;
 	}
-	else if (nonesame == true)
+	else if (nonesame == true)            //if no faces are the same no money added
 	{
 		nonesame2 = true;
 		facenum[0] = 1;
@@ -609,7 +622,7 @@ void SceneSlots::Render()
 		gameStart = false;
 		nonesame = false;
 	}
-	if (threesame2)
+	if (threesame2)          //render text to show how many faces in a row
 	{
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "three in a row", Color(1, 0.7, 0.4), 3, 0, 0);
 	}
@@ -622,9 +635,11 @@ void SceneSlots::Render()
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "you lose", Color(1, 0.7, 0.4), 3, 0, 0);
 	}
 
-	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(1, 1, 0), 2, 0.5, 26.5f);
+	RenderFramerate(meshList[GEO_SLOTTEXT], Color(0, 0, 0), 2, 34, 27);  //render text for framerate
 
-	if (tmp == false && gameEnd == true)
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Money: " + to_string(Player::instance()->getMoney()), Color(1, 1, 0), 2, 0.5, 26.5f);  //render text of amount of money
+
+	if (tmp == false || (tmp == false && gameEnd == true)       //when player has no money
 	{
 		error->setIsPaused(false);
 
@@ -632,7 +647,7 @@ void SceneSlots::Render()
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "money :(", Color(1, 1, 0), 2, 0.5, 23.5f);
 	}
 
-	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "$100 per run", Color(1, 0.7, 0.4), 2, 0.5f, 28.5f);
+	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "$100 per run", Color(1, 0.7, 0.4), 2, 0.5f, 28.5f);       //render text instructions
 
 	RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Click L to start", Color(1, 0.7, 0.4), 2, 12.f, 14.f);
 
@@ -698,4 +713,60 @@ void SceneSlots::RenderMesh(Mesh * mesh, bool enableLight)
 	mesh->Render(); //this line should only be called once in the whole function
 
 	if (mesh->textureID > 0) glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void SceneSlots::RenderFramerate(Mesh* mesh, Color color, float size, float x, float y)
+{
+
+	static float framesPerSecond = 0.0f;
+	static int fps;
+	static float lastTime = 0.0f;
+	float currentTime = GetTickCount64() * 0.001f;
+	++framesPerSecond;
+
+	if (currentTime - lastTime > 1.0f)
+	{
+		lastTime = currentTime;
+		fps = (int)framesPerSecond;
+		framesPerSecond = 0;
+	}
+	std::string frames = "FPS:" + std::to_string(fps);
+	if (!mesh || mesh->textureID <= 0)
+		return;
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Scale(size, size, size);
+	modelStack.Translate(x, y, 0);
+
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	for (unsigned i = 0; i < frames.length(); ++i)
+	{
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(i * 1.0f, 0, 0);
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		mesh->Render((unsigned)frames[i] * 6, 6);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	glEnable(GL_DEPTH_TEST);
 }
