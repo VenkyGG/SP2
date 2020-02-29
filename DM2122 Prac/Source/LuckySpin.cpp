@@ -203,10 +203,10 @@ void LuckySpin::Update(double dt)
 		{
 			//EXIT
 		}
-		if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
+		if (Application::IsKeyPressed(VK_RETURN) || Spinned == false)
 		{
-			returnMotor = true;
 			Application::state = Application::Motorshow;
+			returnMotor = true;
 		}
 		if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
 		{
