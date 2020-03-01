@@ -28,7 +28,7 @@ private:
 	~Player();
 
 public:
-	void CheckAddSound(bool);
+
 	bool hasFile();
 
 	void createFile();

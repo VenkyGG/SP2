@@ -219,7 +219,14 @@ void SceneText::Init()
 
 	}
 	srand(time(NULL));
-
+	float angleposition = 360.0f / Player::instance()->cars.GetnumberofCars();
+	float currentangle = 0;
+	float radius = 100.0f;
+	for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
+	{
+		Player::instance()->cars.GetCar(i)->SetPosition(0, Vector3(radius * sin(Math::DegreeToRadian(currentangle)), 0, radius * cos(Math::DegreeToRadian(currentangle))));
+		currentangle += angleposition;
+	}
 
 
 	for (int i = 0; i < numberofobjects; i++)

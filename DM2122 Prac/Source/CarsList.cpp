@@ -81,20 +81,7 @@ CarsList::CarsList()
 		maxspeed += 5;
 		Price += 100000;
 	}
-	float angleposition = 360.0f / numcars;
-	float currentangle = 0;
-	current = Start;
-	float radius = 100.0f;
-	for (int i = 0; i < numcars; i++)
-	{
-		current->SetPosition(0,Vector3(radius * sin(Math::DegreeToRadian(currentangle)), 0,radius * cos(Math::DegreeToRadian(currentangle))));
-		current->SetRotation(0,Vector3(0, current->GetRotation()[0].y + angleposition, 0));
-		currentangle += angleposition;
-		if (i != numcars - 1)
-		{
-			current = current->GetNext();
-		}
-	}
+	
 	CurrentCar = current;
 }
 

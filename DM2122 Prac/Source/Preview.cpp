@@ -201,7 +201,10 @@ void Preview::Update(double dt)
 	rotation.SetToRotation(yaw, 0, 1, 0);
 	camera.position = rotation * camera.position;
 	camera.up = rotation * camera.up;
-	
+	if (Player::instance()->cars.GetCurrentCar()->GetPostition()[0] != Vector3(0, 0, 0))
+	{
+		Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3(0, 0, 0));
+	}
 	if (Application::IsKeyPressed(VK_LEFT) && bouncetime<GetTickCount64()) // This will change to the previous Car
 	{
 		if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart())

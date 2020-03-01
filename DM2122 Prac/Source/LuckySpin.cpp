@@ -141,7 +141,6 @@ void LuckySpin::Update(double dt)
 		finalspin = rand() % 720 + 1440;
 		remainder = fmod(finalspin, 360);
 		segment = (int(remainder) / 45) + 1;
-		resetRotation();
 		//std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
 
 	}

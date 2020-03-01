@@ -202,7 +202,7 @@ void Application::Run()
 				}
 			}
 			scene = Ptr[state];
-			if (!scene->initialized || scene == Ptr[Motorshow])
+			if (!scene->initialized || scene == Ptr[Motorshow] || scene == Ptr[Driving])
 			{
 				scene->Init();
 			}

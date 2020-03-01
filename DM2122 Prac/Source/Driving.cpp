@@ -23,6 +23,10 @@ irrklang::ISound* driving = engine5->play2D(drive, true, true, true, false);
 irrklang::ISoundSource* Crash = engine5->addSoundSourceFromFile("Sound/collide.mp3");//when car collide
 irrklang::ISound* Crashing = engine5->play2D(Crash, true, true, true, false);
 
+irrklang::ISoundEngine* engine6 = irrklang::createIrrKlangDevice();
+irrklang::ISoundSource* Mon = engine6->addSoundSourceFromFile("Sound/ChaChing.wav");//when money added
+irrklang::ISound* msound = engine6->play2D(Mon, true, true, true, false);
+
 DrivingScene::DrivingScene()
 {
 
@@ -195,17 +199,10 @@ void DrivingScene::Update(double dt)
 	{
 		if (Application::IsKeyPressed(VK_RETURN))
 		{
-			float angleposition = 360.0f / Player::instance()->cars.GetnumberofCars();
-			float currentangle = 0;
-			float radius = 100.0f;
-			for (int i = 0; i < Player::instance()->cars.GetnumberofCars(); i++)
-			{
-				Player::instance()->cars.GetCar(i)->SetPosition(0, Vector3(radius * sin(Math::DegreeToRadian(currentangle)), 0, radius * cos(Math::DegreeToRadian(currentangle))));
-				currentangle += angleposition;
-			}
 			Crashing->setPlayPosition(0);
 			Crashing->setIsPaused(true);
 			Application::state = Application::Motorshow;
+			
 
 		}
 	}
@@ -222,7 +219,7 @@ void DrivingScene::Update(double dt)
 			timeToAdd = true;
 			moneyToAdd = timenow * 200;
 			Player::instance()->addMoney(moneyToAdd);
-			Player::instance()->CheckAddSound(true);
+			msound->setIsPaused(false);
 		}
 		timenow = 0;
 	}
@@ -234,12 +231,14 @@ void DrivingScene::Update(double dt)
 			moneyYpos = 18;
 			moneyToAdd = 0;
 			timeToAdd = false;
-			Player::instance()->CheckAddSound(false);
+			
 		}
-		else
+		if (msound->getPlayPosition() > 500)
 		{
-			Player::instance()->CheckAddSound(true);
+			msound->setPlayPosition(0);
+			msound->setIsPaused(true);
 		}
+		
 	}
 	if (Application::IsKeyPressed(0x31))
 	{
@@ -542,6 +541,7 @@ bool DrivingScene::CheckSquareCollision()
 						timeToAdd = true;
 						moneyToAdd = timenow * 200;
 						Player::instance()->addMoney(moneyToAdd);
+						msound->setIsPaused(false);
 					}
 					timenow = 0;
 					currentmesh->camcollided = true;
