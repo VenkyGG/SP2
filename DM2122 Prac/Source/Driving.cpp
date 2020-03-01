@@ -34,7 +34,18 @@ DrivingScene::DrivingScene()
 	{
 		meshList[i] = NULL;
 	}
-	
+	objectlist[0].SetMesh("InnerTrack", "OBJ//Tracks//track_inneredge.obj");
+	objectlist[0].GetMesh()->textureID = LoadTGA("Image//track_inneredge.tga");
+	objectlist[0].SetNumberOfOccurences(20);
+	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
+	objectlist[1].GetMesh()->textureID = LoadTGA("Image//track_outeredge.tga");
+	objectlist[1].SetNumberOfOccurences(20);
+	objectlist[2].SetMesh("lamppost", "OBJ//Tracks//lamppost.obj");
+	objectlist[2].GetMesh()->textureID = LoadTGA("Image//lamppost.tga");
+	objectlist[2].SetNumberOfOccurences(40);
+	objectlist[3].SetMesh("lamppost", "OBJ//Tracks//statue.obj");
+	objectlist[3].GetMesh()->textureID = LoadTGA("Image//statue.tga");
+	objectlist[3].SetNumberOfOccurences(1);
 }
 
 DrivingScene::~DrivingScene()
@@ -161,20 +172,8 @@ void DrivingScene::Init()
 	meshList[GEO_SPEEDOMETERFRONT]->textureID = LoadTGA("Image//Car Textures//speedometer_front.tga");
 	meshList[GEO_LIGHTSPHERE] = MeshBuilder::GenerateSphere("lightBall", Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 
-	vector<Mesh*> MeshStorage;
 
-	objectlist[0].SetMesh("InnerTrack", "OBJ//Tracks//track_inneredge.obj");
-	objectlist[0].GetMesh()->textureID = LoadTGA("Image//track_inneredge.tga");
-	objectlist[0].SetNumberOfOccurences(20);
-	objectlist[1].SetMesh("OuterTrack", "OBJ//Tracks//track_outeredge.obj");
-	objectlist[1].GetMesh()->textureID = LoadTGA("Image//track_outeredge.tga");
-	objectlist[1].SetNumberOfOccurences(20);
-	objectlist[2].SetMesh("lamppost", "OBJ//Tracks//lamppost.obj");
-	objectlist[2].GetMesh()->textureID = LoadTGA("Image//lamppost.tga");
-	objectlist[2].SetNumberOfOccurences(40);
-	objectlist[3].SetMesh("lamppost", "OBJ//Tracks//statue.obj");
-	objectlist[3].GetMesh()->textureID = LoadTGA("Image//statue.tga");
-	objectlist[3].SetNumberOfOccurences(1);
+
 
 	srand(time(NULL));
 	innerradius = 200;
@@ -203,8 +202,6 @@ void DrivingScene::Update(double dt)
 			Crashing->setPlayPosition(0);
 			Crashing->setIsPaused(true);
 			Application::state = Application::Motorshow;
-			
-
 		}
 	}
 	if (Crashing->getPlayPosition() > 3000)
