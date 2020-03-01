@@ -353,13 +353,16 @@ void SceneText::Update(double dt)
 	{
 		if (objectlist[i].GetMesh()->name == "slotmachine")
 		{
-			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
+			if (Application::IsKeyPressed('E'))
 			{
-				hologramsize3 = (100 - (camera.position - objectlist[i].GetPostition()[1]).Length()) / 1;
-				if (Application::IsKeyPressed('E'))
+				if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
 				{
 					Application::state = Application::Slotmachine;
 				}
+			}
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
+			{
+				hologramsize3 = (100 - (camera.position - objectlist[i].GetPostition()[1]).Length()) / 1;
 			}
 			else
 			{
@@ -369,13 +372,17 @@ void SceneText::Update(double dt)
 
 		if (objectlist[i].GetMesh()->name == "Dcar")
 		{
-			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
+			if (Application::IsKeyPressed('E'))
 			{
-				hologramsize2  = (100-(camera.position - objectlist[i].GetPostition()[1]).Length())/10;
-				if (Application::IsKeyPressed('E'))
+				if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
 				{
 					Application::state = Application::DodgeCars;
 				}
+			}
+			
+			if ((camera.position - objectlist[i].GetPostition()[1]).Length() <= 100)
+			{
+				hologramsize2 = (100 - (camera.position - objectlist[i].GetPostition()[1]).Length()) / 10;
 			}
 			else
 			{
@@ -385,13 +392,16 @@ void SceneText::Update(double dt)
 
 		if (objectlist[i].GetMesh()->name == "spinningWheel")
 		{
-			if ((camera.position - Vector3(300, camera.playerheight, 0)).Length() <= 100)
+			if (Application::IsKeyPressed('E'))
 			{
-				hologramsize1 = (100 - (camera.position - Vector3(300, camera.playerheight, 0)).Length()) / 10;
-				if (Application::IsKeyPressed('E'))
+				if ((camera.position - Vector3(300, camera.playerheight, 0)).Length() <= 100)
 				{
 					Application::state = Application::Luckyspin;
 				}
+			}
+			if ((camera.position - Vector3(300, camera.playerheight, 0)).Length() <= 100)
+			{
+				hologramsize1 = (100 - (camera.position - Vector3(300, camera.playerheight, 0)).Length()) / 10;
 			}
 			else
 			{
@@ -400,9 +410,9 @@ void SceneText::Update(double dt)
 		}
 		if (objectlist[i].GetMesh()->name == "TeleportationPad")
 		{
-			if ((camera.position - objectlist[i].GetPostition()[0]).Length() <= 15)
+			if (Application::IsKeyPressed('E'))
 			{
-				if (Application::IsKeyPressed('E'))
+				if ((camera.position - objectlist[i].GetPostition()[0]).Length() <= 15)
 				{
 					Application::state = Application::PreviewxD;
 				}

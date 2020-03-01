@@ -134,13 +134,14 @@ void LuckySpin::Update(double dt)
 		Wheel->setIsPaused(true);
 	}
 
-	if ((Application::IsKeyPressed('B')) && timer < GetTickCount64()) //&&only inthis scene then can press spinner)
+	if ((Application::IsKeyPressed('B')) && !Spinned) //&&only inthis scene then can press spinner)
 	{
 		Spinned = true;
 		srand(time(NULL));
 		finalspin = rand() % 720 + 1440;
 		remainder = fmod(finalspin, 360);
 		segment = (int(remainder) / 45) + 1;
+		SpinnerRotation = 0;
 		//std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
 
 	}
