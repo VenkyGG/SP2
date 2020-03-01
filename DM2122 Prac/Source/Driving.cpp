@@ -183,6 +183,7 @@ void DrivingScene::Init()
 	Player::instance()->cars.GetCurrentCar()->SetRotation(0, Vector3(0, 0, 0));
 	camera.mouseenabledVertical = false;
 	camera.RotationEnabled = false;
+	camera.disableReset = true;
 	moneyYpos = 18;
 	timeToAdd = false;
 	angledetector = 0;
