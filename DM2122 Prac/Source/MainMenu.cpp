@@ -157,10 +157,10 @@ void MainMenu::Update(double dt)
 	}
 	else if (level==2 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))  //if pointer is at option 2 and enter is pressed, go to settings
 	{
-		SceneSetting::clock3 = GetTickCount64() + 200;
+		SceneSetting::clock3 = GetTickCount64() + 500;
 		Application::state = Application::Settings;
 	}
-	else if (level==3 && Application::IsKeyPressed(VK_RETURN))  //if pointer is at option 3 and enter is pressed, exit the game
+	else if (level==3 && clock2 < GetTickCount64() && Application::IsKeyPressed(VK_RETURN))  //if pointer is at option 3 and enter is pressed, exit the game
 	{
 		Application::TimeToExit = true;
 	}

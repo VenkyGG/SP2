@@ -126,14 +126,14 @@ void SceneSetting::Update(double dt)
 
 	float offsety = 9.5;     //used to change the y axis of the pointer
 	float offsetx = 3.5;     //used to change the x axis of the pointer
-	if (Application::IsKeyPressed('S') && clock2 < GetTickCount64() && level < 2)       //if S is pressed, pointer move down. clock2 to delay moving up and down time so that it cannot be spammed
+	if ((Application::IsKeyPressed('S') || Application::IsKeyPressed(VK_DOWN)) && clock2 < GetTickCount64() && level < 2)       //if S is pressed, pointer move down. clock2 to delay moving up and down time so that it cannot be spammed
 	{
 		pos -= offsety;    //change the axis of the pointer
 		pos2 += offsetx;
 		level++;
 		clock2 = GetTickCount64() + 400;
 	}
-	else if (Application::IsKeyPressed('W') && clock2 < GetTickCount64() && level > 1) //if W is pressed, move pointer up. clock2 to delay moving up and down time so that it cannot be spammed
+	else if ((Application::IsKeyPressed('W') || Application::IsKeyPressed(VK_UP)) && clock2 < GetTickCount64() && level > 1) //if W is pressed, move pointer up. clock2 to delay moving up and down time so that it cannot be spammed
 	{
 		pos += offsety;   //change the axis of the pointer
 		pos2 -= offsetx;
@@ -159,7 +159,7 @@ void SceneSetting::Update(double dt)
 	}
 	else if (level == 2 && clock3 < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN)))//if pointer is at the second option and enter is pressed
 	{
-		MainMenu::clock2 = GetTickCount64() + 200;
+		MainMenu::clock2 = GetTickCount64() + 500;
 		Application::state = Application::Mainmenu;   //change scene to main menu
 	}
 

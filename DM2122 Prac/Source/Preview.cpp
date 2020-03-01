@@ -205,17 +205,16 @@ void Preview::Update(double dt)
 	{
 		Player::instance()->cars.GetCurrentCar()->SetPosition(0, Vector3(0, 0, 0));
 	}
-	if (Application::IsKeyPressed(VK_LEFT) && bouncetime<GetTickCount64()) // This will change to the previous Car
+	if ((Application::IsKeyPressed(VK_LEFT)|| Application::IsKeyPressed('A')) && bouncetime<GetTickCount64()) // This will change to the previous Car
 	{
 		if (Player::instance()->cars.GetCurrentCar() != Player::instance()->cars.GetStart())
 		{
 			Player::instance()->cars.SetCurrentCar(Player::instance()->cars.GetCurrentCar()->Getprevious());
-
 			bouncetime = GetTickCount64() + 200;
 		}
 	}
 
-	if (Application::IsKeyPressed(VK_RIGHT) && bouncetime < GetTickCount64()) // This will change to the next Car
+	if ((Application::IsKeyPressed(VK_RIGHT) || Application::IsKeyPressed('D')) && bouncetime < GetTickCount64()) // This will change to the next Car
 	{
 		if (Player::instance()->cars.GetCurrentCar()->GetNext() != nullptr)
 		{

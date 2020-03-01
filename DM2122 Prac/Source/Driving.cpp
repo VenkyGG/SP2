@@ -22,14 +22,11 @@ irrklang::ISoundSource* drive = engine5->addSoundSourceFromFile("Sound/street.mp
 irrklang::ISound* driving = engine5->play2D(drive, true, true, true, false);
 irrklang::ISoundSource* Crash = engine5->addSoundSourceFromFile("Sound/collide.mp3");//when car collide
 irrklang::ISound* Crashing = engine5->play2D(Crash, true, true, true, false);
-
-irrklang::ISoundEngine* engine6 = irrklang::createIrrKlangDevice();
-irrklang::ISoundSource* Mon = engine6->addSoundSourceFromFile("Sound/ChaChing.wav");//when money added
-irrklang::ISound* msound = engine6->play2D(Mon, true, true, true, false);
+irrklang::ISoundSource* Mon = engine5->addSoundSourceFromFile("Sound/ChaChing.wav");//when money added
+irrklang::ISound* msound = engine5->play2D(Mon, true, true, true, false);
 
 DrivingScene::DrivingScene()
 {
-
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
@@ -580,7 +577,10 @@ bool DrivingScene::CheckSquareCollision()
 			}
 
 		}
-		
+		if (collided)
+		{
+			return collided;
+		}
 	}
 
 	return collided;
