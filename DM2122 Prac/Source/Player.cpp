@@ -1,5 +1,10 @@
 #include "Player.h" 
 
+
+irrklang::ISoundEngine* engine6 = irrklang::createIrrKlangDevice();
+irrklang::ISoundSource* Mon = engine6->addSoundSourceFromFile("Sound/ChaChing.wav");//when money added
+irrklang::ISound* msound = engine6->play2D(Mon, true, true, true, false);
+
 Player::Player()
 {
 	startingBalance = 100000; // Change this value to alter the starting balance of the player
@@ -212,9 +217,21 @@ void Player::addMoney(int amountToBeAdded) // Function to add money.
 {
 	money = getMoney() + amountToBeAdded;
 
+	//msound->setIsPaused(false);
 	rewriteFile();
 }
 
+void Player::CheckAddSound(bool x)
+{
+	if (x == false)
+	{
+		msound->setIsPaused(true);
+	}
+	if (x == true)
+	{
+		msound->setIsPaused(false);
+	}
+}
 
 int Player::getMoney()
 {

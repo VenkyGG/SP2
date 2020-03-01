@@ -141,6 +141,7 @@ void LuckySpin::Update(double dt)
 		finalspin = rand() % 720 + 1440;
 		remainder = fmod(finalspin, 360);
 		segment = (int(remainder) / 45) + 1;
+		resetRotation();
 		//std::cout << " finalspin " << finalspin << "remainder " << remainder << "segment " << segment << std::endl;
 
 	}
@@ -199,22 +200,19 @@ void LuckySpin::Update(double dt)
 			//spin again
 			resetRotation();
 		}
-		if ((Application::IsKeyPressed('N')) && timer < GetTickCount64() && Spinned == false)
-		{
-			//EXIT
-		}
-		if (Application::IsKeyPressed(VK_RETURN) || Spinned == false)
-		{
-			Application::state = Application::Motorshow;
-			returnMotor = true;
-		}
-		if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
-		{
-			SpinB->setIsPaused(true);
-			Wheel->setIsPaused(true);
-		}
-
 	}
+
+	if (Application::IsKeyPressed(VK_RETURN) || Spinned == false)
+	{
+		Application::state = Application::Motorshow;
+		returnMotor = true;
+	}
+	if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
+	{
+		SpinB->setIsPaused(true);
+		Wheel->setIsPaused(true);
+	}
+
 	//reset
 	if ((Application::IsKeyPressed('X')) && timer < GetTickCount64())
 	{

@@ -6,6 +6,8 @@
 #include <fstream>
 #include <cstdint>
 #include "CarsList.h"
+#include <irrKlang.h>
+#pragma comment(lib,"irrKlang.lib")
 
 using namespace std;
 
@@ -26,7 +28,7 @@ private:
 	~Player();
 
 public:
-
+	void CheckAddSound(bool);
 	bool hasFile();
 
 	void createFile();
