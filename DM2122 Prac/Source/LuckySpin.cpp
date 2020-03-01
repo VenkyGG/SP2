@@ -202,7 +202,7 @@ void LuckySpin::Update(double dt)
 		}
 	}
 
-	if (Application::IsKeyPressed(VK_RETURN) || Spinned == false)
+	if (Application::IsKeyPressed(VK_RETURN) && Spinned == false)
 	{
 		Application::state = Application::Motorshow;
 		returnMotor = true;
