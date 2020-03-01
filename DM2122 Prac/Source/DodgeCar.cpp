@@ -159,13 +159,16 @@ void DodgeCar::Update(double dt)
 		camera.target = camera.position + camera.view;
 		/*camera.position.z = -3.5f;*/
 	}
-	if (Application::IsKeyPressed('A') || Application::IsKeyPressed('D'))
+	if (Player::instance()->Audio)
 	{
-		footstep->setIsPaused(false);
-	}
-	else if (!Application::IsKeyPressed('A') || !Application::IsKeyPressed('D'))
-	{
-		footstep->setIsPaused(true);
+		if (Application::IsKeyPressed('A') || Application::IsKeyPressed('D'))
+		{
+			footstep->setIsPaused(false);
+		}
+		else if (!Application::IsKeyPressed('A') &&  !Application::IsKeyPressed('D'))
+		{
+			footstep->setIsPaused(true);
+		}
 	}
 	if (Application::IsKeyPressed('X') && Gamelose == false)
 	{
@@ -273,21 +276,24 @@ void DodgeCar::Update(double dt)
 			Dodgepoints = 0;
 		}
 	}
-	if (Gamelose == true)
+	if (Player::instance()->Audio)
 	{
-		lost->setIsPaused(false);
-		Dbgm->setIsPaused(true);
-	}
-	if (Gamelose == false)
-	{
-		Dbgm->setIsPaused(false);
-		lost->setIsPaused(true);
-		Dbgm->setVolume(30);
-	}
-	if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
-	{
-		Dbgm->setIsPaused(true);
-		lost->setIsPaused(true);
+		if (Gamelose == true)
+		{
+			lost->setIsPaused(false);
+			Dbgm->setIsPaused(true);
+		}
+		if (Gamelose == false)
+		{
+			Dbgm->setIsPaused(false);
+			lost->setIsPaused(true);
+			Dbgm->setVolume(30);
+		}
+		if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
+		{
+			Dbgm->setIsPaused(true);
+			lost->setIsPaused(true);
+		}
 	}
 	//collision with the walls
 	if (abs(camera.position.x >= 5.3))

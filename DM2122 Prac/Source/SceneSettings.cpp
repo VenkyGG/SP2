@@ -7,7 +7,7 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 #include "MainMenu.h"
-
+#include "Player.h"
 #define ROT_LIMIT 45.f;
 #define SCALE_LIMIT 5.f;
 #define LSPEED 10.f
@@ -145,14 +145,17 @@ void SceneSetting::Update(double dt)
 
 	if (level == 1 && clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN))) //if pointer is at the first option and enter is pressed
 	{
+		
 		clock = GetTickCount64() + 400;
 		if (button == true)             //if button is on, turn it off
 		{
+			Player::instance()->Audio = false;
 			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchoff.tga");   //switching the texture of the button from on to off
 			button = false;
 		}
 		else if (button == false)      //if button is on, turn it off
 		{
+			Player::instance()->Audio = true;
 			meshList[GEO_BUTTON]->textureID = LoadTGA("Image//switchon.tga");    //switching the texture of the button from off to on
 			button = true;
 		}

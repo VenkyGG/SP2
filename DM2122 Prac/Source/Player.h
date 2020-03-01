@@ -28,7 +28,7 @@ private:
 	~Player();
 
 public:
-
+	bool Audio;
 	bool hasFile();
 
 	void createFile();

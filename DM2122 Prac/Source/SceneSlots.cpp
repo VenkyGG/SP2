@@ -199,9 +199,10 @@ void SceneSlots::Update(double dt)
 
 	}
 	//camera.Update(dt);
-	
+	if (Player::instance()->Audio)
+	{
 		bg->setIsPaused(false);  //background music
-	
+	}
 
 	if (Application::IsKeyPressed('L') && rotate1 == false && rotate2 == false && rotate3 == false)  //pressing 'L' to start the spinners when spinners are not spinning
 	{
@@ -449,7 +450,10 @@ void SceneSlots::Update(double dt)
 	if (Application::IsKeyPressed(VK_RETURN)) {                            //if pressed enter while none of the spinners are spinning, return to motorshow
 		if (rotate1 == false && rotate2 == false && rotate3 == false)
 		{
-			bg->setIsPaused(true);
+			if (Player::instance()->Audio)
+			{
+				bg->setIsPaused(true);
+			}
 			Application::state = Application::Motorshow;
 		}
 	}
@@ -641,8 +645,10 @@ void SceneSlots::Render()
 
 	if (tmp == false && gameEnd )      //when player has no money
 	{
-		error->setIsPaused(false);
-
+		if (Player::instance()->Audio)
+		{
+			error->setIsPaused(false);
+		}
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "Not enough", Color(1, 1, 0), 2, 0.5, 24.5f);
 		RenderTextOnScreen(meshList[GEO_SLOTTEXT], "money :(", Color(1, 1, 0), 2, 0.5, 23.5f);
 	}

@@ -123,17 +123,19 @@ void LuckySpin::Update(double dt)
 	int offset = 6;
 	speed = 8.f;
 	//Audio
-	if (Spinned == true)
+	if (Player::instance()->Audio)
 	{
-		SpinB->setIsPaused(true);
-		Wheel->setIsPaused(false);
+		if (Spinned == true)
+		{
+			SpinB->setIsPaused(true);
+			Wheel->setIsPaused(false);
+		}
+		else if (Spinned == false)
+		{
+			SpinB->setIsPaused(false);
+			Wheel->setIsPaused(true);
+		}
 	}
-	else if (Spinned == false)
-	{
-		SpinB->setIsPaused(false);
-		Wheel->setIsPaused(true);
-	}
-
 	if ((Application::IsKeyPressed('B')) && !Spinned) //&&only inthis scene then can press spinner)
 	{
 		Spinned = true;
@@ -209,8 +211,11 @@ void LuckySpin::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_RETURN) || returnMotor == true)
 	{
-		SpinB->setIsPaused(true);
-		Wheel->setIsPaused(true);
+		if (Player::instance()->Audio)
+		{
+			SpinB->setIsPaused(true);
+			Wheel->setIsPaused(true);
+		}
 	}
 
 	//reset

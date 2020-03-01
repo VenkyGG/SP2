@@ -214,8 +214,6 @@ bool Player::removeMoney(int amountToBeRemoved) // Function to remove money. Ret
 void Player::addMoney(int amountToBeAdded) // Function to add money.
 {
 	money = getMoney() + amountToBeAdded;
-
-	//msound->setIsPaused(false);
 	rewriteFile();
 }
 

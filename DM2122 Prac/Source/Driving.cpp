@@ -196,15 +196,21 @@ void DrivingScene::Update(double dt)
 	{
 		if (Application::IsKeyPressed(VK_RETURN))
 		{
-			Crashing->setPlayPosition(0);
-			Crashing->setIsPaused(true);
+			if (Player::instance()->Audio)
+			{
+				Crashing->setPlayPosition(0);
+				Crashing->setIsPaused(true);
+			}
 			Application::state = Application::Motorshow;
 		}
 	}
 	if (Crashing->getPlayPosition() > 3000)
 	{
-		Crashing->setPlayPosition(0);
-		Crashing->setIsPaused(true);
+		if (Player::instance()->Audio)
+		{
+			Crashing->setPlayPosition(0);
+			Crashing->setIsPaused(true);
+		}
 	}
 	timenow += Drivetimer.getElapsedTime() * (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed()*5/125.0f);
 	if (Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() <= 0)
@@ -214,7 +220,10 @@ void DrivingScene::Update(double dt)
 			timeToAdd = true;
 			moneyToAdd = timenow * 200;
 			Player::instance()->addMoney(moneyToAdd);
-			msound->setIsPaused(false);
+			if (Player::instance()->Audio)
+			{
+				msound->setIsPaused(false);
+			}
 		}
 		timenow = 0;
 	}
@@ -230,8 +239,11 @@ void DrivingScene::Update(double dt)
 		}
 		if (msound->getPlayPosition() > 500)
 		{
-			msound->setPlayPosition(0);
-			msound->setIsPaused(true);
+			if (Player::instance()->Audio)
+			{
+				msound->setPlayPosition(0);
+				msound->setIsPaused(true);
+			}
 		}
 		
 	}
@@ -349,12 +361,17 @@ void DrivingScene::Update(double dt)
 
 	if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S')) || (Application::IsKeyPressed('W') && Application::IsKeyPressed('S')))
 	{
-		driving->setIsPaused(false);
-		
+		if (Player::instance()->Audio)
+		{
+			driving->setIsPaused(false);
+		}
 	}
 	if (!Application::IsKeyPressed('W') && !Application::IsKeyPressed('S'))
 	{
-		driving->setIsPaused(true);
+		if (Player::instance()->Audio)
+		{
+			driving->setIsPaused(true);
+		}
 	}
 
 }
@@ -530,13 +547,19 @@ bool DrivingScene::CheckSquareCollision()
 				if (x && Player::instance()->cars.GetCurrentCar()->getcurrentSpeed() != 0)
 				{
 					Crashing->setPlayPosition(0);
-					Crashing->setIsPaused(false);
+					if (Player::instance()->Audio)
+					{
+						Crashing->setIsPaused(false);
+					}
 					if (timenow >= 5)
 					{
 						timeToAdd = true;
 						moneyToAdd = timenow * 200;
 						Player::instance()->addMoney(moneyToAdd);
-						msound->setIsPaused(false);
+						if (Player::instance()->Audio)
+						{
+							msound->setIsPaused(false);
+						}
 					}
 					timenow = 0;
 					currentmesh->camcollided = true;

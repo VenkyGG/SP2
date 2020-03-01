@@ -124,16 +124,10 @@ void Application::Init()
 
 	glfwSetWindowSizeCallback(m_window, resize_callback);
 	glfwSetWindowPosCallback(m_window, window_pos_callback);
-	Ptr[intro] = new Intro();
+	Ptr[intro] = new Intro();//Renders intro screen
 	Ptr[intro]->Init();
-	
-	Ptr[intro]->Update(m_timer.getElapsedTime());
 	Ptr[intro]->Render();
-	//Swap buffers
 	glfwSwapBuffers(m_window);
-	//Get and organize events, like keyboard and mouse input, window resizing, etc...
-	glfwPollEvents();
-	m_timer.waitUntil(frameTime);
 }
 
 double Application::getmouseXpos()//get mpouse x coord
@@ -165,9 +159,10 @@ void Application::mouseupdate()//reset mouse position
 void Application::Run()
 {
 
-	Player::instance();
+	Player::instance();//initializes Player for the first time
+	Player::instance()->Audio = true;
 	//Main Loop
-	Ptr[Mainmenu] = new MainMenu();
+	Ptr[Mainmenu] = new MainMenu();//construction of each scene
 	Ptr[Motorshow] = new SceneText();
 	Ptr[Driving] = new DrivingScene();
 	Ptr[PreviewxD] = new Preview();
@@ -176,10 +171,10 @@ void Application::Run()
 	Ptr[DodgeCars] = new DodgeCar();
 	Ptr[Settings] = new SceneSetting();
 
-	state = Mainmenu;
+	state = Mainmenu;//variables to track current and previous scene
 	state2 = Mainmenu;
-	Scene * scene = Ptr[state];
-	scene->Init();
+	Scene * scene = Ptr[state];//sets current scene
+	scene->Init();//initialization of current scene
 	glfwWindowHint(GLFW_CENTER_CURSOR, true);
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !TimeToExit)
@@ -191,31 +186,38 @@ void Application::Run()
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
 		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.
-		if (scene != Ptr[state])
+		if (scene != Ptr[state])//if scene needs to be changed
 		{
-			MainMenu* currentscene = static_cast<MainMenu*>(Ptr[Mainmenu]);
-			for (int i = 0; i < TOTALSCENES; i++)
+			
+			for (int i = 0; i < TOTALSCENES; i++)//used to store the previous scene enum so that it can be reverted to
 			{
-				if (Ptr[i] == scene && i!=Settings && i!=Mainmenu)
+				if (Ptr[i] == scene && i!=Settings && i!=Mainmenu)//stores only if the scene isnt settings or mainmenu
 				{
 					state2 = i;
 				}
 			}
-			scene = Ptr[state];
-			if (!scene->initialized || scene == Ptr[Motorshow] || scene == Ptr[Driving])
+			scene = Ptr[state];//changes scene 
+			if (!scene->initialized || scene == Ptr[Motorshow] || scene == Ptr[Driving])//initializes scene if required
 			{
 				scene->Init();
 			}
-			if (scene == Ptr[Motorshow])
+			if (scene == Ptr[Motorshow])//used to turn on background music
 			{
-				Mbgm->setIsPaused(false);
+				if (Player::instance()->Audio)
+				{
+					Mbgm->setIsPaused(false);
+				}
 			}
-			if (scene != Ptr[Motorshow])
+			if (scene != Ptr[Motorshow])//used to turn off background music
 			{
-				Mbgm->setIsPaused(true);
+				if (Player::instance()->Audio)
+				{
+					Mbgm->setIsPaused(true);
+				}
 			}
-			if (scene == Ptr[0] && state2!=Mainmenu)
+			if (scene == Ptr[0] && state2!=Mainmenu)//to pause game when required
 			{
+				MainMenu* currentscene = static_cast<MainMenu*>(Ptr[Mainmenu]);
 				currentscene->Paused = true;
 			}
 		}
