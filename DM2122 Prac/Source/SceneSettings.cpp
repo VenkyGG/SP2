@@ -100,7 +100,7 @@ void SceneSetting::Init()
 
 
 
-	button = true;
+	button = Player::instance()->Audio;
 }
 double MainMenu::clock2 = 0;
 void SceneSetting::Update(double dt)
@@ -145,7 +145,6 @@ void SceneSetting::Update(double dt)
 
 	if (level == 1 && clock < GetTickCount64() && (Application::IsKeyPressed(VK_LBUTTON) || Application::IsKeyPressed(VK_RETURN))) //if pointer is at the first option and enter is pressed
 	{
-		
 		clock = GetTickCount64() + 400;
 		if (button == true)             //if button is on, turn it off
 		{

@@ -160,7 +160,7 @@ void Application::Run()
 {
 
 	Player::instance();//initializes Player for the first time
-	Player::instance()->Audio = true;
+	Player::instance()->Audio = true;//sets audio to on by default
 	//Main Loop
 	Ptr[Mainmenu] = new MainMenu();//construction of each scene
 	Ptr[Motorshow] = new SceneText();

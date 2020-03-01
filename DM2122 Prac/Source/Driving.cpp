@@ -356,9 +356,8 @@ void DrivingScene::Update(double dt)
 	camera.offset = currentcar->GetPostition()[0];
 	camera.position = Vector3(currentcar->GetPostition()[0].x + 40*sin(Math::DegreeToRadian(camera.Rotationfloat)),10, currentcar->GetPostition()[0].z + 40*cos(Math::DegreeToRadian(camera.Rotationfloat)));
 	camera.target = Player::instance()->cars.GetCurrentCar()->GetPostition()[0];
-	//cout << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector1 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector2 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector3 << " " << Player::instance()->cars.GetCurrentCar()->GetMeshList()[0]->ColisionVector4 << endl;
+	camera.right.y = 0;
 	camera.Update(dt);
-
 	if ((Application::IsKeyPressed('W') || Application::IsKeyPressed('S')) || (Application::IsKeyPressed('W') && Application::IsKeyPressed('S')))
 	{
 		if (Player::instance()->Audio)

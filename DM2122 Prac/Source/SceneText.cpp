@@ -312,36 +312,89 @@ void SceneText::Update(double dt)
 
 
 	float speed = 2;
-
+	float size = 495;
 	if (Application::IsKeyPressed('W'))
 	{
-
+		if (camera.position.x < -size)
+		{
+			camera.position.x = -size + 1;
+		}
+		if (camera.position.x > size)
+		{
+			camera.position.x = size - 1;
+		}
+		if (camera.position.z < -size)
+		{
+			camera.position.z = -size + 1;
+		}
+		if (camera.position.z > size)
+		{
+			camera.position.z = size - 1;
+		}
 		camera.position = camera.position + camera.view * speed;
 		camera.position.y = camera.playerheight;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
-
 	}
 	if (Application::IsKeyPressed('S'))
 	{
-
+		if (camera.position.x < -size)
+		{
+			camera.position.x = -size + 1;
+		}
+		if (camera.position.x > size)
+		{
+			camera.position.x = size - 1;
+		}
+		if (camera.position.z < -size)
+		{
+			camera.position.z = -size + 1;
+		}
+		if (camera.position.z > size)
+		{
+			camera.position.z = size - 1;
+		}
 		camera.position = camera.position - camera.view * speed;
 		camera.position.y = camera.playerheight;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
-
+		
 	}
 	if (Application::IsKeyPressed('A'))
 	{
+		if (camera.position.x < -size)
+		{
+			camera.position.x = -size + 1;
+		}
+		if (camera.position.x > size)
+		{
+			camera.position.x = size - 1;
+		}
+		if (camera.position.z < -size)
+		{
+			camera.position.z = -size + 1;
+		}
+		if (camera.position.z > size)
+		{
+			camera.position.z = size - 1;
+		}
 		camera.position = camera.position - camera.right * speed;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
 	}
 	if (Application::IsKeyPressed('D'))
 	{
+		if (camera.position.x < -size)
+		{
+			camera.position.x = -size + 1;
+		}
+		if (camera.position.x > size)
+		{
+			camera.position.x = size - 1;
+		}
+		if (camera.position.z < -size)
+		{
+			camera.position.z = -size + 1;
+		}
+		if (camera.position.z > size)
+		{
+			camera.position.z = size - 1;
+		}
 		camera.position = camera.position + camera.right * speed;
-		CheckSquareCollision();
-		camera.target = camera.position + camera.view;
 	}
 
 	if (Application::IsKeyPressed(VK_ESCAPE))
